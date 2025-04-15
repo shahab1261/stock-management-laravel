@@ -1,0 +1,19 @@
+<param name = "bgcolor1" value = "65669a" /> <!-- top bg color of player frame -->
+<param name = "bgcolor2" value = "000000" />  <!-- bottom bg color of player frame -->
+<param name = "loadingcolor" value = "ffff27" />
+<param name = "buttoncolor" value = "ffff27" /> <!-- color of control buttons -->
+<param name = "buttonovercolor" value = "ff3230" /> <!-- hovercolor of control buttons -->
+<param name = "scrollbarcolor" value = "ffff27" />
+<param name = "scrollbarovercolor" value = "ff3230" />
+<param name = "slidercolor1" value = "ffff27" /> <!-- duration slider gradient top -->
+<param name = "slidercolor2" value = "888888" />  <!-- duration slider gradient bottom -->
+<param name = "sliderovercolor" value = "ff3230" /> <!-- hovercolor of duration slider -->
+<param name = "textcolor" value = "ffffff" />
+<param name = "playlistcolor" value = "333333" /> <!-- not sure -->
+<param name = "currentmp3color" value = "ffff27" />
+<param name = "showvolume" value = "1" />
+<param name = "showplaylistnumbers" value = "0" /> <!-- adds numbers to playlist -->
+<param name = "buttonwidth" value = "26" />
+<param name = "sliderwidth" value = "20" />
+<param name = "width" value = "200" /> <!-- width of player frame, not the same as the html call width, can be smaller or larger -->
+<param name = "height" value = "148" /> <!-- height of player frame, not the same as the html call width, can be smaller or larger -->

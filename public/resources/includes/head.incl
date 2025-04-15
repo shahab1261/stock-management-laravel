@@ -1,0 +1,265 @@
+<html lang="en">
+  <head>
+    <link href="https://fonts.googleapis.com/" rel="preconnect" />
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" type="text/css" href="/resources/assets/css/swiper-bundle.min.css" />
+    <link rel="stylesheet" type="text/css" href="/resources/assets/css/aos.css" />
+    <link rel="stylesheet" type="text/css" href="/resources/assets/css/glightbox.min.css" />
+    <link rel="stylesheet" type="text/css" href="/resources/assets/css/drift-basic.css" />
+    <link rel="stylesheet" type="text/css" href="/resources/assets/css/main.css?v=1.1" />
+    <link rel="stylesheet" type="text/css" href="/resources/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/resources/assets/css/custom.css?v=1.1" />
+    <link rel="icon" type="icon" href="/images/new-logo.png" />
+
+    <script type="text/javascript" src="/resources/ddlevelsfiles/ddlevelsmenu.js">
+      // All Levels Navigational Menu- (c) Dynamic Drive DHTML code library (http://www.dynamicdrive.com)
+      // This notice MUST stay intact for legal use
+      // Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
+    </script>
+
+    <title>root-sounds</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+
+
+
+  
+    <meta name="description" content="root-sounds online sample library store" />
+
+    <meta
+      name="keywords"
+      content="sound library, download, root studio, rootsounds, root-sounds, apple, logic, logic pro, garageband, exs, reason, digidesign, ni, native instruments, kontakt, sage, spectrasonics, stylus rmx, loops, audio, digital audio, free sounds, online store, sample library, samples, loops, virtual instruments, daw, audio workstation, music production, scoring, film"
+    />
+
+    <!-- audioplayer stuff -->
+    <link rel="stylesheet" href="/resources/audioplayer/style.css" media="screen" />
+
+    <!-- Start Cookie Plugin -->
+    <script type="text/javascript">
+      window.cookieconsent_options = {
+        message: 'We use cookies to improve your experience. By browsing our web site you agree to our usage of cookies.',
+        dismiss: 'OK',
+        learnMore: 'Learn more',
+        link: '/privacy.shtml',
+        theme: 'dark-top',
+      };
+    </script>
+    <script type="text/javascript" src="//s3.amazonaws.com/valao-cloud/cookie-hinweis/script-v2.js"></script>
+    <!-- End Cookie Plugin -->
+  </head>
+
+  <body>
+
+    <header id="header" class="header position-relative">
+        <!-- Top Bar -->
+        <!-- <div class="top-bar py-2">
+            <div class="container-fluid container-xl">
+                <div class="row align-items-center">
+                    <div class="col-lg-4 d-none d-lg-flex">
+                        <div class="top-bar-item">
+                            <i class="bi bi-telephone-fill me-2"></i>
+                            <span>Need help? Call us: </span>
+                            <a href="tel:+1234567890">+1 (234) 123456</a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-12 text-center">
+                        <div class="announcement-slider swiper init-swiper">
+                            <script type="application/json" class="swiper-config">
+                  {
+                    "loop": true,
+                    "speed": 600,
+                    "autoplay": {
+                      "delay": 5000
+                    },
+                    "slidesPerView": 1,
+                    "direction": "vertical",
+                    "effect": "slide"
+                  }
+                </script>
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">🚚 Free shipping on orders over $50</div>
+                                <div class="swiper-slide">💰 30 days money back guarantee.</div>
+                                <div class="swiper-slide">🎁 20% off on your first order</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 d-none d-lg-block">
+
+                            </div>
+                            </div>
+                        </div>
+        </div> -->
+
+        <div class="main-header">
+            <div class="container-fluid container-xl">
+                <div class="d-flex py-3 align-items-center justify-content-between">
+                    <!-- Logo -->
+                    <a href="/" class="logo d-flex align-items-center">
+                        <img src="/images/new-logo.png" alt="">
+                    </a>
+
+                    <!-- Search -->
+                    <div class="header-nav d-flex gap-4">
+                        <div class="container-fluid container-xl">
+                            <div class="position-relative">
+                                <nav id="navmenu" class="navmenu">
+                               
+                                    <ul>
+                                         <li><a class= "" href="/index.shtml">Home</a></li>
+                                        <li class="dropdown">
+                                            <a href="#"><span>Products</span> <i
+                                                    class="bi bi-chevron-down toggle-dropdown"></i></a>
+                                            <ul class="products-menu">
+                                                <li class="row g-0">
+                                                    <span class="col-md-6">
+                                                        <a href="/products/percussive_innuendo/index.shtml">Percussive
+                                                            Innuendo</a>
+                                                    </span>
+                                                    <span class="col-md-6">
+                                                        <a href="/products/concert_marimba/index.shtml">Concert
+                                                            Marimba</a>
+                                                    </span>
+                                                    <span class="col-md-6">
+                                                        <a href="/products/deep_vibes/index.shtml">Deep Vibes</a>
+                                                    </span>
+                                                    <span class="col-md-6">
+                                                        <a href="/products/true_mallets_bundle/index.shtml">True Mallets
+                                                            bundle</a>
+                                                    </span>
+                                                    <span class="col-md-6">
+                                                        <a href="/products/synclavier/index.shtml">Synclavier</a>
+                                                    </span>
+                                                    <span class="col-md-6">
+                                                        <a href="/products/hammered_dulcimer/index.shtml">Hammered
+                                                            Dulcimer</a>
+                                                    </span>
+                                                    <span class="col-md-6">
+                                                        <a href="/products/space_drum/index.shtml">Space Drum</a>
+                                                    </span>
+                                                    <span class="col-md-6">
+                                                        <a href="/products/the_wreck/index.shtml">The Wreck</a>
+                                                    </span>
+                                                    <span class="col-md-6">
+                                                        <a href="/products/creaks_n_freaks/index.shtml">Creaks 'n
+                                                            Freaks</a>
+                                                    </span>
+                                                    <span class="col-md-6">
+                                                        <a href="/products/phantom_organ/index.shtml">Phantom Organ</a>
+                                                    </span>
+                                                    <span class="col-md-6">
+                                                        <a href="/products/union_grand/index.shtml">Union Grand</a>
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                
+                                        <li><a href="/contact.shtml">Contact</a></li>
+                                    </ul>
+                                </nav>
+                        </div>
+                        </div>
+                          <div class="header-actions d-flex align-items-center justify-content-end">
+                        <!-- Account -->
+                        <!-- <div class="dropdown account-dropdown">
+                            <button class="header-action-btn" data-bs-toggle="dropdown">
+                                <i class="bi bi-person"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-header">
+                                    <h6>Welcome to <span class="sitename">root-sounds</span></h6>
+                                    <p class="mb-0">Access account & manage orders</p>
+                                </div>
+                                <div class="dropdown-body">
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <i class="bi bi-person-circle me-2"></i>
+                                        <span>My Profile</span>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <i class="bi bi-bag-check me-2"></i>
+                                        <span>My Orders</span>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <i class="bi bi-heart me-2"></i>
+                                        <span>My Wishlist</span>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <i class="bi bi-gear me-2"></i>
+                                        <span>Settings</span>
+                                    </a>
+                                </div>
+                                </div>
+                        </div> -->
+
+                        <!-- Cart -->
+                        <a class="ec_ejc_thkbx header-action-btn"
+                        >
+                            <i class="bi bi-cart3"></i>
+                        </a>
+
+                        <!-- Mobile Navigation Toggle -->
+                        <i class="mobile-nav-toggle d-xl-none bi bi-list me-0"></i>
+                    </div>
+                    </div>
+
+                    <!-- Actions -->
+                  
+                </div>
+            </div>
+        </div>
+
+        <div class="collapse" id="mobileSearch">
+            <div class="container">
+                <form class="search-form">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for products" />
+                        <button class="btn" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </header>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Get the current page URL path
+    let currentPage = window.location.pathname;
+
+    // Select all navigation links
+    let navLinks = document.querySelectorAll("#navmenu a");
+
+    navLinks.forEach(link => {
+        let linkHref = link.getAttribute("href");
+
+        // Mark individual product links as active
+        if (linkHref === currentPage) {
+            link.classList.add("active");
+        }
+
+        // If the current page is inside the "/products/" folder, highlight "Products"
+        if (currentPage.startsWith("/products/")) {
+            let productsMenuItem = document.querySelector("#navmenu .dropdown > a");
+            if (productsMenuItem) {
+                productsMenuItem.classList.add("active");
+            }
+        }
+    });
+});
+
+
+</script>

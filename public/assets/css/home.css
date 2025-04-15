@@ -1,0 +1,159 @@
+:root {
+    --clr-white: #fff;
+    --clr-black: #000;
+    --clr-primary: #4154f1;
+    --clr-secondary: #222222;
+    --text1-gray: #838181;
+    --b1-l: 1.125rem;
+    --b2-m: 1rem;
+    --b3-s: 0.875rem;
+    --b3-s-gray: 0.875rem;
+    --b4-xs: 0.75rem;
+    --fs-24: 1.5rem;
+    --fs-64: 4rem;
+    --fs-48: 3rem;
+}
+
+.home-carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50% !important;
+    text-align: center;
+}
+
+.header-h6-bold {
+    color: var(--clr-primary);
+    /* font-size: clamp(1.3vmax, 4vw, 1.5rem); */
+    font-size: var(--fs-24);
+    font-weight: 700;
+}
+
+.header-carousel-heading {
+    /* font-size: clamp(2vmax, 5vw, 4rem); */
+    font-size: var(--fs-48);
+    color: var(--clr-secondary);
+    line-height: 60px;
+    font-weight: 600;
+}
+
+.header-carousel-button {
+    background-color: var(--clr-primary);
+    padding: 16px 36px;
+    color: var(--clr-white);
+    border-radius: 8px;
+}
+
+/* Media Queries */
+
+
+.home-carousel-img {
+    height: 100vh;
+
+
+
+}
+
+/* .home-carousel-img::after{
+  content: "";
+  back
+} */
+
+@media screen and (max-width: 600px) {
+    .home-carousel-img {
+        height: 70vh;
+        object-fit: cover;
+    }
+}
+
+/* Feature Listing */
+.card {
+    transition: all 0.5s ease-in-out;
+}
+
+.home-main {
+    margin-top: 80px;
+}
+
+.feature-listing-button {
+    background-color: var(--clr-primary);
+    padding: 16px 36px;
+    color: var(--clr-white);
+    border-radius: 8px;
+}
+
+.home-feature-card {
+    background-color: #eeebe5;
+    height: 250px;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    position: relative;
+    transition: all 0.5 ease-in-out;
+}
+
+.home-feature-card img {
+    width: 100%;
+    object-fit: contain;
+}
+
+.home-feature-badge {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    border: 1px solid #a87f0f94;
+    padding: 6px 10px;
+    border-radius: 8px;
+    color: #fff;
+    background: #0000004d
+}
+
+.home-feature-card-price {
+    color: var(--clr-primary);
+}
+
+.card {
+    border: none !important;
+}
+
+.card-title {
+    font-size: var(--fs-24) !important;
+    color: var(--clr-secondary);
+}
+
+/* Home Best Services */
+.home-testimnial-quotation-img {
+    width: 150px;
+    height: 200px;
+    position: absolute;
+    left: 9%;
+    top: -10%;
+}
+
+.swiper-pagination {
+    text-align: left !important;
+    position: static !important;
+}
+
+.swiper-pagination-bullet {
+    border: 1px solid #222222 !important;
+    background: none !important;
+    width: 16px;
+    height: 16px;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: var(--clr-secondary) !important;
+}
+
+.nav-medium-screen-logo {
+    width: 150px;
+    object-fit: contain;
+
+}
+
+/* .card:hover{
+  transform: scale(1.04);
+} */

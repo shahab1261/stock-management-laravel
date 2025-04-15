@@ -1,0 +1,23 @@
+<!--
+  FatFreeCart.com AddToCart Snippet
+  @version: 0.1
+  @date: 07/30/2007
+  @author: Ropu (rovagnati at gmail)
+//-->
+
+<!-- paypal email(remove if not using PayPal) -->
+	<input type="hidden" name="business" value="paypal@root-studio.com"/>
+<!-- site url -->
+	<input type="hidden" name="site_url" value="http://www.root-sounds.com"/>
+<!-- contact email (where we can notify of the updates) -->
+	<input type="hidden" name="contact_email" value="info@root-studio.com"/>
+<!-- you thank you page -->
+	<input type="hidden" name="return_url" value="https://www.root-studio.com/post_order_landing_page/thanks_order.html"/>
+<!-- any custom info you want to pass -->
+	<input type="hidden" name="custom" value=""/>
+      <!-- currency (USD for Google Checkout USA, GBP for Google Checkout UK. For PayPal: any currency that PayPal supports -->
+	<input type="hidden" name="currency_code" value="USD"/>
+<!-- initial quantity -->
+	<input type="hidden" name="quantity" value="1"/>
+
+	<input type="image" src="http://www.e-junkie.com/ej/ej_add_to_cart.gif" onClick="javascript:return EJEJC_frm(this.parentNode);">

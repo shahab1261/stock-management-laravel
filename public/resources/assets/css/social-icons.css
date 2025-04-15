@@ -1,0 +1,41 @@
+/* Social Media Icons Styling */
+.social-links a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(195, 96, 20, 0.1); /* Primary color with opacity */
+    color: #4154f1; /* Primary color */
+    transition: all 0.3s ease;
+    margin: 0 5px;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    background-color: #4154f1; /* Primary color */
+    color: #fff;
+    transform: translateY(-3px);
+}
+
+/* Individual social media brand colors on hover */
+.social-links a.facebook:hover {
+    background-color: #1877f2;
+}
+
+.social-links a.twitter:hover {
+    background-color: #000000;
+}
+
+.social-links a.youtube:hover {
+    background-color: #ff0000;
+}
+
+.social-links a.soundcloud:hover {
+    background-color: #ff7700;
+}
+
+.social-links a.linkedin:hover {
+    background-color: #0077b5;
+}

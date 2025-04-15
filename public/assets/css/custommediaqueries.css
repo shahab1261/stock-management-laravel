@@ -1,0 +1,342 @@
+:root {
+  --clr-white: #fff;
+  --clr-black: #000;
+  --clr-primary: #4154f1;
+  --clr-secondary: #222222;
+  --text1-gray: #838181;
+
+  /* Body fonts 12 to 18 */
+  --b1-l: 1.125rem;
+  --b2-m: 1rem;
+  --b3-s: 0.875rem;
+  --b3-s-gray: 0.875rem;
+  --b4-xs: 0.75rem;
+  --fs-20: 1.25;
+  --fs-24: 1.5rem;
+  --fs-32: 2rem;
+  --fs-36: 2.25rem;
+  --fs-48: 3rem;
+  --fs-64: 4rem;
+}
+/**********************Media Queries**************************/
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+  /* Order Completion  */
+}
+
+
+
+@media (min-width: 992px) and (max-width: 1266px) {
+  .button-outline-inner {
+    border: 1px solid var(--clr-primary);
+    padding: 8px 14px;
+    color: var(--clr-primary);
+    border-radius: 8px;
+    background-color: none !important;
+    background: none !important;
+  }
+  .header-carousel-heading {
+    font-size: 28px;
+    color: var(--clr-secondary);
+    line-height: 56px;
+    font-weight: 600;
+    line-height: 40px;
+  }
+}
+
+@media (max-width: 992px) {
+  .order-completion-text {
+    width: 100%;
+  }
+  /* Order Completion  */
+
+  .header-carousel-heading {
+    font-size: 28px;
+    color: var(--clr-secondary);
+    line-height: 40px;
+    font-weight: 600;
+
+  }
+  .dashboard-stats-box {
+    padding: 10px 12px;
+  }
+  .cart-details-progress {
+    width: 97%;
+    margin: auto;
+  }
+  .carousel-indicators {
+    margin-bottom: 1rem !important;
+}
+.testimonial--big-img{
+  height: auto !important;
+  width: 100% !important;
+  object-fit: cover;
+
+}
+}
+@media (max-width: 768px) {
+  /* Order Completion  */
+  .cart-details-progress {
+    width: 70%;
+    margin: auto;
+    display: none;
+  }
+
+  .order-completion-text {
+    width: 100%;
+  }
+  /* Home */
+  .header-carousel-heading {
+    font-size: 20px;
+    color: var(--clr-secondary);
+    line-height: 80px;
+    font-weight: 600;
+    line-height: 32px;
+  }
+  .home-carousel-img {
+    height: 70vh;
+    object-fit: cover;
+}
+  .button-fill {
+    padding: 8px 16px;
+  }
+  .button-outline {
+    padding: 8px 16px;
+  }
+  .button-outline-inner {
+    padding: 8px 14px !important;
+  }
+  .button-fill-inner {
+    padding: 8px 14px !important;
+  }
+  .button-fill:hover {
+
+    padding: 8px 16px;
+
+  }
+  .button-outline:hover{
+
+    padding: 8px 16px;
+
+  }
+
+  .testimonial--big-img{
+  height: auto !important;
+  width: 100% !important;
+  object-fit: cover;
+
+}
+  .font-24-gray {
+    font-size: var(--b1-l);
+    color: var(--text1-gray);
+    font-weight: 500;
+  }
+  /* Product Details Start */
+  .product-details-heading {
+    font-size: var(--fs-24);
+  }
+  .send-review-btn button {
+    width: 140px;
+  }
+  .product-details-input > input {
+    width: 88%;
+    border: none;
+    padding: 10px 10px;
+  }
+
+  .product-details-review-img{
+
+
+    /* overflow: hidden; */
+  }
+  /* Product Details End  */
+
+  /* Cart Details Start */
+  .cart-details-value-btn {
+    width: 100%;
+  }
+  /* Cart Details ENd */
+
+  /* Home Testimonial */
+  .home-testimnial-quotation-img {
+    width: 110px;
+    height: 200px;
+    /* position: absolute; */
+    left: 10%;
+    top: -20%;
+  }
+  .mt-80 {
+    margin-top: 40px !important;
+  }
+  .home-service-box{
+    text-align: center !important;
+  }
+}
+@media (max-width: 576px) {
+  /* Order Completion  */
+  .home-testimnial-quotation-img {
+    width: 110px;
+    height: 200px;
+    /* position: absolute; */
+    left: 10%;
+    top: -20%;
+  }
+  .home-testimnial-quotation-img {
+    width: 60px;
+    position: absolute;
+    left: 3%;
+    top: -25%;
+  }
+  .order-completion {
+    width: 90%;
+  }
+
+  /* Home Start */
+  h4 {
+    font-size: var(--fs-24);
+  }
+
+  .fs-48-secondary {
+    /* font-size: clamp(var(--b1-l), 3vw, var(--fs-48)); */
+    font-size: var(--fs-36);
+    font-weight: 500;
+    line-height: 40px;
+    color: var(--clr-secondary);
+  }
+  .mt-80 {
+    margin-top: 20px !important;
+  }
+  .mt-60 {
+    margin-top: 24px;
+  }
+  /* Home End */
+
+  /* Contact */
+  .contact-us-form {
+    width: 90% !important;
+    margin: auto;
+    border: 1px solid #d9d9d8;
+    padding: 20px !important;
+    border-radius : 8px;
+
+  }
+  h3 {
+    font-size: var(--fs-24);
+  }
+  h5 {
+    font-size: var(--fs-20);
+  }
+  .dashboard-stats-box {
+    padding: 10px 14px;
+  }
+  .u-dashboard-img {
+    width: 80px;
+    height: 80px !important;
+  }
+
+
+  /* User Dashboard Start */
+  .dashboard-stats-number {
+    font-size: var(--fs-24);
+    font-weight: 500;
+    line-height: 56px;
+    color: var(--clr-secondary);
+  }
+  .box {
+    position: absolute;
+    top: 150%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    z-index: 111;
+
+    width: 200px;
+    border-radius: 12px;
+
+    z-index: 111;
+  }
+  .dasboard-notification-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  .membership-right {
+    padding: 0 10px !important;
+  }
+
+  .reuse-center-box {
+    width: 84%;
+    margin: auto;
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+
+  /* Packages Plan */
+  .packages-plan-text{
+    font-size: 14px !important;
+
+  }
+  .contact-us-form {
+    width: 85%;
+    margin: auto;
+    border: 1px solid #d9d9d8;
+    padding: 20px;
+    border-radius: 8px;
+}
+  /* User Dashboard EndF */
+  /* HOme */
+  .home-service-box{
+    text-align: center !important;
+  }
+  .header-h6-bold {
+    color: var(--clr-primary);
+    /* font-size: clamp(1.3vmax, 4vw, 1.5rem); */
+    font-size: var(--b2-m) !important;
+    font-weight: 700;
+  }
+  .home-carousel-caption{
+    width: 80% !important;
+  }
+}
+@media (max-width: 420px) {
+  /* Order Completion  */
+  .order-completion {
+    width: 90%;
+  }
+
+  .button-fill {
+    padding: 8px 18px;
+  }
+  .button-outline-inner {
+    padding: 8px 18px;
+  }
+  .home-testimnial-quotation-img {
+    width: 60px;
+    position: absolute;
+    left: 3%;
+    top: -20%;
+  }
+  .mt-80 {
+    margin-top: 24px !important;
+  }
+}
+
+@media (max-width: 350px) {
+  /* Order Completion  */
+  .mt-80 {
+    margin-top: 34px !important;
+  }
+  .card-detials-summary {
+    border: 1px solid #d9d9d8;
+    border-radius: 8px;
+    padding: 12px;
+}
+}
+
+@media (max-width: 300px) {
+  /* Order Completion  */
+}

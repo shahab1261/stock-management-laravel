@@ -1,0 +1,241 @@
+BODY {
+	background-color: #335374;
+	margin: 0px;
+	border-color: #dddddd;
+	border-style: none;
+	border-collapse: collapse;
+	border-width: 1px;
+	background-image: url("/images/specials/virus_0d3149.jpg");
+	background-repeat: no-repeat;
+	background-position: center;
+	}
+
+/* text variations */
+p, th, td, h1, h2 {
+	padding-left: 5px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #cccccc;
+	font-size: small;
+	}
+
+h1 {
+	color: #cccccc;
+	font-weight: bold;
+	font-size: large;
+	padding-top: 15px;
+	}
+
+h2 {
+	font-size: small;
+	color: #cccccc;
+	}
+
+div, li {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #cccccc;
+	font-size: small;
+	}
+
+.copy {
+	font-size: 8pt;
+	color: #cccccc; 
+	text-decoration: none;
+	}
+
+
+a:link {
+	color:#4B5DA5;
+	text-decoration:none;
+	}
+	
+a:visited {
+	color:#4B5DA5;
+	text-decoration:none;
+	}
+	
+a:hover {
+	color:#4B5DA5;
+	text-decoration:none;
+	}
+	
+a:active {
+	color:#4B5DA5;
+	text-decoration:none;
+	}
+
+.copy a {
+	text-decoration:none;
+	color: #4B5DA5;
+	} 
+
+/* layout variations */
+table {
+	width:100%;
+	border:1px;
+	border-style:none;
+	}
+
+th {
+	background-color: #cccccc;
+	padding: 10px;
+	}
+
+.trtop {
+	vertical-align: top;
+	}
+
+.trmid {
+	vertical-align: middle;
+	}
+
+.trtopshade {
+	vertical-align: top;
+	background-color: #cccccc;
+	}
+
+.tdhalf { /* make sure that two cells are evenly spaced */
+	width: 50%;
+	}
+
+.tdblogdate { /* less space for the date entry */
+	width: 20%;
+	padding: 15px;
+	}
+
+.tdblogentry { /* more space for the blog entry */
+	width: 80%;
+	padding: 15px;
+	}
+
+.shade { /* for shading alternating table rows */
+	background-color: #cccccc;
+	}
+
+hr {
+	color: #cccccc;
+	}
+
+img {
+	border: 0;
+	}
+
+.right {
+	float:right;
+	padding: 25px;
+	}
+
+.fixlogo { /* puts the root logo in the corner */
+	position: absolute;
+	left:45px;
+	top: 33px;
+	z-index: +1;
+	}
+
+#botty { /* for contact form */
+	display:none;
+	}
+
+.box {
+    width: 230px;
+    height: 290px; 
+    margin: 25px;
+	float: right;
+	vertical-align: middle;
+	padding: 0px 20px 35px;
+    background: #e3e3e6;
+	font-size: 8pt;
+	color: #303030; 
+	text-align: center;
+
+    /* Box Shadow
+  
+    -o-box-shadow: 5px 5px 5px #666;
+
+    -ms-box-shadow: 5px 5px 5px #666;
+
+    -moz-box-shadow: 5px 5px 5px #666;
+   
+    -webkit-box-shadow: 5px 5px 5px #666;
+  
+    box-shadow: 5px 5px 5px #666; */
+}
+
+
+#footer {
+	clear: left;
+	width: 100%;
+	background: #202020;
+	color: #e0e0e0;
+	text-align: center;
+	padding: 10px 0;
+	}
+
+#footer a {
+	color: #e0e0e0;
+	}
+
+
+/* subtabs in product navigation */
+#subtab {
+	clear:left;
+	float:left;
+	width:100%;
+	background:#dedede url(/images/util/subtab_bg.png) 0 25% repeat;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	border-bottom:1px solid #A8A8A8;
+	overflow:hidden;
+	}
+
+#subtab ul {
+	clear:left;
+	float:left;
+	list-style:none;
+	margin:0;
+	padding:0;
+	position:relative;
+	left:50%;
+	text-align:center;
+	}
+
+#subtab ul li {
+	display:block;
+	float:left;
+	list-style:none;
+	margin:0;
+	padding:0;
+	position:relative;
+	right:50%;
+	}
+	
+#subtab ul li.first {
+	border-left:1px solid #A8A8A8;
+	}
+
+#subtab ul li.last {
+	border-right:1px solid #C8C8C8;
+	}
+
+#subtab ul li a {
+	display:block;
+	margin:0;
+	padding:.4em .8em;
+	color:#000;
+	text-decoration:none;
+	border-left:1px solid #C8C8C8;
+	border-right:1px solid #A8A8A8;
+	line-height:1.3em;
+	}
+
+#subtab ul li a span {
+	display:block;
+	}
+	
+#subtab ul li.active a {
+	background:url(/images/util/blockactive.png) 0 75% repeat;
+	}
+
+#subtab ul li a:hover {
+	background:url(/images/util/blockactive.png) 0 75% repeat;
+	}
+	
+/* end subtabs */

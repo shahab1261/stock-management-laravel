@@ -1,0 +1,76 @@
+<html lang="en">
+<head>
+
+<link rel=STYLESHEET href="/resources/root-sounds.css" type="text/css">
+<link rel="stylesheet" type="text/css" href="/resources/ddlevelsfiles/ddlevelsmenu-base.css" />
+<link rel="stylesheet" type="text/css" href="/resources/ddlevelsfiles/ddlevelsmenu-topbar.css" />
+
+<script type="text/javascript" src="/resources/ddlevelsfiles/ddlevelsmenu.js">
+// All Levels Navigational Menu- (c) Dynamic Drive DHTML code library (http://www.dynamicdrive.com)
+// This notice MUST stay intact for legal use
+// Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
+</script>
+
+<title>root-sounds</title>
+
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<meta name="description" content="root-sounds online sample library store">
+
+<meta name="keywords" content="sound library, download, root studio, rootsounds, root-sounds, apple, logic, logic pro, garageband, exs, reason, digidesign, ni, native instruments, kontakt, sage, spectrasonics, stylus rmx, loops, audio, digital audio, free sounds, online store, sample library, samples, loops, virtual instruments, daw, audio workstation, music production, scoring, film">
+
+<!-- audioplayer stuff -->
+	<link rel="stylesheet" href="/resources/audioplayer/style.css" media="screen">
+
+
+<!-- Start Cookie Plugin -->
+<script type="text/javascript">
+  window.cookieconsent_options = {
+  message: 'We use cookies to improve your experience. By browsing our web site you agree to our usage of cookies.',
+  dismiss: 'OK',
+  learnMore: 'Learn more',
+  link: '/privacy.shtml',
+  theme: 'dark-top'
+ };
+</script>
+<script type="text/javascript" src="//s3.amazonaws.com/valao-cloud/cookie-hinweis/script-v2.js"></script>
+<!-- End Cookie Plugin -->
+
+</head>
+
+<body>
+<div id="maincontainer">
+<div id="topsection">
+<div id="ddtopmenubar" class="underlinemenu">
+
+<p class="right">
+<!-- VIEW CART button code. -->
+        <a href="https://www.e-junkie.com/ecom/fgb.php?c=cart&amp;cl=1&amp;ejc=2&amp;merchant_id=&amp;business=paypal@root-studio.com" target="ej_ejc" class="ec_ejc_thkbx" onClick="javascript:return EJEJC_lc(this);">
+<img src="http://www.e-junkie.com/ej/ej_view_cart.gif" alt="view cart" />
+</a>  
+    <script type="text/javascript">
+  <!-- 
+	function EJEJC_lc(th) { return false; }
+	function EJEJC_config() {
+	EJEJC_INITCSS = false;
+	}
+	// -->
+  </script>
+  <script type="text/javascript" src="https://www.e-junkie.com/ecom/box.js"></script>
+<!-- end fatfreecart.com addtocart snippet v0.1 -->
+</p>
+
+<ul>
+<li><a href="/index.shtml">Home</a></li>
+<li><a href="/products.shtml" rel="ddsubmenu1">Products</a></li>
+<li><a href="/shop.shtml">Shop</a></li>
+<li><a href="/videos.shtml">Videos</a></li>
+<li><a href="/contact.shtml">Contact</a></li>
+</ul>
+</div>
+</div>
+
+<script type="text/javascript">
+ddlevelsmenu.setup("ddtopmenubar", "topbar") //ddlevelsmenu.setup("mainmenuid", "topbar|sidebar")
+</script>
+
+<img src="/images/new-logo.png" width="53" height="69" class="fixlogo" alt="logo">

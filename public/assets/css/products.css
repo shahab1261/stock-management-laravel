@@ -1,0 +1,56 @@
+.product-title {
+    font-size: 2.6rem;
+    color: #4154f1;
+}
+
+.custom-card-header {
+    background-color: rgba(195, 96, 20, 0.1);
+    border-left: 4px solid #4154f1;
+    color: #333;
+    font-weight: 600;
+}
+
+.action-btn {
+    margin: 0 2px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #4154f1;
+    border-color: #4154f1;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #4154f1e1;
+    border-color: #4154f1e1;
+    color: #fff;
+}
+
+.form-check-input:checked {
+    background-color: #4154f1;
+    border-color: #4154f1;
+}
+
+/* TinyMCE editor custom styling */
+.tox-tinymce {
+    border-radius: 6px !important;
+    overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .product-title {
+        font-size: 2rem;
+    }
+}
