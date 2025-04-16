@@ -1,6 +1,6 @@
 @extends('admin.layout.master')
 
-@section('title', 'Manage FAQs - Root Sounds')
+@section('title', 'Manage FAQs - Stock Management')
 @section('description', 'Create, edit, and delete FAQs dynamically')
 
 @section('content')

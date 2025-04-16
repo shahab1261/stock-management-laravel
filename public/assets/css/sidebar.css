@@ -1,0 +1,278 @@
+/* Professional Sidebar Styling - Hostinger-inspired */
+:root {
+    --sidebar-width: 280px;
+    --sidebar-bg: #ffffff;
+    --sidebar-hover: #f6f9ff;
+    --sidebar-active: #4154f1;
+    --sidebar-text: #012970;
+    --sidebar-text-light: #899bbd;
+    --sidebar-text-active: #ffffff;
+    --sidebar-icon-size: 18px;
+    --sidebar-border: rgba(0, 0, 0, 0.05);
+}
+
+/* Sidebar Base Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    z-index: 1030;
+    transition: all 0.3s ease;
+    padding: 0;
+    overflow-y: auto;
+    background-color: var(--sidebar-bg);
+    box-shadow: 0 0 20px rgba(1, 41, 112, 0.1);
+    border-right: 1px solid var(--sidebar-border);
+}
+
+/* Sidebar collapse behavior */
+body.sidebar-collapsed .sidebar {
+    transform: translateX(-100%);
+}
+
+/* Main content adjustment when sidebar is collapsed */
+body.sidebar-collapsed #main,
+body.sidebar-collapsed #footer {
+    margin-left: 0 !important;
+}
+
+/* Mobile sidebar behavior */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    body.sidebar-open .sidebar {
+        transform: translateX(0);
+    }
+    
+    /* Add overlay when sidebar is open on mobile */
+    body.sidebar-open::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1020;
+    }
+}
+
+/* Sidebar Header */
+.sidenav-header {
+    border-bottom: 1px solid var(--sidebar-border);
+}
+
+/* Website Name Dropdown */
+.website-name label {
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.website-name .dropdown-toggle {
+    font-size: 14px;
+    background-color: #fff;
+    border-color: #e9ecef;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.website-name .dropdown-toggle::after {
+    margin-left: auto;
+}
+
+/* Search Box */
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-container input {
+    border: 1px solid #e9ecef;
+    font-size: 14px;
+    padding: 8px 12px 8px 40px;
+    background-color: #f8f9fa;
+    transition: all 0.3s;
+}
+
+.search-container input:focus {
+    background-color: #fff;
+    border-color: #4154f1;
+    box-shadow: 0 0 0 0.25rem rgba(65, 84, 241, 0.15);
+}
+
+/* Menu Items */
+.sidebar-nav-list {
+    padding: 0;
+    margin: 0;
+}
+
+.menu-item {
+    position: relative;
+}
+
+.menu-link {
+    color: var(--sidebar-text);
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s;
+    text-decoration: none;
+    position: relative;
+}
+
+.menu-link:hover {
+    color: var(--sidebar-active);
+    background-color: var(--sidebar-hover);
+}
+
+.menu-link.active {
+    color: var(--sidebar-text-active);
+    background-color: var(--sidebar-active);
+}
+
+.menu-link.active .menu-icon i {
+    color: var(--sidebar-text-active);
+}
+
+/* Add dropdown arrow */
+.menu-link[onclick*="toggleSubmenu"]::after {
+    content: '\f282';
+    font-family: 'bootstrap-icons';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.3s;
+}
+
+/* Rotate arrow when submenu is open */
+.menu-item:has(.collapse.show) .menu-link::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.menu-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: rgba(65, 84, 241, 0.08);
+    color: var(--sidebar-active);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-icon i {
+    font-size: var(--sidebar-icon-size);
+    color: var(--sidebar-active);
+}
+
+.menu-text {
+    font-weight: 500;
+}
+
+/* Dropdown Toggle - Removed */
+
+/* Submenu Styling */
+.submenu {
+    padding-left: 40px;
+    transition: all 0.3s ease;
+}
+
+.collapse:not(.show) {
+    display: none;
+}
+
+.collapse.show {
+    display: block;
+}
+
+.submenu-item {
+    position: relative;
+}
+
+.submenu-link {
+    color: var(--sidebar-text-light);
+    font-size: 14px;
+    font-weight: 400;
+    padding: 8px 16px;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: block;
+}
+
+.submenu-link:hover {
+    color: var(--sidebar-active);
+    background-color: var(--sidebar-hover);
+}
+
+.submenu-link.active {
+    color: var(--sidebar-active);
+    font-weight: 500;
+}
+
+/* Hamburger Menu Button */
+.hamburger-btn {
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    /* Make sure it's visible on all screen sizes */
+    display: flex !important;
+}
+
+.hamburger-menu {
+    width: 24px;
+    height: 18px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.hamburger-menu span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: var(--sidebar-active);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+body.sidebar-open .hamburger-menu span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+body.sidebar-open .hamburger-menu span:nth-child(2) {
+    opacity: 0;
+}
+
+body.sidebar-open .hamburger-menu span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Keep hamburger icon normal when sidebar is collapsed */
+body.sidebar-collapsed .hamburger-menu span:nth-child(1),
+body.sidebar-collapsed .hamburger-menu span:nth-child(2),
+body.sidebar-collapsed .hamburger-menu span:nth-child(3) {
+    transform: none;
+    opacity: 1;
+}
+
+/* Scrollbar Styling */
+.sidebar::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+    background-color: #fff;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #aab7cf;
+}

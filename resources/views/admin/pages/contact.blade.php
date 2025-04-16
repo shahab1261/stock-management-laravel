@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'Root Sounds | Contact Messages')
+@section('title', 'Stock Management | Contact Messages')
 @section('description', 'Manage customer contact messages and inquiries')
 @section('content')
     <div class="container-fluid mt-4">

@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'Root Sounds | Admin | Settings')
+@section('title', 'Stock Management | Admin | Settings')
 @section('description', 'Admin Settings')
 @section('content')
     <div class="container-fluid mt-4">

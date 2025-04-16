@@ -5,10 +5,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>@yield('title', 'Petrol Pump')</title>
-        <meta name="meta_title" content="@yield('title', 'Petrol Pump')">
-        <meta name="meta_description" content="@yield('description', 'Petrol Pump')">
-        <meta name="meta_keywords" content="@yield('keywords', 'Petrol Pump')">
+        <title>@yield('title', 'Stock Management')</title>
+        <meta name="meta_title" content="@yield('title', 'Stock Management')">
+        <meta name="meta_description" content="@yield('description', 'Stock Management')">
+        <meta name="meta_keywords" content="@yield('keywords', 'Stock Management')">
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/" rel="preconnect">
@@ -79,7 +79,7 @@
                 <div class="container-fluid container-xl">
                     <div class="d-flex py-3 align-items-center justify-content-between">
                         <a href="{{ route('home') }}" class="logo d-flex align-items-center">
-                            <img src="{{ asset('images/new-logo.png') }}" alt="Root Sounds Logo">
+                            <img src="{{ asset('images/new-logo.png') }}" alt="Stock Management Logo">
                         </a>
 
                         <div class="header-nav d-flex gap-4">
@@ -146,7 +146,7 @@
                                 <a href="/" class="footer-logo d-flex align-items-center">
                                     <img src="/images/new-logo.png" alt="">
                                 </a>
-                                <p class= "mt-3">root sounds is the sample library division of root studio. We have
+                                <p class= "mt-3">Stock Management is the sample library division of root studio. We have
                                     been collecting sounds for more than 30 years, offering meticulously crafted sample
                                     libraries for your creative projects.</p>
                                 <div class="footer-contact mt-4">
@@ -199,7 +199,7 @@
                     </div>
                     <div class="copyright text-center">
                         <p>&copy; 2012-<span id="year"></span> <span class= "ctext-primary"
-                                href="{{ route('home') }}">root sounds</span>. All Rights Reserved.</p>
+                                href="{{ route('home') }}">Stock Management</span>. All Rights Reserved.</p>
                     </div>
                 </div>
             </div>

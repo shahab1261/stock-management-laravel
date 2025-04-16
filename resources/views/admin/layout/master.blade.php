@@ -7,23 +7,22 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/new-logo.png') }}">
         <!-- Dynamic Meta Titles and Descriptions -->
-        <title>@yield('title', 'Root Sounds')</title>
-        <meta name="description" content="@yield('description', 'Root Sounds')">
+        <title>@yield('title', 'Stock Management')</title>
+        <meta name="description" content="@yield('description', 'Stock Management')">
 
         <!-- CSS Files -->
         <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/css/custommediaqueries.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }} ">
-        {{-- <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }} "> --}}
+        <link rel="stylesheet" href="{{ asset('assets/css/sidebar.css') }} ">
         <link href="{{ asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/responsive.bootstrap5.min.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/buttons.dataTables.min.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/select.dataTables.min.css') }}" rel="stylesheet">
-        <link href="{{ asset('assets/icons/bootstrap-icons.min.css') }}" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
         <link href="{{ asset('assets/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
 
         <style>
-            /* Static Pages Dropdown Styling */
             .navbar-nav .dropdown-menu {
                 padding: 0.5rem 0;
                 background-color: #fff;
@@ -66,13 +65,9 @@
                 background-color: #f6f9ff;
             }
 
-            /* Fix dropdown positioning */
             .navbar-nav .nav-item.dropdown {
                 position: relative;
             }
-
-
-
         </style>
 
     </head>
@@ -110,7 +105,6 @@
         <script>
             tinymce.init({
                 selector: '#my-editor',
-                base_url: '/tinymce',
                 plugins: [
                     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'print', 'preview', 'anchor',
                     'searchreplace', 'visualblocks', 'code', 'fullscreen',
@@ -128,76 +122,6 @@
                 promotion: false,
                 height: 300,
             });
-        </script>
-
-        <script>
-            (function() {
-
-                "use strict";
-
-                /**
-                 * Easy selector helper function
-                 */
-                const select = (el, all = false) => {
-                    el = el.trim()
-                    if (all) {
-                        return [...document.querySelectorAll(el)]
-                    } else {
-                        return document.querySelector(el)
-                    }
-                }
-
-                /**
-                 * Easy event listener function
-                 */
-                const on = (type, el, listener, all = false) => {
-                    if (all) {
-                        select(el, all).forEach(e => e.addEventListener(type, listener))
-                    } else {
-                        select(el, all).addEventListener(type, listener)
-                    }
-                }
-
-                /**
-                 * Easy on scroll event listener
-                 */
-                const onscroll = (el, listener) => {
-                    el.addEventListener('scroll', listener)
-                }
-
-                /**
-                 * Sidebar toggle
-                 */
-                if (select('.toggle-sidebar-btn')) {
-                    on('click', '.toggle-sidebar-btn', function(e) {
-                        console.log("click")
-                        select('body').classList.toggle('toggle-sidebar')
-                    })
-                }
-
-                if (select('.search-bar-toggle')) {
-                    on('click', '.search-bar-toggle', function(e) {
-                        select('.search-bar').classList.toggle('search-bar-show')
-                    })
-                }
-
-
-                document.addEventListener("DOMContentLoaded", function() {
-                    console.log("sidebar cross")
-                    const sidebarCrossIcon = document.getElementById('sidebar-cross-icon');
-                    const sidebar = document.getElementById('sidenav-main');
-                    const showSidebarbtn = document.getElementById("show-sidebarbtn");
-                    showSidebarbtn.addEventListener('click', function() {
-                        sidebar.classList.remove('d-none'); // Remove 'd-none' class to show sidebar
-                    });
-
-                    sidebarCrossIcon.addEventListener('click', function() {
-                        sidebar.classList.add('d-none'); // Add 'd-none' class to hide sidebar
-                    });
-                });
-
-
-            })();
         </script>
 
 

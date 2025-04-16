@@ -1,6 +1,6 @@
 @extends('admin.layout.master')
 
-@section('title', 'Terms & Conditions - Root Sounds')
+@section('title', 'Terms & Conditions - Stock Management')
 @section('description', 'Edit terms and conditions page')
 
 @section('content')

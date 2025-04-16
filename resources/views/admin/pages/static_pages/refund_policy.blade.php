@@ -1,6 +1,6 @@
 @extends('admin.layout.master')
 
-@section('title', 'Refund Policy - Root Sounds')
+@section('title', 'Refund Policy - Stock Management')
 @section('description', 'Edit refund policy page')
 
 @section('content')

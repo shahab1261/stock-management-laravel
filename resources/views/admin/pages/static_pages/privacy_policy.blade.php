@@ -1,6 +1,6 @@
 @extends('admin.layout.master')
 
-@section('title', 'Privacy Policy - Root Sounds')
+@section('title', 'Privacy Policy - Stock Management')
 @section('description', 'Edit privacy policy page')
 
 @section('content')

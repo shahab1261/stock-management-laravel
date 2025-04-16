@@ -1,6 +1,6 @@
 @extends('admin.layout.master')
 
-@section('title', 'License Agreement - Root Sounds')
+@section('title', 'License Agreement - Stock Management')
 @section('description', 'Edit license agreement page')
 
 @section('content')

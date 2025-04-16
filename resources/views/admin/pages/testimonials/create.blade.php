@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'Root Sounds | Add Testimonial')
+@section('title', 'Stock Management | Add Testimonial')
 @section('description', 'Add New Customer Testimonial')
 @section('content')
 

@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'Root Sounds | Edit Document')
+@section('title', 'Stock Management | Edit Document')
 @section('description', 'Edit Document')
 @section('content')
 
