@@ -30,7 +30,7 @@
                     <span class="menu-text">Dashboard</span>
                 </a>
             </li>
-            
+
             <!-- Hosting Plan Menu Item -->
             <li class="menu-item mb-2" data-name="hosting plan">
                 <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('hostingPlanSubmenu')">
@@ -54,7 +54,7 @@
                     </ul>
                 </div>
             </li>
-            
+
             <!-- Performance Menu Item -->
             <li class="menu-item mb-2" data-name="performance">
                 <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('performanceSubmenu')">
@@ -78,7 +78,7 @@
                     </ul>
                 </div>
             </li>
-            
+
             <!-- Analytics Menu Item -->
             <li class="menu-item mb-2" data-name="analytics">
                 <a href="#" class="menu-link d-flex align-items-center rounded p-2">
@@ -88,7 +88,7 @@
                     <span class="menu-text">Journal Vouchers</span>
                 </a>
             </li>
-            
+
             <!-- Security Menu Item -->
             <li class="menu-item mb-2" data-name="security">
                 <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('securitySubmenu')">
@@ -100,13 +100,18 @@
                 <div class="collapse" id="securitySubmenu">
                     <ul class="submenu list-unstyled ms-4 mt-2">
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">SSL Certificates</span>
+                            <a href="{{ route('admin.banks.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Banks</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Firewall Settings</span>
+                            <a href="{{ route('admin.customers.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Customers</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.tanklari.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Customers Tank Lari</span>
                             </a>
                         </li>
                     </ul>
@@ -127,44 +132,44 @@
                 document.body.classList.toggle('sidebar-collapsed');
             });
         }
-        
+
         // Close sidebar when clicking outside on mobile
         document.addEventListener('click', function(event) {
-            if (window.innerWidth < 992 && 
-                !sidebar.contains(event.target) && 
-                !showSidebarbtn.contains(event.target) && 
+            if (window.innerWidth < 992 &&
+                !sidebar.contains(event.target) &&
+                !showSidebarbtn.contains(event.target) &&
                 document.body.classList.contains('sidebar-open')) {
                 document.body.classList.remove('sidebar-open');
             }
         });
-        
+
         // Search functionality
         const searchInput = document.getElementById('sidebar-search');
         const menuItems = document.querySelectorAll('.menu-item');
-        
+
         if (searchInput) {
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
                 let hasResults = false;
-                
+
                 // First pass: Check main menu items and their direct text
                 menuItems.forEach(item => {
                     const itemName = item.getAttribute('data-name').toLowerCase();
                     const menuText = item.querySelector('.menu-text').textContent.toLowerCase();
                     const hasSubmenu = item.querySelector('.collapse') !== null;
                     let showItem = false;
-                    
+
                     // Check if main item matches
                     if (itemName.includes(searchTerm) || menuText.includes(searchTerm)) {
                         showItem = true;
                         hasResults = true;
                     }
-                    
+
                     // Check submenu items if this item has a submenu
                     if (hasSubmenu) {
                         const submenuItems = item.querySelectorAll('.submenu-item');
                         let hasSubmenuMatch = false;
-                        
+
                         submenuItems.forEach(subItem => {
                             const subItemText = subItem.textContent.toLowerCase();
                             if (subItemText.includes(searchTerm)) {
@@ -178,7 +183,7 @@
                                 subItem.style.display = 'block';
                             }
                         });
-                        
+
                         // If any submenu items match, open the dropdown
                         const collapse = item.querySelector('.collapse');
                         if (hasSubmenuMatch && searchTerm) {
@@ -189,11 +194,11 @@
                             collapse.classList.remove('show');
                         }
                     }
-                    
+
                     // Show/hide the main menu item
                     item.style.display = showItem ? 'block' : 'none';
                 });
-                
+
                 // If no search term, reset everything
                 if (!searchTerm) {
                     menuItems.forEach(item => {
@@ -210,7 +215,7 @@
                 }
             });
         }
-        
+
         // Auto-expand parent menu when child is active
         const activeSubmenuItems = document.querySelectorAll('.submenu-link.active');
         activeSubmenuItems.forEach(item => {
@@ -220,7 +225,7 @@
             }
         });
     });
-    
+
     // Function to toggle submenu
     function toggleSubmenu(id) {
         const submenu = document.getElementById(id);
