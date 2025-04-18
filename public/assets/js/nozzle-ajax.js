@@ -1,113 +1,40 @@
 $(document).ready(function() {
-    $('#addNewTankLariBtn').on('click', function() {
-        $('#addTankLariModal').modal('show');
+    $('#addNewNozzleBtn').on('click', function() {
+        $('#addNozzleModal').modal('show');
     });
 
-    $('#submitAddForm').on('click', function() {
+    $('#addNozzleForm').on('submit', function(e) {
+        e.preventDefault();
         $('.invalid-feedback').hide();
         $('.is-invalid').removeClass('is-invalid');
 
-        var $btn = $(this);
-        $btn.prop('disabled', true);
-        $btn.find('.spinner-border').removeClass('d-none');
-        $btn.find('.submit-icon').addClass('d-none');
+        var $submitBtn = $(this).find('button[type="submit"]');
+        $submitBtn.prop('disabled', true);
+        $submitBtn.find('.spinner-border').removeClass('d-none');
+        $submitBtn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/tanklari/store',
+            url: $(this).attr('action'),
             method: 'POST',
-            data: $('#addTankLariForm').serialize(),
+            data: $(this).serialize(),
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
                 if (response.success) {
-                    $('#addTankLariModal').modal('hide');
-                    $('#addTankLariForm')[0].reset();
+                    $('#addNozzleModal').modal('hide');
+                    $('#addNozzleForm')[0].reset();
 
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: response.message,
+                        text: response.message || 'Nozzle added successfully',
                         confirmButtonColor: '#4154f1'
                     }).then(function() {
                         location.reload();
                     });
-                } else{
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: response.message,
-                        confirmButtonColor: '#4154f1'
-                    });
-                }
-            },
-            error: function(xhr, error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Something went wrong. Please try again.',
-                    confirmButtonColor: '#4154f1'
-                });
-            },
-            complete: function() {
-                $btn.prop('disabled', false);
-                $btn.find('.spinner-border').addClass('d-none');
-                $btn.find('.submit-icon').removeClass('d-none');
-            }
-        });
-    });
-
-    $(document).on('click', '.edit-tank-lari', function() {
-        $('#editTankLariForm')[0].reset();
-        $('.invalid-feedback').hide();
-        $('.is-invalid').removeClass('is-invalid');
-
-        var tankLari = $(this);
-        $('#editTankLariForm #edit_tid').val(tankLari.data('id'));
-        $('#editTankLariForm #edit_larry_name').val(tankLari.data('name'));
-        $('#editTankLariForm #edit_customer_id').val(tankLari.data('customer'));
-        $('#editTankLariForm #edit_chamber_dip_one').val(tankLari.data('chamberDipOne'));
-        $('#editTankLariForm #edit_chamber_capacity_one').val(tankLari.data('chamberCapacityOne'));
-        $('#editTankLariForm #edit_chamber_dip_two').val(tankLari.data('chamberDipTwo'));
-        $('#editTankLariForm #edit_chamber_capacity_two').val(tankLari.data('chamberCapacityTwo'));
-        $('#editTankLariForm #edit_chamber_dip_three').val(tankLari.data('chamberDipThree'));
-        $('#editTankLariForm #edit_chamber_capacity_three').val(tankLari.data('chamberCapacityThree'));
-        $('#editTankLariForm #edit_chamber_dip_four').val(tankLari.data('chamberDipFour'));
-        $('#editTankLariForm #edit_chamber_capacity_four').val(tankLari.data('chamberCapacityFour'));
-
-        $('#editTankLariModal').modal('show');
-    });
-
-    $('#submitEditForm').on('click', function() {
-        $('.invalid-feedback').hide();
-        $('.is-invalid').removeClass('is-invalid');
-
-        var $btn = $(this);
-        $btn.prop('disabled', true);
-        $btn.find('.spinner-border').removeClass('d-none');
-        $btn.find('.submit-icon').addClass('d-none');
-
-        $.ajax({
-            url: '/admin/tanklari/update',
-            method: 'POST',
-            data: $('#editTankLariForm').serialize(),
-            dataType: 'json',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success) {
-                    $('#editTankLariModal').modal('hide');
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
-                        confirmButtonColor: '#4154f1'
-                    }).then(function() {
-                        location.reload();
-                    });
-                } else{
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -125,21 +52,93 @@ $(document).ready(function() {
                 });
             },
             complete: function() {
-                $btn.prop('disabled', false);
-                $btn.find('.spinner-border').addClass('d-none');
-                $btn.find('.submit-icon').removeClass('d-none');
+                $submitBtn.prop('disabled', false);
+                $submitBtn.find('.spinner-border').addClass('d-none');
+                $submitBtn.find('.submit-icon').removeClass('d-none');
             }
         });
     });
 
-    $(document).on('click', '.delete-tank-lari', function() {
-        var tankLariId = $(this).data('id');
-        $('#delete_tanklari_id').val(tankLariId);
-        $('#deleteModal').modal('show');
+    $(document).on('click', '.edit-nozzle', function() {
+        $('#editNozzleForm')[0].reset();
+        $('.invalid-feedback').hide();
+        $('.is-invalid').removeClass('is-invalid');
+
+        var nozzle = $(this);
+        $('#edit_id').val(nozzle.data('id'));
+        $('#edit_name').val(nozzle.data('name'));
+        $('#edit_opening_reading').val(nozzle.data('opening_reading'));
+        $('#edit_product_id').val(nozzle.data('product_id'));
+        $('#edit_tank_id').val(nozzle.data('tank_id'));
+        $('#edit_closing_reading').val(nozzle.data('closing_reading'));
+        $('#edit_status').val(nozzle.data('status'));
+        $('#edit_notes').val(nozzle.data('notes'));
+
+        $('#editNozzleModal').modal('show');
     });
-    // Delete Tank Lari
-    $('#confirmDeleteBtn').on('click', function() {
-        var tankLariId = $('#delete_tanklari_id').val();
+
+    $('#editNozzleForm').on('submit', function(e) {
+        e.preventDefault();
+        $('.invalid-feedback').hide();
+        $('.is-invalid').removeClass('is-invalid');
+
+        var $submitBtn = $(this).find('button[type="submit"]');
+        $submitBtn.prop('disabled', true);
+        $submitBtn.find('.spinner-border').removeClass('d-none');
+        $submitBtn.find('.submit-icon').addClass('d-none');
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#editNozzleModal').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message || 'Nozzle updated successfully',
+                        confirmButtonColor: '#4154f1'
+                    }).then(function() {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.message,
+                        confirmButtonColor: '#4154f1'
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Something went wrong. Please try again.',
+                    confirmButtonColor: '#4154f1'
+                });
+            },
+            complete: function() {
+                $submitBtn.prop('disabled', false);
+                $submitBtn.find('.spinner-border').addClass('d-none');
+                $submitBtn.find('.submit-icon').removeClass('d-none');
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-nozzle', function() {
+        var nozzleId = $(this).data('id');
+        $('#delete_id').val(nozzleId);
+        $('#deleteNozzleModal').modal('show');
+    });
+
+    $('#confirmDelete').on('click', function() {
+        var nozzleId = $('#delete_id').val();
 
         var $btn = $(this);
         $btn.prop('disabled', true);
@@ -147,24 +146,27 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/tanklari/delete/' + tankLariId,
-            method: 'GET',
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: {
+                id: nozzleId
+            },
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                $('#deleteModal').modal('hide');
+                $('#deleteNozzleModal').modal('hide');
                 if (response.success) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Deleted!',
-                        text: response.message,
+                        text: response.message || 'Nozzle deleted successfully',
                         confirmButtonColor: '#4154f1'
                     }).then(function() {
                         location.reload();
                     });
-                } else{
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -174,11 +176,11 @@ $(document).ready(function() {
                 }
             },
             error: function() {
-                $('#deleteModal').modal('hide');
+                $('#deleteNozzleModal').modal('hide');
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'Failed to delete Tank Lari. Please try again.',
+                    text: 'Failed to delete nozzle. Please try again.',
                     confirmButtonColor: '#4154f1'
                 });
             },
@@ -190,4 +192,30 @@ $(document).ready(function() {
         });
     });
 
+    $("#product_id").on('change', function(){
+        var productId = $(this).val();
+        $.ajax({
+            url: `/admin/products/${productId}/tank`,
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                let optionsHtml = '<option value="">Select Tank</option>';
+                response.tank.forEach(tank => {
+                    optionsHtml += `<option value="${tank.id}">${tank.tank_name}</option>`;
+                });
+                $("#tank_id").html(optionsHtml);
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Something went wrong. Please try again.',
+                    confirmButtonColor: '#4154f1'
+                });
+            }
+        });
+    });
 });

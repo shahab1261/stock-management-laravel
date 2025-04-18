@@ -1,42 +1,46 @@
 $(document).ready(function() {
-    $('#addNewTankLariBtn').on('click', function() {
-        $('#addTankLariModal').modal('show');
+    $('#addNewIncomeBtn').on('click', function() {
+        resetAddForm();
+        $('#addIncomeModal').modal('show');
     });
 
-    $('#submitAddForm').on('click', function() {
-        $('.invalid-feedback').hide();
+    $('#saveBtn').on('click', function() {
         $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').text('');
 
         var $btn = $(this);
         $btn.prop('disabled', true);
         $btn.find('.spinner-border').removeClass('d-none');
         $btn.find('.submit-icon').addClass('d-none');
 
+        const formData = $('#incomeForm').serialize();
+
         $.ajax({
-            url: '/admin/tanklari/store',
-            method: 'POST',
-            data: $('#addTankLariForm').serialize(),
-            dataType: 'json',
+            url: $('#incomeForm').attr('action'),
+            type: 'POST',
+            data: formData,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                if (response.success) {
-                    $('#addTankLariModal').modal('hide');
-                    $('#addTankLariForm')[0].reset();
+                $('#addIncomeModal').modal('hide');
 
+                if(response.success == true) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
+                        title: 'Success',
+                        text: response.message || 'Income added successfully',
+                        confirmButtonText: 'OK',
                         confirmButtonColor: '#4154f1'
-                    }).then(function() {
-                        location.reload();
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
                     });
-                } else{
+                } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error!',
+                        title: 'Error',
                         text: response.message,
                         confirmButtonColor: '#4154f1'
                     });
@@ -45,8 +49,8 @@ $(document).ready(function() {
             error: function(xhr, error) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error!',
-                    text: 'Something went wrong. Please try again.',
+                    title: 'Error',
+                    text: 'Failed to add income. Please try again.',
                     confirmButtonColor: '#4154f1'
                 });
             },
@@ -58,69 +62,67 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', '.edit-tank-lari', function() {
-        $('#editTankLariForm')[0].reset();
-        $('.invalid-feedback').hide();
-        $('.is-invalid').removeClass('is-invalid');
+    $(document).on('click', '.edit-btn', function() {
+        resetEditForm();
 
-        var tankLari = $(this);
-        $('#editTankLariForm #edit_tid').val(tankLari.data('id'));
-        $('#editTankLariForm #edit_larry_name').val(tankLari.data('name'));
-        $('#editTankLariForm #edit_customer_id').val(tankLari.data('customer'));
-        $('#editTankLariForm #edit_chamber_dip_one').val(tankLari.data('chamberDipOne'));
-        $('#editTankLariForm #edit_chamber_capacity_one').val(tankLari.data('chamberCapacityOne'));
-        $('#editTankLariForm #edit_chamber_dip_two').val(tankLari.data('chamberDipTwo'));
-        $('#editTankLariForm #edit_chamber_capacity_two').val(tankLari.data('chamberCapacityTwo'));
-        $('#editTankLariForm #edit_chamber_dip_three').val(tankLari.data('chamberDipThree'));
-        $('#editTankLariForm #edit_chamber_capacity_three').val(tankLari.data('chamberCapacityThree'));
-        $('#editTankLariForm #edit_chamber_dip_four').val(tankLari.data('chamberDipFour'));
-        $('#editTankLariForm #edit_chamber_capacity_four').val(tankLari.data('chamberCapacityFour'));
+        const incomeId = $(this).data('id');
+        const incomeName = $(this).data('income-name');
+        const incomeAmount = $(this).data('income-amount');
 
-        $('#editTankLariModal').modal('show');
+        $('#edit_income_id').val(incomeId);
+        $('#edit_income_name').val(incomeName);
+        $('#edit_income_amount').val(incomeAmount);
+
+        $('#editIncomeModal').modal('show');
     });
 
-    $('#submitEditForm').on('click', function() {
-        $('.invalid-feedback').hide();
-        $('.is-invalid').removeClass('is-invalid');
+    $('#updateBtn').on('click', function() {
+        $('#editIncomeModal .is-invalid').removeClass('is-invalid');
+        $('#editIncomeModal .invalid-feedback').text('');
 
         var $btn = $(this);
         $btn.prop('disabled', true);
         $btn.find('.spinner-border').removeClass('d-none');
         $btn.find('.submit-icon').addClass('d-none');
 
+        const formData = $('#editIncomeForm').serialize();
+
         $.ajax({
-            url: '/admin/tanklari/update',
-            method: 'POST',
-            data: $('#editTankLariForm').serialize(),
-            dataType: 'json',
+            url: $('#editIncomeForm').attr('action'),
+            type: 'POST',
+            data: formData,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                if (response.success) {
-                    $('#editTankLariModal').modal('hide');
+                $('#editIncomeModal').modal('hide');
+
+                if(response.success == true) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Success!',
-                        text: response.message,
+                        title: 'Updated!',
+                        text: response.message || 'Income updated successfully',
+                        confirmButtonText: 'OK',
                         confirmButtonColor: '#4154f1'
-                    }).then(function() {
-                        location.reload();
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
                     });
-                } else{
+                } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error!',
+                        title: 'Error',
                         text: response.message,
                         confirmButtonColor: '#4154f1'
                     });
                 }
             },
-            error: function(xhr) {
+            error: function(xhr, error) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error!',
-                    text: 'Something went wrong. Please try again.',
+                    title: 'Error',
+                    text: 'Failed to update income. Please try again.',
                     confirmButtonColor: '#4154f1'
                 });
             },
@@ -132,53 +134,56 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', '.delete-tank-lari', function() {
-        var tankLariId = $(this).data('id');
-        $('#delete_tanklari_id').val(tankLariId);
+    $(document).on('click', '.delete-btn', function() {
+        const incomeId = $(this).data('id');
+        $('#delete_income_id').val(incomeId);
         $('#deleteModal').modal('show');
     });
-    // Delete Tank Lari
-    $('#confirmDeleteBtn').on('click', function() {
-        var tankLariId = $('#delete_tanklari_id').val();
 
+    $('#confirmDeleteBtn').on('click', function() {
+        const incomeId = $('#delete_income_id').val();
         var $btn = $(this);
         $btn.prop('disabled', true);
         $btn.find('.spinner-border').removeClass('d-none');
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/tanklari/delete/' + tankLariId,
-            method: 'GET',
-            dataType: 'json',
+            url: `/admin/incomes/delete/${incomeId}`,
+            type: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
                 $('#deleteModal').modal('hide');
-                if (response.success) {
+
+                if(response.success == true) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Deleted!',
-                        text: response.message,
+                        text: response.message || 'Income deleted successfully',
+                        confirmButtonText: 'OK',
                         confirmButtonColor: '#4154f1'
-                    }).then(function() {
-                        location.reload();
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
                     });
-                } else{
+                } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error!',
+                        title: 'Error',
                         text: response.message,
                         confirmButtonColor: '#4154f1'
                     });
                 }
             },
-            error: function() {
+            error: function(xhr, error) {
                 $('#deleteModal').modal('hide');
+
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error!',
-                    text: 'Failed to delete Tank Lari. Please try again.',
+                    title: 'Error',
+                    text: 'Failed to delete income. Please try again.',
                     confirmButtonColor: '#4154f1'
                 });
             },
@@ -190,4 +195,15 @@ $(document).ready(function() {
         });
     });
 
+    function resetAddForm() {
+        $('#incomeForm')[0].reset();
+        $('#incomeForm .is-invalid').removeClass('is-invalid');
+        $('#incomeForm .invalid-feedback').text('');
+    }
+
+    function resetEditForm() {
+        $('#editIncomeForm')[0].reset();
+        $('#editIncomeModal .is-invalid').removeClass('is-invalid');
+        $('#editIncomeModal .invalid-feedback').text('');
+    }
 });

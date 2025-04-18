@@ -229,6 +229,7 @@
                     <i class="bi bi-x-circle me-1"></i> Cancel
                 </button>
                 <button type="button" id="saveBtn" class="btn btn-primary px-4">
+                    <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
                     <i class="bi bi-save me-1"></i> <span id="saveBtnText">Save</span>
                 </button>
             </div>
@@ -327,7 +328,8 @@
                     <i class="bi bi-x-circle me-1"></i> Cancel
                 </button>
                 <button type="button" id="saveBtn" class="btn btn-primary px-4">
-                    <i class="bi bi-save me-1"></i> <span id="saveBtnText">Save</span>
+                    <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
+                    <i class="bi bi-save me-1"></i> <span id="saveBtnText">Update</span>
                 </button>
             </div>
         </div>
@@ -357,6 +359,7 @@
                     <i class="bi bi-x-circle me-1"></i> Cancel
                 </button>
                 <button type="button" id="confirmDeleteBtn" class="btn btn-danger px-4">
+                    <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
                     <i class="bi bi-trash me-1"></i> Delete
                 </button>
             </div>
@@ -370,33 +373,36 @@
         height: 36px;
         font-size: 16px;
     }
-    .empty-state-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        background-color: #f8f9fa;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .table th {
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 12px;
-        letter-spacing: 0.5px;
-        background-color: #f8f9fa;
-        border-top: 1px solid #dee2e6;
-        border-bottom: 1px solid #dee2e6;
-        padding: 12px 16px;
-        white-space: nowrap;
-    }
-    .table td {
-        vertical-align: middle;
-        padding: 12px 16px;
-        white-space: nowrap;
-    }
     .form-label {
         margin-bottom: 0.3rem;
+        font-weight: 500;
+        color: #444;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #4154f1;
+        box-shadow: 0 0 0 0.25rem rgba(65, 84, 241, 0.1);
+    }
+    .modal-content {
+        border-radius: 0.5rem;
+    }
+    .modal-header {
+        border-radius: 0.5rem 0.5rem 0 0;
+    }
+    .input-group-text {
+        color: #6c757d;
+    }
+    .btn-primary {
+        background-color: #4154f1;
+        border-color: #4154f1;
+    }
+    .btn-primary:hover {
+        background-color: #3a4cd8;
+        border-color: #3a4cd8;
+    }
+    .badge {
+        font-weight: 500;
+        padding: 0.5em 0.8em;
+        border-radius: 30px;
     }
     .dataTables_wrapper {
         padding-top: 15px;
@@ -414,6 +420,16 @@
     }
     .dataTables_wrapper .dataTables_info {
         padding-left: 15px;
+    }
+    #addNewTankLariBtn:hover {
+        background-color: #ffffff;
+        border-color: #4154f1;
+        color: #4154f1;
+    }
+    .btn.btn-primary:hover {
+        background-color: #ffffff;
+        border-color: #4154f1;
+        color: #4154f1;
     }
 </style>
 @endsection

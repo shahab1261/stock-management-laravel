@@ -46,6 +46,11 @@ $(document).ready(function() {
     $('#confirmDeleteBtn').on('click', function() {
         const customerId = $('#delete_customer_id').val();
 
+        var $btn = $(this);
+        $btn.prop('disabled', true);
+        $btn.find('.spinner-border').removeClass('d-none');
+        $btn.find('.submit-icon').addClass('d-none');
+
         $.ajax({
             url: `/admin/customers/delete/${customerId}`,
             type: 'DELETE',
@@ -85,6 +90,11 @@ $(document).ready(function() {
                     text: 'Failed to delete customer. Please try again.',
                     confirmButtonColor: '#4154f1'
                 });
+            },
+            complete: function() {
+                $btn.prop('disabled', false);
+                $btn.find('.spinner-border').addClass('d-none');
+                $btn.find('.submit-icon').removeClass('d-none');
             }
         });
     });
@@ -92,6 +102,11 @@ $(document).ready(function() {
     $('#addCustomerModal #saveBtn').on('click', function() {
         $('#addCustomerModal .is-invalid').removeClass('is-invalid');
         $('#addCustomerModal .invalid-feedback').text('');
+
+        var $btn = $(this);
+        $btn.prop('disabled', true);
+        $btn.find('.spinner-border').removeClass('d-none');
+        $btn.find('.submit-icon').addClass('d-none');
 
         const formData = $('#addCustomerModal form').serialize();
 
@@ -127,20 +142,17 @@ $(document).ready(function() {
                 }
             },
             error: function(xhr) {
-                if (xhr.status === 422) {
-                    const errors = xhr.responseJSON.errors;
-                    for (const field in errors) {
-                        $(`#addCustomerModal #${field}`).addClass('is-invalid');
-                        $(`#addCustomerModal #${field}-error`).text(errors[field][0]);
-                    }
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to create customer. Please try again.',
-                        confirmButtonColor: '#4154f1'
-                    });
-                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to create customer. Please try again.',
+                    confirmButtonColor: '#4154f1'
+                });
+            },
+            complete: function() {
+                $btn.prop('disabled', false);
+                $btn.find('.spinner-border').addClass('d-none');
+                $btn.find('.submit-icon').removeClass('d-none');
             }
         });
     });
@@ -148,6 +160,11 @@ $(document).ready(function() {
     $('#editCustomerModal #updateBtn').on('click', function() {
         $('#editCustomerModal .is-invalid').removeClass('is-invalid');
         $('#editCustomerModal .invalid-feedback').text('');
+
+        var $btn = $(this);
+        $btn.prop('disabled', true);
+        $btn.find('.spinner-border').removeClass('d-none');
+        $btn.find('.submit-icon').addClass('d-none');
 
         const formData = $('#editCustomerModal form').serialize();
 
@@ -183,20 +200,17 @@ $(document).ready(function() {
                 }
             },
             error: function(xhr) {
-                if (xhr.status === 422) {
-                    const errors = xhr.responseJSON.errors;
-                    for (const field in errors) {
-                        $(`#editCustomerModal #${field}`).addClass('is-invalid');
-                        $(`#editCustomerModal #${field}-error`).text(errors[field][0]);
-                    }
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to update customer. Please try again.',
-                        confirmButtonColor: '#4154f1'
-                    });
-                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to update customer. Please try again.',
+                    confirmButtonColor: '#4154f1'
+                });
+            },
+            complete: function() {
+                $btn.prop('disabled', false);
+                $btn.find('.spinner-border').addClass('d-none');
+                $btn.find('.submit-icon').removeClass('d-none');
             }
         });
     });

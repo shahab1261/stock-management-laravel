@@ -1,44 +1,161 @@
 $(document).ready(function() {
-    $('#addNewBankBtn').on('click', function() {
+    $('#addNewDriverBtn').on('click', function() {
         resetAddForm();
-        $('#addBankModal').modal('show');
+        $('#addDriverModal').modal('show');
+    });
+
+    $('#saveBtn').on('click', function() {
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').text('');
+
+        var $btn = $(this);
+        $btn.prop('disabled', true);
+        $btn.find('.spinner-border').removeClass('d-none');
+        $btn.find('.submit-icon').addClass('d-none');
+
+        const formData = $('#driverForm').serialize();
+
+        $.ajax({
+            url: $('#driverForm').attr('action'),
+            type: 'POST',
+            data: formData,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if(response.success == true) {
+                    $('#addDriverModal').modal('hide');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message || 'Driver added successfully',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#4154f1'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message,
+                        confirmButtonColor: '#4154f1'
+                    });
+                }
+            },
+            error: function(xhr, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to add driver. Please try again.',
+                    confirmButtonColor: '#4154f1'
+                });
+            },
+            complete: function() {
+                $btn.prop('disabled', false);
+                $btn.find('.spinner-border').addClass('d-none');
+                $btn.find('.submit-icon').removeClass('d-none');
+            }
+        });
     });
 
     $(document).on('click', '.edit-btn', function() {
         resetEditForm();
 
-        const bankId = $(this).data('id');
-        const bankName = $(this).data('name');
-        const bankAccountNumber = $(this).data('acc');
-        const bankCode = $(this).data('bank-code');
-        const bankAddress = $(this).data('address');
-        const bankNotes = $(this).data('notes');
-        const bankStatus = $(this).data('status');
+        const driverId = $(this).data('id');
+        const driverType = $(this).data('driver-type');
+        const driverName = $(this).data('driver-name');
+        const firstMobile = $(this).data('first-mobile');
+        const secondMobile = $(this).data('second-mobile');
+        const cnic = $(this).data('cnic');
+        const vehicle = $(this).data('vehicle');
+        const city = $(this).data('city');
+        const address = $(this).data('address');
+        const reference = $(this).data('reference');
 
-        $('#editBankModal #bank_id').val(bankId);
-        $('#editBankModal #name').val(bankName);
-        $('#editBankModal #account_number').val(bankAccountNumber);
-        $('#editBankModal #bank_code').val(bankCode);
-        $('#editBankModal #address').val(bankAddress);
-        $('#editBankModal #notes').val(bankNotes);
+        $('#edit_driver_id').val(driverId);
+        $('#edit_driver_type').val(driverType);
+        $('#edit_driver_name').val(driverName);
+        $('#edit_first_mobile_no').val(firstMobile);
+        $('#edit_second_mobile_no').val(secondMobile);
+        $('#edit_cnic').val(cnic);
+        $('#edit_vehicle_no').val(vehicle);
+        $('#edit_city').val(city);
+        $('#edit_address').val(address);
+        $('#edit_reference').val(reference);
 
-        if (bankStatus == 1) {
-            $('#editBankModal #statusActive').prop('checked', true);
-        } else {
-            $('#editBankModal #statusInactive').prop('checked', true);
-        }
+        $('#editDriverModal').modal('show');
+    });
 
-        $('#editBankModal').modal('show');
+    $('#updateBtn').on('click', function() {
+        $('#editDriverModal .is-invalid').removeClass('is-invalid');
+        $('#editDriverModal .invalid-feedback').text('');
+
+        var $btn = $(this);
+        $btn.prop('disabled', true);
+        $btn.find('.spinner-border').removeClass('d-none');
+        $btn.find('.submit-icon').addClass('d-none');
+
+        const formData = $('#editDriverForm').serialize();
+
+        $.ajax({
+            url: $('#editDriverForm').attr('action'),
+            type: 'POST',
+            data: formData,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                $('#editDriverModal').modal('hide');
+
+                if(response.success == true) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: response.message || 'Driver updated successfully',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#4154f1'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message,
+                        confirmButtonColor: '#4154f1'
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to update driver. Please try again.',
+                    confirmButtonColor: '#4154f1'
+                });
+            },
+            complete: function() {
+                $btn.prop('disabled', false);
+                $btn.find('.spinner-border').addClass('d-none');
+                $btn.find('.submit-icon').removeClass('d-none');
+            }
+        });
     });
 
     $(document).on('click', '.delete-btn', function() {
-        const bankId = $(this).data('id');
-        $('#delete_bank_id').val(bankId);
+        const driverId = $(this).data('id');
+        $('#delete_driver_id').val(driverId);
         $('#deleteModal').modal('show');
     });
 
     $('#confirmDeleteBtn').on('click', function() {
-        const bankId = $('#delete_bank_id').val();
+        const driverId = $('#delete_driver_id').val();
 
         var $btn = $(this);
         $btn.prop('disabled', true);
@@ -46,7 +163,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: `/admin/banks/delete/${bankId}`,
+            url: `/admin/drivers/delete/${driverId}`,
             type: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -54,11 +171,11 @@ $(document).ready(function() {
             success: function(response) {
                 $('#deleteModal').modal('hide');
 
-                if(response.success == "true" || response.success == true){
+                if(response.success == true) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Created!',
-                        text: response.message || 'Bank has been created successfully.',
+                        title: 'Deleted!',
+                        text: response.message || 'Driver deleted successfully',
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#4154f1'
                     }).then((result) => {
@@ -66,7 +183,7 @@ $(document).ready(function() {
                             location.reload();
                         }
                     });
-                } else{
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -81,121 +198,7 @@ $(document).ready(function() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Failed to delete bank. Please try again.',
-                    confirmButtonColor: '#4154f1'
-                });
-            },
-            complete: function() {
-                $btn.prop('disabled', false);
-                $btn.find('.spinner-border').addClass('d-none');
-                $btn.find('.submit-icon').removeClass('d-none');
-            }
-        });
-    });
-
-    $('#addBankModal #saveBtn').on('click', function() {
-        $('#addBankModal .is-invalid').removeClass('is-invalid');
-        $('#addBankModal .invalid-feedback').text('');
-
-        var $btn = $(this);
-        $btn.prop('disabled', true);
-        $btn.find('.spinner-border').removeClass('d-none');
-        $btn.find('.submit-icon').addClass('d-none');
-
-        const formData = $('#addBankModal form').serialize();
-
-        $.ajax({
-            url: $('#addBankModal form').attr('action'),
-            type: $('#addBankModal form').attr('method'),
-            data: formData,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                $('#addBankModal').modal('hide');
-                if(response.success == "true" || response.success == true){
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Created!',
-                        text: response.message || 'Bank has been created successfully.',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#4154f1'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
-                        }
-                    });
-                } else{
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message,
-                        confirmButtonColor: '#4154f1'
-                    });
-                }
-            },
-            error: function(error, xhr) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text:  'Failed to create bank. Please try again.',
-                    confirmButtonColor: '#4154f1'
-                });
-            },
-            complete: function() {
-                $btn.prop('disabled', false);
-                $btn.find('.spinner-border').addClass('d-none');
-                $btn.find('.submit-icon').removeClass('d-none');
-            }
-        });
-    });
-
-    $('#editBankModal #saveBtn').on('click', function() {
-        $('#editBankModal .is-invalid').removeClass('is-invalid');
-        $('#editBankModal .invalid-feedback').text('');
-
-        var $btn = $(this);
-        $btn.prop('disabled', true);
-        $btn.find('.spinner-border').removeClass('d-none');
-        $btn.find('.submit-icon').addClass('d-none');
-        const formData = $('#editBankModal form').serialize();
-
-        $.ajax({
-            url: $('#editBankModal form').attr('action'),
-            type: $('#editBankModal form').attr('method'),
-            data: formData,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                $('#editBankModal').modal('hide');
-
-                if(response.success == "true" || response.success == true){
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Created!',
-                        text: response.message || 'Bank has been created successfully.',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#4154f1'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
-                        }
-                    });
-                } else{
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message,
-                        confirmButtonColor: '#4154f1'
-                    });
-                }
-            },
-            error: function(xhr) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text:  'Failed to create bank. Please try again.',
+                    text: 'Failed to delete driver. Please try again.',
                     confirmButtonColor: '#4154f1'
                 });
             },
@@ -208,15 +211,14 @@ $(document).ready(function() {
     });
 
     function resetAddForm() {
-        $('#addBankModal form')[0].reset();
-        $('#addBankModal .is-invalid').removeClass('is-invalid');
-        $('#addBankModal .invalid-feedback').text('');
+        $('#driverForm')[0].reset();
+        $('#driverForm .is-invalid').removeClass('is-invalid');
+        $('#driverForm .invalid-feedback').text('');
     }
 
     function resetEditForm() {
-        $('#editBankModal form')[0].reset();
-        $('#editBankModal #bank_id').val('');
-        $('#editBankModal .is-invalid').removeClass('is-invalid');
-        $('#editBankModal .invalid-feedback').text('');
+        $('#editDriverForm')[0].reset();
+        $('#editDriverModal .is-invalid').removeClass('is-invalid');
+        $('#editDriverModal .invalid-feedback').text('');
     }
 });

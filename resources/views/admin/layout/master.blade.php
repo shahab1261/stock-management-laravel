@@ -102,7 +102,7 @@
         <script src="{{ asset('assets/js/dataTables.select.min.js') }}"></script>
         <script src="{{ asset('assets/js/dataTables.fixedColumns.min.js') }}"></script>
 
-        <script>
+        {{-- <script>
             tinymce.init({
                 selector: '#my-editor',
                 plugins: [
@@ -122,7 +122,7 @@
                 promotion: false,
                 height: 300,
             });
-        </script>
+        </script> --}}
 
 
         @stack('scripts')

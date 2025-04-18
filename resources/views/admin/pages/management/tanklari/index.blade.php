@@ -401,6 +401,7 @@
                     <i class="bi bi-x-circle me-1"></i> Cancel
                 </button>
                 <button type="button" id="confirmDeleteBtn" class="btn btn-danger px-4">
+                    <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
                     <i class="bi bi-trash me-1"></i> Delete
                 </button>
             </div>

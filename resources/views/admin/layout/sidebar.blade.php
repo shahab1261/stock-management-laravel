@@ -114,6 +114,41 @@
                                 <span class="submenu-text">Customers Tank Lari</span>
                             </a>
                         </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.drivers.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Drivers</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.expenses.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Expenses Types</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.incomes.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Income Types</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.nozzles.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Nozzles</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.suppliers.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Suppliers</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.users.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Users</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.terminals.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Terminals</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
