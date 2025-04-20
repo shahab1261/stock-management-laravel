@@ -24,7 +24,7 @@ class IncomeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
         }
 
         try {
@@ -50,7 +50,7 @@ class IncomeController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['errors' => $validator->errors()], 422);
+                return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
             }
 
             $income = Incomes::findOrFail($request->id);

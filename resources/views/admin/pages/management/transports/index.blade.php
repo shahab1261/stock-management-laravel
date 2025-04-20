@@ -1,94 +1,38 @@
 @extends('admin.layout.master')
 
-@section('title', 'Tank Lari Management')
-@section('description', 'Manage your tank lari fleet')
+@section('title', 'Transport Management')
+@section('description', 'Manage your transport vehicles')
 
 @section('content')
 <div class="container-fluid py-4">
     <!-- Header Section with Stats -->
     <div class="row mb-4">
         <div class="col-12 text-center">
-            <h3 class="mb-0"><i class="bi bi-truck text-primary me-2"></i>Tank Lari</h3>
-            <p class="text-muted mb-0">Manage your tank lari fleet and chamber capacities</p>
+            <h3 class="mb-0"><i class="bi bi-truck text-primary me-2"></i>Transports</h3>
+            <p class="text-muted mb-0">Manage your transport vehicles and chamber capacities</p>
         </div>
     </div>
 
-    <!-- Tank Lari Cards Overview -->
-    {{-- <div class="row mb-4">
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-primary bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
-                        <i class="bi bi-truck text-primary" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-1">Total Tank Lari</h6>
-                        <h3 class="mb-0">{{ count($tanklaris) }}</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-success bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
-                        <i class="bi bi-check-circle text-success" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-1">Active</h6>
-                        <h3 class="mb-0">{{ $tanklaris->where('larry_status', 1)->count() }}</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-danger bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
-                        <i class="bi bi-x-circle text-danger" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-1">Inactive</h6>
-                        <h3 class="mb-0">{{ $tanklaris->where('larry_status', 0)->count() }}</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-info bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
-                        <i class="bi bi-fuel-pump text-info" style="font-size: 1.5rem;"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-1">Total Chambers</h6>
-                        <h3 class="mb-0">{{ $totalChambers }}</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
-    <!-- Tank Lari Table Section -->
+    <!-- Transports Table Section -->
     <div class="row">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                    <h5 class="mb-0"><i class="bi bi-table me-2"></i>Tank Lari List</h5>
+                    <h5 class="mb-0"><i class="bi bi-table me-2"></i>Transports</h5>
                     <div>
-                        <button id="addNewTankLariBtn" class="btn btn-primary btn-sm">
-                            <i class="bi bi-plus-circle me-1"></i> Add New
+                        <button id="addNewTransportBtn" class="btn btn-primary d-flex align-items-center">
+                            <i class="bi bi-plus-circle me-2"></i> Add Transport
                         </button>
                     </div>
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" id="tanklariTable" style="width:100%">
+                        <table class="table table-hover align-middle mb-0" id="transportsTable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th width="50" class="ps-3 text-center">#</th>
                                     <th class="ps-3">Vehicle Name</th>
-                                    <th class="ps-3">Customer</th>
+                                    <th class="ps-3">Driver</th>
                                     <th class="ps-3">Chamber Dip 1</th>
                                     <th class="ps-3">Chamber Capacity 1</th>
                                     <th class="ps-3">Chamber Dip 2</th>
@@ -101,45 +45,45 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($tanklaris as $key => $tanklari)
+                                @foreach($transports as $key => $transport)
                                 <tr>
                                     <td class="text-center">{{ $key + 1 }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center">
-                                                <span class="text-primary">{{ substr($tanklari->larry_name, 0, 1) }}</span>
+                                                <span class="text-primary">{{ substr($transport->larry_name, 0, 1) }}</span>
                                             </div>
-                                            <span class="fw-medium">{{ $tanklari->larry_name }}</span>
+                                            <span class="fw-medium">{{ $transport->larry_name }}</span>
                                         </div>
                                     </td>
-                                    <td>{{ $tanklari->customer ? $tanklari->customer->name : 'N/A' }}</td>
-                                    <td>{{ $tanklari->chamber_dip_one }}</td>
-                                    <td>{{ $tanklari->chamber_capacity_one }}</td>
-                                    <td>{{ $tanklari->chamber_dip_two }}</td>
-                                    <td>{{ $tanklari->chamber_capacity_two }}</td>
-                                    <td>{{ $tanklari->chamber_dip_three }}</td>
-                                    <td>{{ $tanklari->chamber_capacity_three }}</td>
-                                    <td>{{ $tanklari->chamber_dip_four }}</td>
-                                    <td>{{ $tanklari->chamber_capacity_four }}</td>
+                                    <td>{{ $transport->driver ? $transport->driver->driver_name : 'Nothing selected' }}</td>
+                                    <td>{{ $transport->chamber_dip_one }}</td>
+                                    <td>{{ $transport->chamber_capacity_one }}</td>
+                                    <td>{{ $transport->chamber_dip_two }}</td>
+                                    <td>{{ $transport->chamber_capacity_two }}</td>
+                                    <td>{{ $transport->chamber_dip_three }}</td>
+                                    <td>{{ $transport->chamber_capacity_three }}</td>
+                                    <td>{{ $transport->chamber_dip_four }}</td>
+                                    <td>{{ $transport->chamber_capacity_four }}</td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary edit-tank-lari me-1"
-                                            data-id="{{ $tanklari->id }}"
-                                            data-name="{{ $tanklari->larry_name }}"
-                                            data-customer="{{ $tanklari->customer ? $tanklari->customer->id : 'N/A' }}"
-                                            data-chamber-dip-one="{{ $tanklari->chamber_dip_one }}"
-                                            data-chamber-capacity-one="{{ $tanklari->chamber_capacity_one }}"
-                                            data-chamber-dip-two="{{ $tanklari->chamber_dip_two }}"
-                                            data-chamber-capacity-two="{{ $tanklari->chamber_capacity_two }}"
-                                            data-chamber-dip-three="{{ $tanklari->chamber_dip_three }}"
-                                            data-chamber-capacity-three="{{ $tanklari->chamber_capacity_three }}"
-                                            data-chamber-dip-four="{{ $tanklari->chamber_dip_four }}"
-                                            data-chamber-capacity-four="{{ $tanklari->chamber_capacity_four }}"
+                                        <button class="btn btn-sm btn-outline-primary edit-transport me-1"
+                                            data-id="{{ $transport->id }}"
+                                            data-name="{{ $transport->larry_name }}"
+                                            data-driver="{{ $transport->driver ? $transport->driver->id : '' }}"
+                                            data-chamber-dip-one="{{ $transport->chamber_dip_one }}"
+                                            data-chamber-capacity-one="{{ $transport->chamber_capacity_one }}"
+                                            data-chamber-dip-two="{{ $transport->chamber_dip_two }}"
+                                            data-chamber-capacity-two="{{ $transport->chamber_capacity_two }}"
+                                            data-chamber-dip-three="{{ $transport->chamber_dip_three }}"
+                                            data-chamber-capacity-three="{{ $transport->chamber_capacity_three }}"
+                                            data-chamber-dip-four="{{ $transport->chamber_dip_four }}"
+                                            data-chamber-capacity-four="{{ $transport->chamber_capacity_four }}"
                                             title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-danger delete-tank-lari"
-                                            data-id="{{ $tanklari->id }}"
-                                            data-name="{{ $tanklari->larry_name }}"
+                                        <button class="btn btn-sm btn-outline-danger delete-transport"
+                                            data-id="{{ $transport->id }}"
+                                            data-name="{{ $transport->larry_name }}"
                                             title="Delete">
                                             <i class="bi bi-trash"></i>
                                         </button>
@@ -155,21 +99,21 @@
     </div>
 </div>
 
-<!-- Add Tank Lari Modal -->
-<div class="modal fade" id="addTankLariModal" tabindex="-1" aria-labelledby="addTankLariModalLabel" aria-hidden="true" data-bs-backdrop="static">
+<!-- Add Transport Modal -->
+<div class="modal fade" id="addTransportModal" tabindex="-1" aria-labelledby="addTransportModalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-primary bg-opacity-10 border-0">
                 <h5 class="modal-title">
-                    <i class="bi bi-truck me-2"></i>Add New Tank Lari
+                    <i class="bi bi-truck me-2"></i>Add New Transport
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="addTankLariForm" class="row g-3" action="{{ route('admin.tanklari.store') }}" method="POST">
+                <form id="addTransportForm" class="row g-3" action="{{ route('admin.transports.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="id">
-                    <input type="hidden" name="tank_type" value="3">
+                    <input type="hidden" name="tank_type" value="2">
 
                     <div class="col-md-6">
                         <label for="larry_name" class="form-label fw-medium">Vehicle Name <span class="text-danger">*</span></label>
@@ -183,19 +127,19 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label for="customer_id" class="form-label fw-medium">Customer <span class="text-danger">*</span></label>
+                        <label for="driver_id" class="form-label fw-medium">Driver</label>
                         <div class="input-group mb-0">
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person"></i>
                             </span>
-                            <select class="form-select border-start-0" id="customer_id" name="customer_id">
-                                <option value="">Select Customer</option>
-                                @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                            <select class="form-select border-start-0" id="driver_id" name="driver_id">
+                                <option value="">Nothing selected</option>
+                                @foreach($drivers as $driver)
+                                <option value="{{ $driver->id }}">{{ $driver->driver_name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="invalid-feedback" id="customer_id-error"></div>
+                        <div class="invalid-feedback" id="driver_id-error"></div>
                     </div>
 
                     <div class="col-12">
@@ -256,33 +200,32 @@
                     </div>
                 </form>
             </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-light" style="background-color: #fdfdfd;" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i> Cancel
-                </button>
-                <button type="button" id="submitAddForm" class="btn btn-primary px-4">
-                    <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
-                    <i class="bi bi-save me-1"></i> Submit
+            <div class="modal-footer bg-light border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="submitAddForm" class="btn btn-primary d-flex align-items-center">
+                    <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
+                    <i class="bi bi-save me-1 submit-icon"></i> Save
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Edit Tank Lari Modal -->
-<div class="modal fade" id="editTankLariModal" tabindex="-1" aria-labelledby="editTankLariModalLabel" aria-hidden="true" data-bs-backdrop="static">
+<!-- Edit Transport Modal -->
+<div class="modal fade" id="editTransportModal" tabindex="-1" aria-labelledby="editTransportModalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-primary bg-opacity-10 border-0">
                 <h5 class="modal-title">
-                    <i class="bi bi-pencil-square me-2"></i>Edit Tank Lari
+                    <i class="bi bi-pencil-square me-2"></i>Edit Transport
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="editTankLariForm" class="row g-3" action="{{ route('admin.tanklari.update') }}" method="POST">
+                <form id="editTransportForm" class="row g-3" action="{{ route('admin.transports.update') }}" method="POST">
                     @csrf
                     <input type="hidden" id="edit_id" name="id">
+
                     <div class="col-md-6">
                         <label for="edit_larry_name" class="form-label fw-medium">Vehicle Name <span class="text-danger">*</span></label>
                         <div class="input-group mb-0">
@@ -293,25 +236,28 @@
                         </div>
                         <div class="invalid-feedback" id="edit_larry_name-error"></div>
                     </div>
+
                     <div class="col-md-6">
-                        <label for="edit_customer_id" class="form-label fw-medium">Customer <span class="text-danger">*</span></label>
+                        <label for="edit_driver_id" class="form-label fw-medium">Driver</label>
                         <div class="input-group mb-0">
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person"></i>
                             </span>
-                            <select class="form-select border-start-0" id="edit_customer_id" name="customer_id">
-                                <option value="">Select Customer</option>
-                                @foreach($customers as $customer)
-                                    <option value="{{ $customer->id }}" {{ $customer->id == $tanklari->customer_id ? 'selected' : '' }}>{{ $customer->name }}</option>
+                            <select class="form-select border-start-0" id="edit_driver_id" name="driver_id">
+                                <option value="">Nothing selected</option>
+                                @foreach($drivers as $driver)
+                                <option value="{{ $driver->id }}">{{ $driver->driver_name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="invalid-feedback" id="edit_customer_id-error"></div>
+                        <div class="invalid-feedback" id="edit_driver_id-error"></div>
                     </div>
+
                     <div class="col-12">
                         <hr class="text-muted">
                         <h5 class="mb-3">Chamber Details</h5>
                     </div>
+
                     <div class="col-md-12 mb-3">
                         <div class="table-responsive">
                             <table class="table table-bordered">
@@ -365,13 +311,11 @@
                     </div>
                 </form>
             </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-light" style="background-color: #fdfdfd;" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i> Cancel
-                </button>
-                <button type="button" id="submitEditForm" class="btn btn-primary px-4">
-                    <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
-                    <i class="bi bi-save me-1"></i> Update
+            <div class="modal-footer bg-light border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="submitEditForm" class="btn btn-primary d-flex align-items-center">
+                    <span class="spinner-border spinner-border-sm d-none me-2" role="status"></span>
+                    <i class="bi bi-save me-1 submit-icon"></i> Update
                 </button>
             </div>
         </div>
@@ -379,12 +323,12 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-danger bg-opacity-10 border-0">
                 <h5 class="modal-title text-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Delete Tank Lari
+                    <i class="bi bi-exclamation-triangle me-2"></i>Delete Transport
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -394,7 +338,7 @@
                 </div>
                 <h5 class="mb-3">Are you sure?</h5>
                 <p class="text-muted mb-0">You won't be able to revert this action!</p>
-                <input type="hidden" id="delete_tanklari_id">
+                <input type="hidden" id="delete_transport_id">
             </div>
             <div class="modal-footer border-0 justify-content-center pt-0">
                 <button type="button" class="btn btn-light" style="background-color: #fdfdfd;" data-bs-dismiss="modal">
@@ -402,7 +346,7 @@
                 </button>
                 <button type="button" id="confirmDeleteBtn" class="btn btn-danger px-4">
                     <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
-                    <i class="bi bi-trash me-1"></i> Delete
+                    <i class="bi bi-trash me-1 submit-icon"></i> Delete
                 </button>
             </div>
         </div>
@@ -477,13 +421,14 @@
         color: #4154f1;
     }
 </style>
+
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/tanklari-ajax.js') }}"></script>
+<script src="{{ asset('js/transports-ajax.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('#tanklariTable').DataTable({
+        $('#transportsTable').DataTable({
             processing: true,
             responsive: false,
             scrollX: true,

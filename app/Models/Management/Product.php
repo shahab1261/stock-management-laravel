@@ -17,4 +17,9 @@ class Product extends Model
     {
         return $this->hasMany(Nozzle::class, 'product_id');
     }
+
+    public function tank()
+    {
+        return $this->belongsTo(Tank::class, 'tank_id');
+    }
 }

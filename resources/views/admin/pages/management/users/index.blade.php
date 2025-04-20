@@ -113,7 +113,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="name" name="name" placeholder="Enter full name" required>
+                            <input type="text" class="form-control border-start-0" id="name" name="name" placeholder="Enter full name"  >
                         </div>
                         <div class="invalid-feedback" id="name-error"></div>
                     </div>
@@ -124,7 +124,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-envelope"></i>
                             </span>
-                            <input type="email" class="form-control border-start-0" id="email" name="email" placeholder="Enter email address" required>
+                            <input type="email" class="form-control border-start-0" id="email" name="email" placeholder="Enter email address"  >
                         </div>
                         <div class="invalid-feedback" id="email-error"></div>
                     </div>
@@ -135,7 +135,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-telephone"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="phone" name="phone" placeholder="Enter phone number" required>
+                            <input type="text" class="form-control border-start-0" id="phone" name="phone" placeholder="Enter phone number"  >
                         </div>
                         <div class="invalid-feedback" id="phone-error"></div>
                     </div>
@@ -157,7 +157,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-lock"></i>
                             </span>
-                            <input type="password" class="form-control border-start-0" id="password" name="password" placeholder="Enter password" required>
+                            <input type="password" class="form-control border-start-0" id="password" name="password" placeholder="Enter password"  >
                             <button class="btn btn-light border toggle-password" type="button" data-target="#password">
                                 <i class="bi bi-eye-slash"></i>
                             </button>
@@ -171,7 +171,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-lock-fill"></i>
                             </span>
-                            <input type="password" class="form-control border-start-0" id="password_confirmation" name="password_confirmation" placeholder="Confirm password" required>
+                            <input type="password" class="form-control border-start-0" id="password_confirmation" name="password_confirmation" placeholder="Confirm password"  >
                             <button class="btn btn-light border toggle-password" type="button" data-target="#password_confirmation">
                                 <i class="bi bi-eye-slash"></i>
                             </button>
@@ -185,7 +185,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-toggle-on"></i>
                             </span>
-                            <select class="form-select border-start-0" id="status" name="status" required>
+                            <select class="form-select border-start-0" id="status" name="status"  >
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
@@ -248,7 +248,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="edit_name" name="name" placeholder="Enter full name" required>
+                            <input type="text" class="form-control border-start-0" id="edit_name" name="name" placeholder="Enter full name"  >
                         </div>
                         <div class="invalid-feedback" id="edit-name-error"></div>
                     </div>
@@ -259,7 +259,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-envelope"></i>
                             </span>
-                            <input type="email" class="form-control border-start-0" id="edit_email" name="email" placeholder="Enter email address" required>
+                            <input type="email" class="form-control border-start-0" id="edit_email" name="email" placeholder="Enter email address"  >
                         </div>
                         <div class="invalid-feedback" id="edit-email-error"></div>
                     </div>
@@ -270,7 +270,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-telephone"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="edit_phone" name="phone" placeholder="Enter phone number" required>
+                            <input type="text" class="form-control border-start-0" id="edit_phone" name="phone" placeholder="Enter phone number"  >
                         </div>
                         <div class="invalid-feedback" id="edit-phone-error"></div>
                     </div>
@@ -320,7 +320,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-toggle-on"></i>
                             </span>
-                            <select class="form-select border-start-0" id="edit_status" name="status" required>
+                            <select class="form-select border-start-0" id="edit_status" name="status"  >
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>

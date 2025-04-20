@@ -72,7 +72,7 @@ class TankLariController extends Controller
         try {
             try {
                 $validator = Validator::make($request->all(), [
-                    'tid' => 'required|exists:tank_lari,tid',
+                    'id' => 'required|exists:tank_lari,id',
                     'customer_id' => 'required|exists:customers,id',
                     'larry_name' => 'required|string|max:255',
                     'chamber_dip_one' => 'nullable|numeric',
@@ -89,7 +89,7 @@ class TankLariController extends Controller
                     return response()->json(['success' => false, 'message' => $validator->messages()->first()]);
                 }
 
-                $tanklari = TankLari::findOrFail($request->tid);
+                $tanklari = TankLari::findOrFail($request->id);
                 $tanklari->larry_name = $request->larry_name;
                 $tanklari->customer_id = $request->customer_id;
                 $tanklari->chamber_dip_one = $request->chamber_dip_one ?? 0;

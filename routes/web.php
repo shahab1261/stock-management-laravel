@@ -9,10 +9,13 @@ use App\Http\Controllers\Management\IncomeController;
 use App\Http\Controllers\Management\NozzleController;
 use App\Http\Controllers\Management\ExpenseController;
 use App\Http\Controllers\Management\CustomerController;
+use App\Http\Controllers\Management\ProductController;
 use App\Http\Controllers\Management\SupplierController;
 use App\Http\Controllers\Management\TankLariController;
+use App\Http\Controllers\Management\TransportController;
 use App\Http\Controllers\Management\UserController;
 use App\Http\Controllers\Management\TerminalController;
+use App\Http\Controllers\Management\EmployeeController;
 
 Route::get('/', function(){
     return view('pages.login');
@@ -89,4 +92,22 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::post('/terminals/store', [TerminalController::class, 'store'])->name('admin.terminals.store');
     Route::post('/terminals/update', [TerminalController::class, 'update'])->name('admin.terminals.update');
     Route::delete('/terminals/delete/{id}', [TerminalController::class, 'delete'])->name('admin.terminals.delete');
+
+    /*************************Employees_Routes***************************/
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('admin.employees.index');
+    Route::post('/employees/store', [EmployeeController::class, 'store'])->name('admin.employees.store');
+    Route::post('/employees/update', [EmployeeController::class, 'update'])->name('admin.employees.update');
+    Route::delete('/employees/delete/{id}', [EmployeeController::class, 'delete'])->name('admin.employees.delete');
+
+    /*************************Transports_Routes***************************/
+    Route::get('/transports', [TransportController::class, 'index'])->name('admin.transports.index');
+    Route::post('/transports/store', [TransportController::class, 'store'])->name('admin.transports.store');
+    Route::post('/transports/update', [TransportController::class, 'update'])->name('admin.transports.update');
+    Route::delete('/transports/delete/{id}', [TransportController::class, 'delete'])->name('admin.transports.delete');
+
+    /*************************Products_Routes***************************/
+    Route::get('/products', [ProductController::class, 'index'])->name('admin.products.index');
+    Route::post('/products/store', [ProductController::class, 'store'])->name('admin.products.store');
+    Route::post('/products/update', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.delete');
 });

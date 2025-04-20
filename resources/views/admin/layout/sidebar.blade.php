@@ -135,6 +135,11 @@
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.products.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Products</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
                             <a href="{{ route('admin.suppliers.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <span class="submenu-text">Suppliers</span>
                             </a>
@@ -147,6 +152,16 @@
                         <li class="submenu-item mb-2">
                             <a href="{{ route('admin.terminals.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <span class="submenu-text">Terminals</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.employees.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Employees</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.transports.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <span class="submenu-text">Transports</span>
                             </a>
                         </li>
                     </ul>

@@ -10,7 +10,6 @@ class TankLari extends Model
     use HasFactory;
 
     protected $table = "tank_lari";
-    protected $primaryKey = 'tid';
     protected $guarded = [];
 
     // Relationships

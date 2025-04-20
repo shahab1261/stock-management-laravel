@@ -31,7 +31,7 @@ class DriverController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()->first()]);
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
         }
 
         try {
@@ -71,7 +71,7 @@ class DriverController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['errors' => $validator->errors()], 422);
+                return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
             }
 
             $driver = Drivers::findOrFail($request->id);

@@ -87,9 +87,7 @@
         <script src="{{ asset('assets/bootstrap5/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ asset('assets/sweetalert2/sweetalert2.min.js') }}"></script>
         <script src="{{ asset('assets/jquery/jquery-3.7.1.min.js') }}"></script>
-        <script src="{{ asset('assets/js/ajax.js') }}"></script>
         <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('tinymce/tinymce.min.js') }}"></script>
         <script src="{{ asset('assets/js/popper.min.js') }}"></script>
         <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>

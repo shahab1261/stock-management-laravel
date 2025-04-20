@@ -28,7 +28,7 @@ class BankController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
         }
 
         // dd($request->all());
@@ -64,7 +64,7 @@ class BankController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(['errors' => $validator->errors()], 422);
+                return response()->json(['success' => false, 'message' => $validator->errors()->first()]);
             }
 
             $bank = Banks::findOrFail($request->id);

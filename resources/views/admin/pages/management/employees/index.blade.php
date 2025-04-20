@@ -1,65 +1,74 @@
 @extends('admin.layout.master')
 
-@section('title', 'Manage Terminals')
-@section('description', 'Manage system terminals')
+@section('title', 'Manage Employees')
+@section('description', 'Manage system employees')
 
 @section('content')
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row mb-4">
         <div class="col-12 text-center">
-            <h3 class="mb-0"><i class="bi bi-building text-primary me-2"></i>Terminals</h3>
-            <p class="text-muted mb-0">Manage system terminals</p>
+            <h3 class="mb-0"><i class="bi bi-people text-primary me-2"></i>Employees</h3>
+            <p class="text-muted mb-0">Manage system employees</p>
         </div>
     </div>
 
-    <!-- Terminals Table Section -->
+    <!-- Employees Table Section -->
     <div class="row">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                    <h5 class="mb-0"><i class="bi bi-table me-2"></i>Terminals</h5>
-                    <button type="button" id="addNewTerminalBtn" class="btn btn-primary d-flex align-items-center">
-                        <i class="bi bi-plus-circle me-2"></i> Add Terminal
+                    <h5 class="mb-0"><i class="bi bi-table me-2"></i>Employees</h5>
+                    <button type="button" id="addNewEmployeeBtn" class="btn btn-primary d-flex align-items-center">
+                        <i class="bi bi-plus-circle me-2"></i> Add Employee
                     </button>
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
-                        <table id="terminalsTable" class="table table-hover align-middle mb-0" style="width:100%">
+                        <table id="employeesTable" class="table table-hover align-middle mb-0" style="width:100%">
                             <thead class="table-light">
                                 <tr>
                                     <th width="5%" class="ps-3">#</th>
                                     <th width="15%" class="ps-3">Name</th>
-                                    <th width="30%" class="ps-3">Address</th>
-                                    <th width="25%" class="ps-3">Notes</th>
-                                    <th width="15%" class="ps-3">Registered Date</th>
+                                    <th width="15%" class="ps-3">Email</th>
+                                    <th width="10%" class="ps-3">Phone Number</th>
+                                    <th width="15%" class="ps-3">Bank Account Number</th>
+                                    <th width="15%" class="ps-3">Address</th>
+                                    <th width="15%" class="ps-3">Notes</th>
+                                    <th width="10%" class="ps-3">Registered Date</th>
                                     <th width="10%" class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($terminals as $key => $terminal)
+                                @foreach($employees as $key => $employee)
                                 <tr>
-                                    <td class="ps-3 text-start">{{ $key + 1 }}</td>
-                                    <td class="ps-3 text-start">
+                                    <td class="ps-3">{{ $key + 1 }}</td>
+                                    <td class="ps-3">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center">
-                                                <span class="text-primary">{{ substr($terminal->name, 0, 1) }}</span>
+                                                <span class="text-primary">{{ substr($employee->name, 0, 1) }}</span>
                                             </div>
-                                            <span class="fw-medium">{{ $terminal->name }}</span>
+                                            <span class="fw-medium">{{ $employee->name }}</span>
                                         </div>
                                     </td>
-                                    <td class="ps-3 text-start">{{ $terminal->address }}</td>
-                                    <td class="ps-3 text-start">{{ $terminal->notes }}</td>
-                                    <td class="ps-3 text-start">{{ date('d-m-Y', strtotime($terminal->created_at)) }}</td>
-                                    <td class="text-center ps-0">
-                                        <button type="button" class="btn btn-sm btn-outline-primary edit-terminal me-1"
-                                            data-id="{{ $terminal->id }}"
-                                            data-name="{{ $terminal->name }}"
-                                            data-address="{{ $terminal->address }}"
-                                            data-notes="{{ $terminal->notes }}">
+                                    <td class="ps-3">{{ $employee->email }}</td>
+                                    <td class="ps-3">{{ $employee->phone }}</td>
+                                    <td class="ps-3">{{ $employee->bank_account_number }}</td>
+                                    <td class="ps-3">{{ $employee->address }}</td>
+                                    <td class="ps-3">{{ $employee->notes }}</td>
+                                    <td class="ps-3">{{ date('d-m-Y', strtotime($employee->created_at)) }}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-outline-primary edit-employee me-1"
+                                            data-id="{{ $employee->id }}"
+                                            data-name="{{ $employee->name }}"
+                                            data-email="{{ $employee->email }}"
+                                            data-phone="{{ $employee->phone }}"
+                                            data-bank-account="{{ $employee->bank_account_number }}"
+                                            data-address="{{ $employee->address }}"
+                                            data-notes="{{ $employee->notes }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger delete-terminal" data-id="{{ $terminal->id }}">
+                                        <button type="button" class="btn btn-sm btn-outline-danger delete-employee" data-id="{{ $employee->id }}">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </td>
@@ -74,31 +83,64 @@
     </div>
 </div>
 
-<!-- Add Terminal Modal -->
-<div class="modal fade" id="addTerminalModal" tabindex="-1" aria-labelledby="addTerminalModalLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
+<!-- Add Employee Modal -->
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-primary bg-opacity-10 border-0">
-                <h5 class="modal-title" id="addTerminalModalLabel">
-                    <i class="bi bi-plus-circle me-2"></i>Add Terminal
+                <h5 class="modal-title" id="addEmployeeModalLabel">
+                    <i class="bi bi-plus-circle me-2"></i>Add Employee
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="addTerminalForm" action="{{ route('admin.terminals.store') }}" method="POST" class="row g-3">
+                <form id="addEmployeeForm" action="{{ route('admin.employees.store') }}" method="POST" class="row g-3">
                     @csrf
-                    <div class="col-md-12">
-                        <label for="name" class="form-label fw-medium">Name <span class="text-danger">*</span></label>
+                    <div class="col-md-6">
+                        <label for="name" class="form-label fw-medium">Full Name <span class="text-danger">*</span></label>
                         <div class="input-group mb-0">
                             <span class="input-group-text bg-light border-end-0">
-                                <i class="bi bi-building"></i>
+                                <i class="bi bi-person"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="name" name="name" placeholder="Enter terminal name"  >
+                            <input type="text" class="form-control border-start-0" id="name" name="name" placeholder="Enter full name"  >
                         </div>
                         <div class="invalid-feedback" id="name-error"></div>
                     </div>
 
-                    <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="email" class="form-label fw-medium">Email <span class="text-danger">*</span></label>
+                        <div class="input-group mb-0">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control border-start-0" id="email" name="email" placeholder="Enter email address"  >
+                        </div>
+                        <div class="invalid-feedback" id="email-error"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label fw-medium">Phone Number <span class="text-danger">*</span></label>
+                        <div class="input-group mb-0">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-telephone"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="phone" name="phone" placeholder="Enter phone number"  >
+                        </div>
+                        <div class="invalid-feedback" id="phone-error"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="bank_account_number" class="form-label fw-medium">Bank Account Number</label>
+                        <div class="input-group mb-0">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-bank"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="bank_account_number" name="bank_account_number" placeholder="Enter bank account number">
+                        </div>
+                        <div class="invalid-feedback" id="bank_account_number-error"></div>
+                    </div>
+
+                    <div class="col-md-6">
                         <label for="address" class="form-label fw-medium">Address</label>
                         <div class="input-group mb-0">
                             <span class="input-group-text bg-light border-end-0">
@@ -109,7 +151,7 @@
                         <div class="invalid-feedback" id="address-error"></div>
                     </div>
 
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <label for="notes" class="form-label fw-medium">Notes</label>
                         <div class="input-group mb-0">
                             <span class="input-group-text bg-light border-end-0">
@@ -123,42 +165,75 @@
             </div>
             <div class="modal-footer bg-light">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" form="addTerminalForm" class="btn btn-primary addTerminalBtn">
+                <button type="submit" form="addEmployeeForm" class="btn btn-primary addEmployeeBtn">
                     <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
-                    <i class="bi bi-save me-1 submit-icon"></i>Submit
+                    <i class="bi bi-save me-1 submit-icon"></i>Add Employee
                 </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Edit Terminal Modal -->
-<div class="modal fade" id="editTerminalModal" tabindex="-1" aria-labelledby="editTerminalModalLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
+<!-- Edit Employee Modal -->
+<div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-primary bg-opacity-10 border-0">
-                <h5 class="modal-title" id="editTerminalModalLabel">
-                    <i class="bi bi-pencil-square me-2"></i>Edit Terminal
+                <h5 class="modal-title" id="editEmployeeModalLabel">
+                    <i class="bi bi-pencil-square me-2"></i>Edit Employee
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="editTerminalForm" action="{{ route('admin.terminals.update') }}" class="row g-3">
+                <form id="editEmployeeForm" action="{{ route('admin.employees.update') }}" class="row g-3">
                     @csrf
                     <input type="hidden" id="edit_id" name="id">
 
-                    <div class="col-md-12">
-                        <label for="edit_name" class="form-label fw-medium">Name <span class="text-danger">*</span></label>
+                    <div class="col-md-6">
+                        <label for="edit_name" class="form-label fw-medium">Full Name <span class="text-danger">*</span></label>
                         <div class="input-group mb-0">
                             <span class="input-group-text bg-light border-end-0">
-                                <i class="bi bi-building"></i>
+                                <i class="bi bi-person"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="edit_name" name="name" placeholder="Enter terminal name"  >
+                            <input type="text" class="form-control border-start-0" id="edit_name" name="name" placeholder="Enter full name"  >
                         </div>
                         <div class="invalid-feedback" id="edit-name-error"></div>
                     </div>
 
-                    <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="edit_email" class="form-label fw-medium">Email <span class="text-danger">*</span></label>
+                        <div class="input-group mb-0">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control border-start-0" id="edit_email" name="email" placeholder="Enter email address"  >
+                        </div>
+                        <div class="invalid-feedback" id="edit-email-error"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="edit_phone" class="form-label fw-medium">Phone Number <span class="text-danger">*</span></label>
+                        <div class="input-group mb-0">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-telephone"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="edit_phone" name="phone" placeholder="Enter phone number"  >
+                        </div>
+                        <div class="invalid-feedback" id="edit-phone-error"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="edit_bank_account_number" class="form-label fw-medium">Bank Account Number</label>
+                        <div class="input-group mb-0">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-bank"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="edit_bank_account_number" name="bank_account_number" placeholder="Enter bank account number">
+                        </div>
+                        <div class="invalid-feedback" id="edit-bank_account_number-error"></div>
+                    </div>
+
+                    <div class="col-md-6">
                         <label for="edit_address" class="form-label fw-medium">Address</label>
                         <div class="input-group mb-0">
                             <span class="input-group-text bg-light border-end-0">
@@ -169,7 +244,7 @@
                         <div class="invalid-feedback" id="edit-address-error"></div>
                     </div>
 
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <label for="edit_notes" class="form-label fw-medium">Notes</label>
                         <div class="input-group mb-0">
                             <span class="input-group-text bg-light border-end-0">
@@ -183,9 +258,9 @@
             </div>
             <div class="modal-footer bg-light">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" form="editTerminalForm" class="btn btn-primary editTerminalBtn">
+                <button type="submit" form="editEmployeeForm" class="btn btn-primary editEmployeeBtn">
                     <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
-                    <i class="bi bi-save me-1 submit-icon"></i>Update
+                    <i class="bi bi-save me-1 submit-icon"></i>Update Employee
                 </button>
             </div>
         </div>
@@ -193,12 +268,12 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteTerminalModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="deleteEmployeeModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-danger bg-opacity-10 border-0">
                 <h5 class="modal-title text-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Delete Terminal
+                    <i class="bi bi-exclamation-triangle me-2"></i>Delete Employee
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -294,10 +369,10 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/terminals-ajax.js') }}"></script>
+<script src="{{ asset('js/employees-ajax.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('#terminalsTable').DataTable({
+        $('#employeesTable').DataTable({
             processing: true,
             responsive: false,
             scrollX: true,

@@ -101,7 +101,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-fuel-pump"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="name" name="name" placeholder="Enter nozzle name" required>
+                            <input type="text" class="form-control border-start-0" id="name" name="name" placeholder="Enter nozzle name"  >
                         </div>
                         <div class="invalid-feedback" id="name-error"></div>
                     </div>
@@ -138,7 +138,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-speedometer"></i>
                             </span>
-                            <input type="number" step="0.01" class="form-control border-start-0" id="opening_reading" name="opening_reading" placeholder="Enter opening reading" required>
+                            <input type="number" step="0.01" class="form-control border-start-0" id="opening_reading" name="opening_reading" placeholder="Enter opening reading"  >
                         </div>
                         <div class="invalid-feedback" id="opening_reading-error"></div>
                     </div>
@@ -185,7 +185,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-fuel-pump"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="edit_name" name="name" placeholder="Enter nozzle name" required>
+                            <input type="text" class="form-control border-start-0" id="edit_name" name="name" placeholder="Enter nozzle name"  >
                         </div>
                         <div class="invalid-feedback" id="edit-name-error"></div>
                     </div>
@@ -222,7 +222,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-speedometer"></i>
                             </span>
-                            <input type="number" step="0.01" class="form-control border-start-0" id="edit_opening_reading" name="opening_reading" placeholder="Enter opening reading" required>
+                            <input type="number" step="0.01" class="form-control border-start-0" id="edit_opening_reading" name="opening_reading" placeholder="Enter opening reading"  >
                         </div>
                         <div class="invalid-feedback" id="edit-opening_reading-error"></div>
                     </div>

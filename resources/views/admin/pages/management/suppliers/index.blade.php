@@ -174,7 +174,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person-circle"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="name" name="name" placeholder="Enter supplier name" required>
+                            <input type="text" class="form-control border-start-0" id="name" name="name" placeholder="Enter supplier name"  >
                         </div>
                         <div class="invalid-feedback" id="name-error"></div>
                     </div>
@@ -185,7 +185,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-tag"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="supplier_type" name="supplier_type" placeholder="Enter supplier type" required>
+                            <input type="text" class="form-control border-start-0" id="supplier_type" name="supplier_type" placeholder="Enter supplier type"  >
                         </div>
                         <div class="invalid-feedback" id="supplier_type-error"></div>
                     </div>
@@ -196,7 +196,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="contact_person" name="contact_person" placeholder="Enter contact person name" required>
+                            <input type="text" class="form-control border-start-0" id="contact_person" name="contact_person" placeholder="Enter contact person name"  >
                         </div>
                         <div class="invalid-feedback" id="contact_person-error"></div>
                     </div>
@@ -207,7 +207,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-box"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="item_type" name="item_type" placeholder="Enter item type" required>
+                            <input type="text" class="form-control border-start-0" id="item_type" name="item_type" placeholder="Enter item type"  >
                         </div>
                         <div class="invalid-feedback" id="item_type-error"></div>
                     </div>
@@ -218,7 +218,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-telephone"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="mobile_no" name="mobile_no" placeholder="Enter mobile number" required>
+                            <input type="text" class="form-control border-start-0" id="mobile_no" name="mobile_no" placeholder="Enter mobile number"  >
                         </div>
                         <div class="invalid-feedback" id="mobile_no-error"></div>
                     </div>
@@ -229,7 +229,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-envelope"></i>
                             </span>
-                            <input type="email" class="form-control border-start-0" id="email" name="email" placeholder="Enter email address" required>
+                            <input type="email" class="form-control border-start-0" id="email" name="email" placeholder="Enter email address"  >
                         </div>
                         <div class="invalid-feedback" id="email-error"></div>
                     </div>
@@ -284,7 +284,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-toggle-on"></i>
                             </span>
-                            <select class="form-select border-start-0" id="status" name="status" required>
+                            <select class="form-select border-start-0" id="status" name="status"  >
                                 <option value="1">Active</option>
                                 <option value="0">Non Active</option>
                             </select>
@@ -346,7 +346,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person-circle"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="edit_name" name="name" placeholder="Enter supplier name" required>
+                            <input type="text" class="form-control border-start-0" id="edit_name" name="name" placeholder="Enter supplier name"  >
                         </div>
                         <div class="invalid-feedback" id="edit-name-error"></div>
                     </div>
@@ -357,7 +357,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-tag"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="edit_supplier_type" name="supplier_type" placeholder="Enter supplier type" required>
+                            <input type="text" class="form-control border-start-0" id="edit_supplier_type" name="supplier_type" placeholder="Enter supplier type"  >
                         </div>
                         <div class="invalid-feedback" id="edit-supplier_type-error"></div>
                     </div>
@@ -368,7 +368,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="edit_contact_person" name="contact_person" placeholder="Enter contact person name" required>
+                            <input type="text" class="form-control border-start-0" id="edit_contact_person" name="contact_person" placeholder="Enter contact person name"  >
                         </div>
                         <div class="invalid-feedback" id="edit-contact_person-error"></div>
                     </div>
@@ -379,7 +379,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-box"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="edit_item_type" name="item_type" placeholder="Enter item type" required>
+                            <input type="text" class="form-control border-start-0" id="edit_item_type" name="item_type" placeholder="Enter item type"  >
                         </div>
                         <div class="invalid-feedback" id="edit-item_type-error"></div>
                     </div>
@@ -390,7 +390,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-telephone"></i>
                             </span>
-                            <input type="text" class="form-control border-start-0" id="edit_mobile_no" name="mobile_no" placeholder="Enter mobile number" required>
+                            <input type="text" class="form-control border-start-0" id="edit_mobile_no" name="mobile_no" placeholder="Enter mobile number"  >
                         </div>
                         <div class="invalid-feedback" id="edit-mobile_no-error"></div>
                     </div>
@@ -401,7 +401,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-envelope"></i>
                             </span>
-                            <input type="email" class="form-control border-start-0" id="edit_email" name="email" placeholder="Enter email address" required>
+                            <input type="email" class="form-control border-start-0" id="edit_email" name="email" placeholder="Enter email address"  >
                         </div>
                         <div class="invalid-feedback" id="edit-email-error"></div>
                     </div>
@@ -456,7 +456,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-toggle-on"></i>
                             </span>
-                            <select class="form-select border-start-0" id="edit_status" name="status" required>
+                            <select class="form-select border-start-0" id="edit_status" name="status"  >
                                 <option value="1">Active</option>
                                 <option value="0">Non Active</option>
                             </select>
