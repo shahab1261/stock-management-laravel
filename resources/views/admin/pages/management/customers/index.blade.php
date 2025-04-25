@@ -78,6 +78,7 @@
                                     <th class="ps-3">Phone</th>
                                     <th class="ps-3">Credit Limit</th>
                                     <th class="ps-3">Bank Account</th>
+                                    <th class="ps-3">Address</th>
                                     <th class="ps-3">Balance</th>
                                     <th class="ps-3">Status</th>
                                     <th class="ps-3">Created Date</th>
@@ -101,6 +102,7 @@
                                     <td>{{ $customer->phone }}</td>
                                     <td>{{ number_format($customer->credit_limit, 2) }}</td>
                                     <td>{{ $customer->bank_account_number }}</td>
+                                    <td>{{ $customer->address }}</td>
                                     <td>{{ number_format($customer->balance, 2) }}</td>
                                     <td>
                                         @if($customer->status == 1)

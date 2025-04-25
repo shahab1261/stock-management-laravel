@@ -2,20 +2,23 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\Management\BankController;
+use App\Http\Controllers\Management\TankController;
+use App\Http\Controllers\Management\UserController;
 use App\Http\Controllers\Management\DriverController;
 use App\Http\Controllers\Management\IncomeController;
 use App\Http\Controllers\Management\NozzleController;
 use App\Http\Controllers\Management\ExpenseController;
-use App\Http\Controllers\Management\CustomerController;
 use App\Http\Controllers\Management\ProductController;
+use App\Http\Controllers\Management\CustomerController;
+use App\Http\Controllers\Management\EmployeeController;
+use App\Http\Controllers\Management\SettingsController;
 use App\Http\Controllers\Management\SupplierController;
 use App\Http\Controllers\Management\TankLariController;
-use App\Http\Controllers\Management\TransportController;
-use App\Http\Controllers\Management\UserController;
 use App\Http\Controllers\Management\TerminalController;
-use App\Http\Controllers\Management\EmployeeController;
+use App\Http\Controllers\Management\TransportController;
 
 Route::get('/', function(){
     return view('pages.login');
@@ -43,6 +46,11 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
     Route::post('/settings/update', [SettingsController::class, 'update'])->name('admin.settings.update');
     Route::post('/settings/change-password', [SettingsController::class, 'changePassword'])->name('admin.settings.password');
+
+    /*************************Profile_Routes***************************/
+    Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile.index');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('admin.profile.update');
+    Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('admin.profile.password');
 
     /*************************Tank_Lari_Routes***************************/
     Route::get('/tanklari', [TankLariController::class, 'index'])->name('admin.tanklari.index');
@@ -110,4 +118,25 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::post('/products/store', [ProductController::class, 'store'])->name('admin.products.store');
     Route::post('/products/update', [ProductController::class, 'update'])->name('admin.products.update');
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.delete');
+
+    /*************************Tanks_Routes***************************/
+    Route::get('/tanks', [TankController::class, 'index'])->name('admin.tanks.index');
+    Route::post('/tanks/store', [TankController::class, 'store'])->name('admin.tanks.store');
+    Route::post('/tanks/update', [TankController::class, 'update'])->name('admin.tanks.update');
+    Route::delete('/tanks/delete/{id}', [TankController::class, 'delete'])->name('admin.tanks.delete');
+    Route::get('/tanks/{id}/dip-charts', [TankController::class, 'viewDipCharts'])->name('admin.tanks.dip_charts');
+    Route::get('/tanks/{id}/dip-charts-page', [TankController::class, 'dipChartsIndex'])->name('admin.tanks.dip_charts.index');
+
+    /*************************Purchase_Routes***************************/
+    Route::get('/purchase', [PurchaseController::class, 'index'])->name('purchase.index');
+    Route::post('/purchase/store', [PurchaseController::class, 'store'])->name('purchase.store');
+    Route::get('/purchase/create', [PurchaseController::class, 'create'])->name('purchase.create');
+    Route::post('product/tank/update', [PurchaseController::class, 'productTankUpdate'])->name('product.tank.update');
+    Route::post('product/rate/update', [PurchaseController::class, 'productRateUpdate'])->name('product.rate.update');
+    Route::post('tank/chamber/data', [PurchaseController::class, 'tankChamberData'])->name('tank.chamber.data');
+});
+
+Route::prefix('admin')->name('admin.management.')->group(function () {
+    Route::get('/settings', [App\Http\Controllers\Management\SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings/update', [App\Http\Controllers\Management\SettingsController::class, 'update'])->name('settings.update');
 });

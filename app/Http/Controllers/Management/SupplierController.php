@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
-use App\Models\Management\Supplier;
+use App\Models\Management\Suppliers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -12,7 +12,7 @@ class SupplierController extends Controller
 {
     public function index()
     {
-        $suppliers = Supplier::orderBy('created_at', 'desc')->get();
+        $suppliers = Suppliers::orderBy('created_at', 'desc')->get();
         return view('admin.pages.management.suppliers.index', compact('suppliers'));
     }
 
@@ -39,7 +39,7 @@ class SupplierController extends Controller
         }
 
         try {
-            $supplier = new Supplier();
+            $supplier = new Suppliers();
             $supplier->name = $request->name;
             $supplier->supplier_type = $request->supplier_type;
             $supplier->contact_person = $request->contact_person;
@@ -95,7 +95,7 @@ class SupplierController extends Controller
         }
 
         try {
-            $supplier = Supplier::findOrFail($request->id);
+            $supplier = Suppliers::findOrFail($request->id);
             $supplier->name = $request->name;
             $supplier->supplier_type = $request->supplier_type;
             $supplier->contact_person = $request->contact_person;
@@ -129,7 +129,7 @@ class SupplierController extends Controller
     public function delete($id)
     {
         try {
-            $supplier = Supplier::findOrFail($id);
+            $supplier = Suppliers::findOrFail($id);
             $supplier->delete();
 
             return response()->json([

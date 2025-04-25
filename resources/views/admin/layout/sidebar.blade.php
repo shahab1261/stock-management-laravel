@@ -1,8 +1,11 @@
 <aside id="sidenav-main" class="sidebar navbar navbar-vertical navbar-expand-xs" id="sidebar-nav">
     <div class="sidenav-header d-flex justify-content-center align-items-center px-3 py-3">
+        @php
+            $settings = App\Models\Management\Settings::first();
+        @endphp
         <a href="{{ route('admin.dashboard') }}" class="m-0 d-flex align-items-center">
-            <img src="{{ asset('images/new-logo.png') }}" alt="Logo" width="auto" height="32" class="me-2">
-            <span class="fw-semibold text-dark" style="font-size: 20px;">Stock Management</span>
+            <img src="{{ asset($settings->logo_path) }}" alt="Logo" width="auto" height="32" class="me-2">
+            <span class="fw-semibold text-dark" style="font-size: 20px;">{{ $settings->company_name }}</span>
         </a>
     </div>
     <div class="px-3 py-2">
@@ -25,75 +28,37 @@
             <li class="menu-item mb-2" data-name="overview">
                 <a href="{{ route('admin.dashboard') }}" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.dashboard') ? 'active' : '') }}">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
-                        <i class="bi bi-grid-1x2-fill"></i>
+                        <i class="bi bi-grid-1x2"></i>
                     </div>
                     <span class="menu-text">Dashboard</span>
                 </a>
             </li>
 
-            <!-- Hosting Plan Menu Item -->
-            <li class="menu-item mb-2" data-name="hosting plan">
-                <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('hostingPlanSubmenu')">
-                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
-                        <i class="bi bi-hdd-stack"></i>
-                    </div>
-                    <span class="menu-text">Nozzle Sales</span>
-                </a>
-                <div class="collapse" id="hostingPlanSubmenu">
-                    <ul class="submenu list-unstyled ms-4 mt-2">
-                        <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Profit</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Credit Sales</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <!-- Performance Menu Item -->
-            <li class="menu-item mb-2" data-name="performance">
-                <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('performanceSubmenu')">
-                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
-                        <i class="bi bi-speedometer2"></i>
-                    </div>
-                    <span class="menu-text">Credit Sales</span>
-                </a>
-                <div class="collapse" id="performanceSubmenu">
-                    <ul class="submenu list-unstyled ms-4 mt-2">
-                        <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Speed Optimization</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Cache Settings</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
             <!-- Analytics Menu Item -->
             <li class="menu-item mb-2" data-name="analytics">
-                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                <a href="#" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.daybook.index') ? 'active' : '') }}">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
-                        <i class="bi bi-graph-up"></i>
+                        <i class="bi bi-calendar-event"></i>
                     </div>
-                    <span class="menu-text">Journal Vouchers</span>
+                    <span class="menu-text">Day Book</span>
                 </a>
             </li>
 
-            <!-- Security Menu Item -->
+            <!-- Purchase Menu Item -->
+            <li class="menu-item mb-2" data-name="purchases">
+                <a href="{{ route('purchase.index') }}" class="menu-link d-flex align-items-center rounded p-2">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-cart"></i>
+                    </div>
+                    <span class="menu-text">Purchase</span>
+                </a>
+            </li>
+
+            <!-- Management Menu Item -->
             <li class="menu-item mb-2" data-name="security">
                 <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('securitySubmenu')">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
-                        <i class="bi bi-shield-lock"></i>
+                        <i class="bi bi-building-gear"></i>
                     </div>
                     <span class="menu-text">Management</span>
                 </a>
@@ -101,67 +66,92 @@
                     <ul class="submenu list-unstyled ms-4 mt-2">
                         <li class="submenu-item mb-2">
                             <a href="{{ route('admin.banks.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-bank2 me-2"></i>
                                 <span class="submenu-text">Banks</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.customers.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.customers.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-people me-2"></i>
                                 <span class="submenu-text">Customers</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.tanklari.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.tanklari.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-fuel-pump me-2"></i>
                                 <span class="submenu-text">Customers Tank Lari</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.drivers.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.drivers.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-people-fill me-2"></i>
                                 <span class="submenu-text">Drivers</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.expenses.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Expenses Types</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.incomes.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Income Types</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.nozzles.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Nozzles</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.products.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Products</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.suppliers.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Suppliers</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.users.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Users</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.terminals.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
-                                <span class="submenu-text">Terminals</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.employees.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.employees.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-person-vcard me-2"></i>
                                 <span class="submenu-text">Employees</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.transports.index')  }}" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.expenses.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-cash-stack me-2"></i>
+                                <span class="submenu-text">Expenses Types</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.incomes.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-graph-up-arrow me-2"></i>
+                                <span class="submenu-text">Income Types</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.nozzles.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-droplet me-2"></i>
+                                <span class="submenu-text">Nozzles</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.products.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-box-seam me-2"></i>
+                                <span class="submenu-text">Products</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.tanks.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-database me-2"></i>
+                                <span class="submenu-text">Tanks</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.suppliers.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-truck me-2"></i>
+                                <span class="submenu-text">Suppliers</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.terminals.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-terminal me-2"></i>
+                                <span class="submenu-text">Terminals</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.transports.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-truck-front me-2"></i>
                                 <span class="submenu-text">Transports</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.users.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-person-gear me-2"></i>
+                                <span class="submenu-text">Users</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.management.settings.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-gear me-2"></i>
+                                <span class="submenu-text">Settings</span>
                             </a>
                         </li>
                     </ul>

@@ -14,7 +14,7 @@
     </div>
 
     <!-- Expense Cards Overview -->
-    <div class="row mb-4">
+    {{-- <div class="row mb-4">
         <div class="col-md-4 mb-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center">
@@ -54,7 +54,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Expenses Table Section -->
     <div class="row">
@@ -73,7 +73,6 @@
                                 <tr>
                                     <th width="50" class="ps-3 text-center">#</th>
                                     <th class="ps-3">Expense Name</th>
-                                    <th class="ps-3">Amount</th>
                                     <th class="ps-3">Created Date</th>
                                     <th width="120" class="text-center">Actions</th>
                                 </tr>
@@ -90,7 +89,6 @@
                                             <span class="fw-medium">{{ $expense->expense_name }}</span>
                                         </div>
                                     </td>
-                                    <td>{{ number_format($expense->expense_amount, 2) }}</td>
                                     <td>{{ date('d M Y', strtotime($expense->created_at)) }}</td>
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-outline-primary edit-btn me-1"

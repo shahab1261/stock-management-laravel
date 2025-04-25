@@ -2,20 +2,19 @@
 
 namespace App\Models\Management;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Supplier extends Model
+class DipChart extends Model
 {
     use HasFactory;
 
-    protected $table = "suppliers";
+    protected $table = "dip_charts";
     protected $guarded = [];
 
     // Relationships
-    public function user()
+    public function tank()
     {
-        return $this->belongsTo(User::class, 'entery_by_user');
+        return $this->belongsTo(Tank::class, 'tank_id');
     }
 }

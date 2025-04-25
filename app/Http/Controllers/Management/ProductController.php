@@ -24,6 +24,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'unit' => 'required|string|max:255',
@@ -39,23 +40,56 @@ class ProductController extends Controller
         }
 
         try {
-            $product = new Product();
-            $product->name = $request->name;
-            $product->unit = $request->unit;
-            $product->current_purchase = $request->current_purchase;
-            $product->current_sale = $request->current_sale;
-            $product->is_dippable = $request->is_dippable;
-            $product->tank_id = $request->tank_id;
-            $product->notes = $request->notes;
-            $product->book_stock = 0; // Default value
-            $product->physical_stock = 0; // Default value
-            $product->status = 1; // Default active
-            $product->entery_by_user = Auth::id();
-            $product->save();
+            if($request->is_dippable == 0){
+                $tank = Tank::create([
+                    'entery_by_user' => Auth::id(),
+                    'tank_name' => $request->name . " storage",
+                    'tank_limit' => 5000000,
+                    'opening_stock' => 0,
+                    'product_id' => '-1',
+                    'notes' => 'auto storage tank',
+                    'is_dippable' => 0,
+                ]);
+
+                $prod = Product::create([
+                    'name' => $request->name,
+                    'unit' => $request->unit,
+                    'current_purchase' => $request->current_purchase,
+                    'current_sale' => $request->current_sale,
+                    'is_dippable' => '0',
+                    'tank_id' => $tank->id,
+                    'notes' => $request->notes,
+                    'book_stock' => 0,
+                    'entery_by_user' => Auth::id(),
+                ]);
+
+                $tank->update([
+                    'product_id' => $prod->id,
+                    'opening_stock' => 0,
+                ]);
+            } else{
+                $product = new Product();
+                $product->name = $request->name;
+                $product->unit = $request->unit;
+                $product->current_purchase = $request->current_purchase;
+                $product->current_sale = $request->current_sale;
+                $product->is_dippable = '1';
+                $product->tank_id = $request->tank_id;
+                $product->notes = $request->notes;
+                $product->book_stock = 0;
+                $product->entery_by_user = Auth::id();
+                $product->save();
+
+                $tank = Tank::findOrFail($request->tank_id);
+                $tank->update([
+                    'product_id' => $product->id,
+                    'opening_stock' => 0,
+                ]);
+            }
 
             return response()->json(['success' => true, 'message' => 'Product added successfully', 'product' => $product]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to add product', 'error' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to add product']);
         }
     }
 

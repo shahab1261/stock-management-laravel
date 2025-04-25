@@ -2,6 +2,9 @@
 @section('title', 'Admin Login | Stock Management')
 @section('description', 'Stock Management Admin Login')
 @section('content')
+    @php
+        $settings = App\Models\Management\Settings::first();
+    @endphp
     <style>
         #login-btn:hover {
             background-color: #5868f4 !important;
@@ -14,7 +17,7 @@
                     <div class="login-form-wrapper card shadow-lg rounded-4 border-0 p-4 p-md-5" data-aos="fade-up">
                         <!-- Logo -->
                         <div class="text-center mb-2">
-                            <img src="{{ asset('images/new-logo.png') }}" alt="Stock Management Logo" class="img-fluid"
+                            <img src="{{ asset($settings->logo_path) }}" alt="Stock Management Logo" class="img-fluid"
                                 style="max-height: 80px;">
                             <h2 class="mt-3 fw-bold">Admin Login</h2>
                             <p class="text-muted">Enter your credentials to access the dashboard</p>
@@ -89,7 +92,7 @@
                         </form>
 
                         <div class="mt-4 pt-3 border-top text-center">
-                            <p class="mb-0 text-muted small"> {{ date('Y') }} Stock Management. All Rights Reserved.</p>
+                            <p class="mb-0 text-muted small"> {{ date('Y') }} {{ $settings->company_name }}. All Rights Reserved.</p>
                         </div>
                     </div>
                 </div>
