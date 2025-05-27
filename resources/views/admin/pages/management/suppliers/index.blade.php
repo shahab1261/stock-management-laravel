@@ -98,7 +98,7 @@
                                             <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center">
                                                 <span class="text-primary">{{ substr($supplier->name, 0, 1) }}</span>
                                             </div>
-                                            <span class="fw-medium">{{ $supplier->name }}</span>
+                                            <span class="fw-medium">{{ str_replace('&amp;', '&', $supplier->name) }}</span>
                                         </div>
                                     </td>
                                     <td class="ps-3">{{ $supplier->contact_person }}</td>

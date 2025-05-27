@@ -34,13 +34,13 @@
                 </a>
             </li>
 
-            <!-- Analytics Menu Item -->
-            <li class="menu-item mb-2" data-name="analytics">
-                <a href="#" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.daybook.index') ? 'active' : '') }}">
+            <!-- Daybook Menu Item -->
+            <li class="menu-item mb-2" data-name="daybook">
+                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
-                        <i class="bi bi-calendar-event"></i>
+                        <i class="bi bi-file-earmark-text"></i>
                     </div>
-                    <span class="menu-text">Day Book</span>
+                    <span class="menu-text">Daybook</span>
                 </a>
             </li>
 
@@ -52,6 +52,246 @@
                     </div>
                     <span class="menu-text">Purchase</span>
                 </a>
+            </li>
+
+            <!-- Sales Menu Item -->
+            <li class="menu-item mb-2" data-name="sales">
+                <a href="{{ route('sales.index') }}" class="menu-link d-flex align-items-center rounded p-2">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <span class="menu-text">Sales</span>
+                </a>
+            </li>
+
+            <!-- Journal Vouchers Menu Item -->
+            <li class="menu-item mb-2" data-name="journal-vouchers">
+                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-journal"></i>
+                    </div>
+                    <span class="menu-text">Journal Vouchers</span>
+                </a>
+            </li>
+
+            <!-- Trial Balance Menu Item -->
+            <li class="menu-item mb-2" data-name="trial-balance">
+                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-list-columns-reverse"></i>
+                    </div>
+                    <span class="menu-text">Trial Balance</span>
+                </a>
+            </li>
+
+            <!-- Profit and Loss Menu Item -->
+            <li class="menu-item mb-2" data-name="profit-loss">
+                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <span class="menu-text">Profit and Loss</span>
+                </a>
+            </li>
+
+            <!-- Balance Sheet Menu Item -->
+            <li class="menu-item mb-2" data-name="balance-sheet">
+                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-columns-gap"></i>
+                    </div>
+                    <span class="menu-text">Balance Sheet</span>
+                </a>
+            </li>
+
+            <!-- Wet Stock Menu Item -->
+            <li class="menu-item mb-2" data-name="wet-stock">
+                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-water"></i>
+                    </div>
+                    <span class="menu-text">Wet Stock</span>
+                </a>
+            </li>
+
+
+            <li class="menu-item mb-2" data-name="payments">
+                <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('paymentsSubmenu')">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-currency-exchange"></i>
+                    </div>
+                    <span class="menu-text">Payments</span>
+                </a>
+                <div class="collapse" id="paymentsSubmenu">
+                    <ul class="submenu list-unstyled ms-4 mt-2">
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <div class="submenu-icon d-flex align-items-center justify-content-center me-3">
+                                    <i class="bi bi-cash"></i>
+                                </div>
+                                <span class="submenu-text">Bank Receipts</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <div class="submenu-icon d-flex align-items-center justify-content-center me-3">
+                                    <i class="bi bi-wallet"></i>
+                                </div>
+                                <span class="submenu-text">Bank Payments</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <div class="submenu-icon d-flex align-items-center justify-content-center me-3">
+                                    <i class="bi bi-receipt-cutoff"></i>
+                                </div>
+                                <span class="submenu-text">Cash Receipts</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <div class="submenu-icon d-flex align-items-center justify-content-center me-3">
+                                    <i class="bi bi-cash-coin"></i>
+                                </div>
+                                <span class="submenu-text">Cash Payments</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="menu-item mb-2" data-name="ledgers">
+                <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('ledgersSubmenu')">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-book"></i>
+                    </div>
+                    <span class="menu-text">Ledgers</span>
+                </a>
+                <div class="collapse" id="ledgersSubmenu">
+                    <ul class="submenu list-unstyled ms-4 mt-2">
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-box-seam me-2"></i>
+                                <span class="submenu-text">Product Ledger</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-truck me-2"></i>
+                                <span class="submenu-text">Supplier Ledger</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-people me-2"></i>
+                                <span class="submenu-text">Customer Ledger</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-bank2 me-2"></i>
+                                <span class="submenu-text">Bank Ledger</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-cash-stack me-2"></i>
+                                <span class="submenu-text">Cash Ledger</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-joystick me-2"></i>
+                                <span class="submenu-text">MP Ledger</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-cash-stack me-2"></i>
+                                <span class="submenu-text">Expense Ledger</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-person-vcard me-2"></i>
+                                <span class="submenu-text">Employee Ledger</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-graph-up-arrow me-2"></i>
+                                <span class="submenu-text">Income Ledger</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="menu-item mb-2" data-name="history">
+                <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('historySubmenu')">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <span class="menu-text">History</span>
+                </a>
+                <div class="collapse" id="historySubmenu">
+                    <ul class="submenu list-unstyled ms-4 mt-2">
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-cart me-2"></i>
+                                <span class="submenu-text">Purchases</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-credit-card me-2"></i>
+                                <span class="submenu-text">Sales</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-receipt-cutoff me-2"></i>
+                                <span class="submenu-text">Bank Receivings</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-wallet me-2"></i>
+                                <span class="submenu-text">Bank Payments</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-receipt-cutoff me-2"></i>
+                                <span class="submenu-text">Cash Receipts</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-wallet me-2"></i>
+                                <span class="submenu-text">Cash Payments</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-journal me-2"></i>
+                                <span class="submenu-text">Journal Vouchers</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-droplet me-2"></i>
+                                <span class="submenu-text">Dips</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.logs.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-activity me-2"></i>
+                                <span class="submenu-text">System Logs</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
             <!-- Management Menu Item -->
@@ -157,10 +397,62 @@
                     </ul>
                 </div>
             </li>
+
+            <!-- Reports Menu Item -->
+            <li class="menu-item mb-2" data-name="reports">
+                <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('reportsSubmenu')">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-file-earmark-bar-graph"></i>
+                    </div>
+                    <span class="menu-text">Reports</span>
+                </a>
+                <div class="collapse" id="reportsSubmenu">
+                    <ul class="submenu list-unstyled ms-4 mt-2">
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-clock-history me-2"></i>
+                                <span class="submenu-text">Account History</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-box-seam me-2"></i>
+                                <span class="submenu-text">All Stocks</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-journal-text me-2"></i>
+                                <span class="submenu-text">Day Book</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-file-earmark-check me-2"></i>
+                                <span class="submenu-text">Summary</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-truck me-2"></i>
+                                <span class="submenu-text">Purchase Transport Report</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item mb-2">
+                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-truck-flatbed me-2"></i>
+                                <span class="submenu-text">Sale Transport Report</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+
+
         </ul>
     </div>
 </aside>
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Sidebar toggle functionality
@@ -278,3 +570,4 @@
         }
     }
 </script>
+

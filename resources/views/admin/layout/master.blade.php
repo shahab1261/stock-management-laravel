@@ -21,6 +21,8 @@
         <link href="{{ asset('assets/css/select.dataTables.min.css') }}" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
         <link href="{{ asset('assets/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+
 
         <style>
             .navbar-nav .dropdown-menu {
@@ -122,7 +124,12 @@
             });
         </script> --}}
 
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/js/bootstrap-select.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('.selectpicker').selectpicker();
+            });
+        </script>
         @stack('scripts')
     </body>
 

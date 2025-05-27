@@ -43,11 +43,11 @@ body.sidebar-collapsed #footer {
     .sidebar {
         transform: translateX(-100%);
     }
-    
+
     body.sidebar-open .sidebar {
         transform: translateX(0);
     }
-    
+
     /* Add overlay when sidebar is open on mobile */
     body.sidebar-open::before {
         content: '';

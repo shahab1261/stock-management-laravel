@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use App\Models\Management\Banks;
 use App\Models\Management\Incomes;
 use App\Models\Management\Product;
@@ -11,28 +10,11 @@ use App\Models\Management\Customers;
 use App\Models\Management\Suppliers;
 use Illuminate\Database\Eloquent\Model;
 
-class Purchase extends Model
+class Sales extends Model
 {
-    protected $table = 'purchase';
+    protected $table = 'sales';
 
     protected $guarded = [];
-
-    /**
-     * Get the chambers for this purchase
-     */
-    public function chambers()
-    {
-        return $this->hasMany(PurchaseChamber::class);
-    }
-
-
-    /**
-     * Get the product for this purchase
-     */
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
 
     public function getVendorByType($vendorType, $supplierId)
     {
@@ -93,3 +75,4 @@ class Purchase extends Model
         ];
     }
 }
+

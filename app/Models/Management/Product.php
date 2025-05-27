@@ -2,8 +2,9 @@
 
 namespace App\Models\Management;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Purchase;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -18,8 +19,14 @@ class Product extends Model
         return $this->hasMany(Nozzle::class, 'product_id');
     }
 
-    public function tanks()
+
+    public function purchases()
     {
-        return $this->hasMany(Tank::class); 
+        return $this->hasMany(Purchase::class);
+    }
+
+    public function tank()
+    {
+        return $this->belongsTo(Tank::class);
     }
 }

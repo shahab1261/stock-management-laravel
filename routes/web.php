@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogsController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\Management\BankController;
@@ -134,9 +136,22 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::post('product/tank/update', [PurchaseController::class, 'productTankUpdate'])->name('product.tank.update');
     Route::post('product/rate/update', [PurchaseController::class, 'productRateUpdate'])->name('product.rate.update');
     Route::post('tank/chamber/data', [PurchaseController::class, 'tankChamberData'])->name('tank.chamber.data');
+    Route::post('purchase/chamber/data', [PurchaseController::class, 'getChamberData'])->name('purchase.chamber.data');
+    Route::delete('/purchases/delete', [PurchaseController::class, 'delete'])->name('purchase.delete');
+
+    /*************************Purchase_Routes***************************/
+    Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
+    Route::post('/sales/store', [SalesController::class, 'store'])->name('sales.store');
+    Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create');
+    Route::delete('/sales/delete', [SalesController::class, 'delete'])->name('sales.delete');
 });
 
 Route::prefix('admin')->name('admin.management.')->group(function () {
     Route::get('/settings', [App\Http\Controllers\Management\SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings/update', [App\Http\Controllers\Management\SettingsController::class, 'update'])->name('settings.update');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Logs Routes
+    Route::get('/admin/logs', [LogsController::class, 'index'])->name('admin.logs.index');
 });
