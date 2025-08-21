@@ -271,12 +271,12 @@
                     <table class="table table-hover border table-striped">
                         <thead class="table-light">
                             <tr>
-                                <th>Chamber #</th>
-                                <th>Capacity (ltr)</th>
-                                <th>Dip</th>
-                                <th>Rec. Dip</th>
-                                <th>Gain/Loss</th>
-                                <th>Ltr</th>
+                                <th class="text-center">Chamber #</th>
+                                <th class="text-center">Capacity (ltr)</th>
+                                <th class="text-center">Dip</th>
+                                <th class="text-center">Rec. Dip</th>
+                                <th class="text-center">Gain/Loss</th>
+                                <th class="text-center">Ltr</th>
                             </tr>
                         </thead>
                         <tbody id="chamber_table_body">
@@ -363,7 +363,7 @@
         border-color: #4154f1;
     }
     .btn-primary:hover, .btn-primary:focus {
-        background-color: #3a4cd8;
+        background-color: #ffffff;
         border-color: #3a4cd8;
     }
     .btn-outline-primary {

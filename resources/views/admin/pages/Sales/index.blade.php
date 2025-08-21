@@ -186,7 +186,7 @@
         border-color: #4154f1;
     }
     .btn-primary:hover, .btn-primary:focus {
-        background-color: #3a4cd8;
+        background-color: #ffffff;
         border-color: #3a4cd8;
     }
     .btn-outline-primary {

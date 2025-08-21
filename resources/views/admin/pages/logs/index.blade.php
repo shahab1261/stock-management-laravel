@@ -21,11 +21,11 @@
                         <table id="logsTable" class="table table-hover align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th>#</th>
-                                    <th>User</th>
-                                    <th>Action</th>
-                                    <th>Description</th>
-                                    <th>Date & Time</th>
+                                    <th class="text-center">#</th>
+                                    <th class="text-center">User</th>
+                                    <th class="text-center">Action</th>
+                                    <th class="text-center">Description</th>
+                                    <th class="text-center">Date & Time</th>
                                 </tr>
                             </thead>
                             <tbody>

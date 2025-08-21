@@ -1,0 +1,522 @@
+/**
+ * Wet Stock Analysis CSS
+ * Custom styles for wet stock analysis page
+ */
+
+/* Avatar styles */
+.avatar-sm {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+}
+
+/* Form styling */
+.form-label {
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    color: #444;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #4154f1;
+    box-shadow: 0 0 0 0.25rem rgba(65, 84, 241, 0.1);
+}
+
+/* Input group styling */
+.input-group-text {
+    color: #6c757d;
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: #4154f1;
+    border-color: #4154f1;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #3a4cd8;
+    border-color: #3a4cd8;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover, .btn-success:focus {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* Badge styling */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    border-radius: 30px;
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.badge.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+/* DataTable styling */
+.dataTables_wrapper {
+    padding-top: 15px;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+    color: #6c757d;
+    padding: 8px;
+}
+
+.dataTables_wrapper .dataTables_length {
+    padding-left: 15px;
+}
+
+.dataTables_wrapper .dataTables_info {
+    padding-left: 15px;
+}
+
+/* Table styling */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+    font-size: 0.875rem;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(65, 84, 241, 0.05);
+}
+
+.table tbody td {
+    font-size: 0.875rem;
+    vertical-align: middle;
+}
+
+/* Special row styling */
+.table-warning {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+    border-left: 4px solid #ffc107;
+}
+
+.table-warning td {
+    font-weight: 600;
+}
+
+/* Stats card styling */
+.card {
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Gain/Loss indicators */
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+/* Variance color coding */
+.variance-excellent {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.variance-good {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.variance-poor {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Filter section */
+.filter-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #4154f1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-card {
+        margin-bottom: 1rem;
+    }
+
+    .table-responsive {
+        font-size: 12px;
+    }
+
+    .avatar-sm {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    h3 {
+        font-size: 1.3rem !important;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .table thead th {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.25rem;
+    }
+
+    .table tbody td {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .card-body {
+        padding: 0.75rem;
+    }
+
+    .table-responsive {
+        font-size: 11px;
+    }
+
+    .btn {
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+    h3 {
+        font-size: 1.2rem !important;
+    }
+
+    .badge {
+        font-size: 0.65rem;
+        padding: 0.25em 0.5em;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .card-header {
+        background-color: transparent !important;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .table {
+        font-size: 10px;
+    }
+
+    .btn {
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        display: none;
+    }
+
+    .table-warning {
+        background-color: #f8f9fa !important;
+        border-left: 2px solid #000 !important;
+    }
+}
+
+/* Hover effects */
+.table tbody tr {
+    transition: background-color 0.15s ease-in-out;
+}
+
+.card-header {
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* Custom scrollbar for table */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* Button group styling */
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Animation for stats cards */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Tank status indicators */
+.tank-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.tank-indicator.active {
+    background-color: #28a745;
+}
+
+.tank-indicator.inactive {
+    background-color: #dc3545;
+}
+
+/* Calculation highlights */
+.positive-value {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.negative-value {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.neutral-value {
+    color: #6c757d;
+}
+
+/* Date range indicator */
+.date-range-badge {
+    background: linear-gradient(45deg, #4154f1, #6c5ce7);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Export button enhancement */
+.export-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.export-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.export-btn:hover::before {
+    left: 100%;
+}
+
+/* Filter form enhancements */
+.filter-form {
+    background: rgba(65, 84, 241, 0.02);
+    border: 1px solid rgba(65, 84, 241, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.filter-form .form-control,
+.filter-form .form-select {
+    border-radius: 0.5rem;
+}
+
+/* Summary section */
+.summary-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 1rem;
+}
+
+.summary-card .card-body {
+    padding: 2rem;
+}
+
+/* Variance indicators */
+.variance-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.variance-excellent .variance-indicator {
+    background-color: #28a745;
+}
+
+.variance-good .variance-indicator {
+    background-color: #ffc107;
+}
+
+.variance-poor .variance-indicator {
+    background-color: #dc3545;
+}
+
+/* Sticky header for large tables */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f8f9fa;
+}
+
+/* Data visualization enhancements */
+.data-point {
+    position: relative;
+    cursor: pointer;
+}
+
+.data-point:hover {
+    background-color: rgba(65, 84, 241, 0.1);
+    border-radius: 4px;
+}
+
+/* Tooltip styling */
+.tooltip-custom {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    z-index: 1000;
+}
+
+/* Mobile enhancements */
+@media (max-width: 480px) {
+    .table-responsive table {
+        font-size: 10px;
+    }
+
+    .badge {
+        font-size: 0.6rem;
+        padding: 0.2em 0.4em;
+    }
+
+    .avatar-sm {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+}

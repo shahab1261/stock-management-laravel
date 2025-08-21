@@ -36,7 +36,7 @@
 
             <!-- Daybook Menu Item -->
             <li class="menu-item mb-2" data-name="daybook">
-                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                <a href="{{ route('admin.daybook.index') }}" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.daybook.index') ? 'active' : '') }}">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
                         <i class="bi bi-file-earmark-text"></i>
                     </div>
@@ -66,7 +66,7 @@
 
             <!-- Journal Vouchers Menu Item -->
             <li class="menu-item mb-2" data-name="journal-vouchers">
-                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                <a href="{{ route('admin.journal.index') }}" class="menu-link d-flex align-items-center rounded p-2">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
                         <i class="bi bi-journal"></i>
                     </div>
@@ -76,7 +76,7 @@
 
             <!-- Trial Balance Menu Item -->
             <li class="menu-item mb-2" data-name="trial-balance">
-                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                <a href="{{ route('admin.trial-balance.index') }}" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.trial-balance.index') ? 'active' : '') }}">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
                         <i class="bi bi-list-columns-reverse"></i>
                     </div>
@@ -86,7 +86,7 @@
 
             <!-- Profit and Loss Menu Item -->
             <li class="menu-item mb-2" data-name="profit-loss">
-                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                <a href="{{ route('admin.profit.index') }}" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.profit.index') ? 'active' : '') }}">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
                         <i class="bi bi-graph-up"></i>
                     </div>
@@ -94,19 +94,19 @@
                 </a>
             </li>
 
-            <!-- Balance Sheet Menu Item -->
-            <li class="menu-item mb-2" data-name="balance-sheet">
-                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+            <!-- Dips Menu Item -->
+            <li class="menu-item mb-2" data-name="dips">
+                <a href="{{ route('admin.dips.index') }}" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.dips.index') ? 'active' : '') }}">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
                         <i class="bi bi-columns-gap"></i>
                     </div>
-                    <span class="menu-text">Balance Sheet</span>
+                    <span class="menu-text">Dips</span>
                 </a>
             </li>
 
             <!-- Wet Stock Menu Item -->
             <li class="menu-item mb-2" data-name="wet-stock">
-                <a href="#" class="menu-link d-flex align-items-center rounded p-2">
+                <a href="{{ route('admin.wet-stock.index') }}" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.wet-stock.*') ? 'active' : '') }}">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
                         <i class="bi bi-water"></i>
                     </div>
@@ -125,7 +125,7 @@
                 <div class="collapse" id="paymentsSubmenu">
                     <ul class="submenu list-unstyled ms-4 mt-2">
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.payments.bank-receiving') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <div class="submenu-icon d-flex align-items-center justify-content-center me-3">
                                     <i class="bi bi-cash"></i>
                                 </div>
@@ -133,7 +133,7 @@
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.payments.bank-payments') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <div class="submenu-icon d-flex align-items-center justify-content-center me-3">
                                     <i class="bi bi-wallet"></i>
                                 </div>
@@ -141,7 +141,7 @@
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.payments.cash-receiving') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <div class="submenu-icon d-flex align-items-center justify-content-center me-3">
                                     <i class="bi bi-receipt-cutoff"></i>
                                 </div>
@@ -149,7 +149,7 @@
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.payments.cash-payments') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <div class="submenu-icon d-flex align-items-center justify-content-center me-3">
                                     <i class="bi bi-cash-coin"></i>
                                 </div>
@@ -170,55 +170,55 @@
                 <div class="collapse" id="ledgersSubmenu">
                     <ul class="submenu list-unstyled ms-4 mt-2">
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.ledger.product') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-box-seam me-2"></i>
                                 <span class="submenu-text">Product Ledger</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.ledger.supplier') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-truck me-2"></i>
                                 <span class="submenu-text">Supplier Ledger</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.ledger.customer') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-people me-2"></i>
                                 <span class="submenu-text">Customer Ledger</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.ledger.bank') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-bank2 me-2"></i>
                                 <span class="submenu-text">Bank Ledger</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.ledger.cash') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-cash-stack me-2"></i>
                                 <span class="submenu-text">Cash Ledger</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.ledger.mp') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-joystick me-2"></i>
                                 <span class="submenu-text">MP Ledger</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
-                                <i class="bi bi-cash-stack me-2"></i>
+                            <a href="{{ route('admin.ledger.expense') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-wallet2 me-2"></i>
                                 <span class="submenu-text">Expense Ledger</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.ledger.employee') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-person-vcard me-2"></i>
                                 <span class="submenu-text">Employee Ledger</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.ledger.income') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-graph-up-arrow me-2"></i>
                                 <span class="submenu-text">Income Ledger</span>
                             </a>
@@ -237,43 +237,43 @@
                 <div class="collapse" id="historySubmenu">
                     <ul class="submenu list-unstyled ms-4 mt-2">
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.history.purchases') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-cart me-2"></i>
                                 <span class="submenu-text">Purchases</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.history.sales') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-credit-card me-2"></i>
                                 <span class="submenu-text">Sales</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.history.bank-receivings') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-receipt-cutoff me-2"></i>
                                 <span class="submenu-text">Bank Receivings</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.history.bank-payments') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-wallet me-2"></i>
                                 <span class="submenu-text">Bank Payments</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.history.cash-receipts') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-receipt-cutoff me-2"></i>
                                 <span class="submenu-text">Cash Receipts</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.history.cash-payments') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-wallet me-2"></i>
                                 <span class="submenu-text">Cash Payments</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.history.journal-vouchers') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-journal me-2"></i>
                                 <span class="submenu-text">Journal Vouchers</span>
                             </a>
@@ -409,37 +409,37 @@
                 <div class="collapse" id="reportsSubmenu">
                     <ul class="submenu list-unstyled ms-4 mt-2">
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.reports.account-history') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-clock-history me-2"></i>
                                 <span class="submenu-text">Account History</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.reports.all-stocks') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-box-seam me-2"></i>
                                 <span class="submenu-text">All Stocks</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.daybook.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-journal-text me-2"></i>
                                 <span class="submenu-text">Day Book</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.reports.summary') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-file-earmark-check me-2"></i>
                                 <span class="submenu-text">Summary</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.reports.purchase-transport') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-truck me-2"></i>
                                 <span class="submenu-text">Purchase Transport Report</span>
                             </a>
                         </li>
                         <li class="submenu-item mb-2">
-                            <a href="#" class="submenu-link d-flex align-items-center rounded p-2">
+                            <a href="{{ route('admin.reports.sale-transport') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-truck-flatbed me-2"></i>
                                 <span class="submenu-text">Sale Transport Report</span>
                             </a>

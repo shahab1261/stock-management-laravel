@@ -8,6 +8,8 @@ use App\Models\Management\Product;
 use App\Models\Management\Expenses;
 use App\Models\Management\Customers;
 use App\Models\Management\Suppliers;
+use App\Models\Management\Tank;
+use App\Models\Management\TankLari;
 use Illuminate\Database\Eloquent\Model;
 
 class Sales extends Model
@@ -15,6 +17,21 @@ class Sales extends Model
     protected $table = 'sales';
 
     protected $guarded = [];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function tank()
+    {
+        return $this->belongsTo(Tank::class, 'tank_id');
+    }
+
+    public function tankLari()
+    {
+        return $this->belongsTo(TankLari::class, 'tank_lari_id');
+    }
 
     public function getVendorByType($vendorType, $supplierId)
     {

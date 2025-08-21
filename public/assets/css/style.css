@@ -1836,7 +1836,7 @@ input[type="file"]::file-selector-button:hover {
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
     color: #4154f1!important;
-    border-bottom: 2px solid #ae9e6e !important;
+    border-bottom: 2px solid #4154f1 !important;
 }
 
 .table td,

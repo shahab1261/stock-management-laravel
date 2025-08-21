@@ -9,6 +9,8 @@ use App\Models\Management\Product;
 use App\Models\Management\Expenses;
 use App\Models\Management\Customers;
 use App\Models\Management\Suppliers;
+use App\Models\Management\Tank;
+use App\Models\Management\Drivers;
 use Illuminate\Database\Eloquent\Model;
 
 class Purchase extends Model
@@ -32,6 +34,22 @@ class Purchase extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Get the tank for this purchase
+     */
+    public function tank()
+    {
+        return $this->belongsTo(Tank::class, 'tank_id');
+    }
+
+    /**
+     * Get the driver for this purchase
+     */
+    public function driver()
+    {
+        return $this->belongsTo(Drivers::class, 'driver_no');
     }
 
     public function getVendorByType($vendorType, $supplierId)

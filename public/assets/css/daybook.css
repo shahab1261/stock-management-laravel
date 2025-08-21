@@ -1,0 +1,341 @@
+/* Daybook Styles */
+
+/* Navigation Tabs */
+.nav-tabs .nav-link {
+    color: #6c757d;
+    font-weight: 500;
+    border: 1px solid #6c757d;
+    border-bottom: 3px solid transparent;
+    padding: 15px;
+    background: none;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: transparent;
+    color: #4154f1;
+    background-color: rgba(65, 84, 241, 0.1);
+}
+
+.nav-tabs .nav-link.active {
+    color: #4154f1;
+    background-color: transparent;
+    border-color: transparent;
+    border-bottom-color: #4154f1;
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #4154f1;
+    border-color: #4154f1;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #3a4cd8;
+    border-color: #3a4cd8;
+}
+
+/* Alerts */
+.alert-info {
+    background-color: rgba(65, 84, 241, 0.1);
+    border-color: rgba(65, 84, 241, 0.2);
+    color: #4154f1;
+}
+
+/* Form Controls */
+.form-control:focus {
+    border-color: #4154f1;
+    box-shadow: 0 0 0 0.25rem rgba(65, 84, 241, 0.1);
+}
+
+/* Tables */
+.table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    border-top: none;
+}
+
+.daybook-table {
+    font-size: 0.875rem;
+}
+
+.daybook-table th,
+.daybook-table td {
+    vertical-align: middle;
+    padding: 0.75rem 0.5rem;
+}
+
+.daybook-table .text-end {
+    text-align: right;
+}
+
+.daybook-table .text-center {
+    text-align: center;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    border-radius: 30px;
+}
+
+/* Card Headers */
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-header h5 {
+    margin-bottom: 0;
+    color: #495057;
+}
+
+/* Print Section Buttons */
+.print-section {
+    transition: all 0.2s ease-in-out;
+}
+
+.print-section:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Status and Amount Styling */
+.text-success {
+    color: #198754 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-primary {
+    color: #4154f1 !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+.fw-bold {
+    font-weight: 700 !important;
+}
+
+.fw-medium {
+    font-weight: 500 !important;
+}
+
+/* Cash Balance Section */
+.cash-balance-card {
+    border-left: 4px solid #4154f1;
+}
+
+.cash-balance-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #4154f1;
+}
+
+/* Cash Balance Widget in Header */
+.cash-balance-widget {
+    background: linear-gradient(135deg, rgba(65, 84, 241, 0.1) 0%, rgba(65, 84, 241, 0.05) 100%);
+    border: 1px solid rgba(65, 84, 241, 0.2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.cash-balance-widget:hover {
+    background: linear-gradient(135deg, rgba(65, 84, 241, 0.15) 0%, rgba(65, 84, 241, 0.08) 100%);
+    border-color: rgba(65, 84, 241, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(65, 84, 241, 0.15);
+}
+
+.cash-balance-widget .cash-balance-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(65, 84, 241, 0.1);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.cash-balance-widget:hover .cash-balance-icon {
+    background: rgba(65, 84, 241, 0.2);
+    transform: scale(1.05);
+}
+
+.cash-balance-widget .cash-balance-content small {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.cash-balance-widget .cash-balance-amount {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #4154f1;
+    margin-top: 2px;
+}
+
+/* Filters Section */
+.filters-card {
+    border: 1px solid #e3e6f0;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.filters-card .card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+/* Tab Content */
+.tab-content {
+    padding: 0;
+}
+
+.tab-pane {
+    padding: 1.5rem 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .nav-tabs .nav-link {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .daybook-table {
+        font-size: 0.75rem;
+    }
+
+    .daybook-table th,
+    .daybook-table td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    /* Mobile Cash Balance Widget */
+    .cash-balance-widget {
+        padding: 8px 12px;
+    }
+
+    .cash-balance-widget .cash-balance-icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 8px !important;
+    }
+
+    .cash-balance-widget .cash-balance-content small {
+        font-size: 0.7rem;
+    }
+
+    .cash-balance-widget .cash-balance-amount {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-header .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .card-header .btn {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+
+    /* Stack cash balance widget on very small screens */
+    .card-header.d-flex.justify-content-between {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .cash-balance-widget {
+        margin-top: 1rem;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .btn,
+    .nav-tabs,
+    .card-header,
+    .filters-section,
+    .print-section {
+        display: none !important;
+    }
+
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .tab-content {
+        display: block !important;
+    }
+
+    .tab-pane {
+        display: block !important;
+        opacity: 1 !important;
+    }
+
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #000;
+        padding: 8px 4px;
+        font-size: 11px;
+    }
+
+    .table th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+
+    .table tfoot th,
+    .table tfoot td {
+        font-weight: bold;
+        background-color: #f0f0f0;
+    }
+
+    .page-break {
+        page-break-before: always;
+    }
+
+    .no-break {
+        page-break-inside: avoid;
+    }
+
+    .text-success {
+        color: #000 !important;
+    }
+
+    .text-danger {
+        color: #000 !important;
+    }
+
+    .text-primary {
+        color: #000 !important;
+    }
+
+    .badge {
+        border: 1px solid #000;
+        background: transparent !important;
+        color: #000 !important;
+    }
+}

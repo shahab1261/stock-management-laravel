@@ -214,13 +214,13 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th class="text-center">#</th>
-                                        <th>Item Name</th>
-                                        <th>Opening stock</th>
-                                        <th>Purchased stock</th>
-                                        <th>Sold stock</th>
-                                        <th>Closing stock</th>
-                                        <th>Avg Sale %</th>
-                                        <th>Current stock</th>
+                                        <th class="text-center">Item Name</th>
+                                        <th class="text-center">Opening stock</th>
+                                        <th class="text-center">Purchased stock</th>
+                                        <th class="text-center">Sold stock</th>
+                                        <th class="text-center">Closing stock</th>
+                                        <th class="text-center">Avg Sale %</th>
+                                        <th class="text-center">Current stock</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -457,7 +457,7 @@
         }
 
         .btn-primary:hover, .btn-primary:focus {
-            background-color: #3a4cd8;
+            background-color: #ffffff;
             border-color: #3a4cd8;
         }
 

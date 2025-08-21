@@ -1,0 +1,61 @@
+/* Additional Ledger Styles - Supplements history.css */
+
+/* Bootstrap Select Enhancements */
+.bootstrap-select .dropdown-toggle {
+    border: 1px solid #d1d3e2;
+    border-radius: 0.35rem;
+    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+}
+
+.bootstrap-select .dropdown-toggle:focus {
+    border-color: #4154f1;
+    box-shadow: 0 0 0 0.25rem rgba(65, 84, 241, 0.1);
+}
+
+/* Ledger-specific table enhancements */
+.history-table .transaction-debit {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.history-table .transaction-credit {
+    color: #198754;
+    font-weight: 500;
+}
+
+/* Badge styling for balance indicators */
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.badge.bg-success {
+    background-color: #198754 !important;
+}
+
+/* Additional responsive improvements */
+@media (max-width: 768px) {
+    .bootstrap-select .dropdown-toggle {
+        padding: 0.25rem 1.5rem 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Print-specific adjustments for ledger */
+@media print {
+    .bootstrap-select,
+    .card-header,
+    .btn {
+        display: none !important;
+    }
+
+    .transaction-debit,
+    .transaction-credit {
+        color: #000 !important;
+    }
+
+    .badge {
+        border: 1px solid #000;
+        background: transparent !important;
+        color: #000 !important;
+    }
+}

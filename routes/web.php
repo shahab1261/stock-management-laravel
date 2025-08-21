@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\Management\BankController;
 use App\Http\Controllers\Management\TankController;
 use App\Http\Controllers\Management\UserController;
@@ -21,6 +22,13 @@ use App\Http\Controllers\Management\SupplierController;
 use App\Http\Controllers\Management\TankLariController;
 use App\Http\Controllers\Management\TerminalController;
 use App\Http\Controllers\Management\TransportController;
+use App\Http\Controllers\LedgerController;
+use App\Http\Controllers\JournalController;
+use App\Http\Controllers\TrialBalanceController;
+use App\Http\Controllers\ProfitController;
+use App\Http\Controllers\DipController;
+use App\Http\Controllers\WetStockController;
+use App\Http\Controllers\AccountHistoryController;
 
 Route::get('/', function(){
     return view('pages.login');
@@ -139,11 +147,87 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::post('purchase/chamber/data', [PurchaseController::class, 'getChamberData'])->name('purchase.chamber.data');
     Route::delete('/purchases/delete', [PurchaseController::class, 'delete'])->name('purchase.delete');
 
-    /*************************Purchase_Routes***************************/
+    /*************************Sales_Routes***************************/
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
     Route::post('/sales/store', [SalesController::class, 'store'])->name('sales.store');
     Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create');
     Route::delete('/sales/delete', [SalesController::class, 'delete'])->name('sales.delete');
+
+        /*************************Daybook_Routes***************************/
+    Route::get('/daybook', [App\Http\Controllers\DaybookController::class, 'index'])->name('admin.daybook.index');
+
+    /*************************Payments_Routes***************************/
+    // Bank Receiving Routes
+    Route::get('/payments/bank-receiving', [App\Http\Controllers\PaymentController::class, 'bankReceiving'])->name('admin.payments.bank-receiving');
+    Route::post('/payments/bank-receiving/store', [App\Http\Controllers\PaymentController::class, 'storeBankReceiving'])->name('admin.payments.bank-receiving.store');
+
+    // Bank Payments Routes
+    Route::get('/payments/bank-payments', [App\Http\Controllers\PaymentController::class, 'bankPayments'])->name('admin.payments.bank-payments');
+    Route::post('/payments/bank-payments/store', [App\Http\Controllers\PaymentController::class, 'storeBankPayment'])->name('admin.payments.bank-payments.store');
+
+    // Cash Receiving Routes
+    Route::get('/payments/cash-receiving', [App\Http\Controllers\PaymentController::class, 'cashReceiving'])->name('admin.payments.cash-receiving');
+    Route::post('/payments/cash-receiving/store', [App\Http\Controllers\PaymentController::class, 'storeCashReceiving'])->name('admin.payments.cash-receiving.store');
+
+    // Cash Payments Routes
+    Route::get('/payments/cash-payments', [App\Http\Controllers\PaymentController::class, 'cashPayments'])->name('admin.payments.cash-payments');
+    Route::post('/payments/cash-payments/store', [App\Http\Controllers\PaymentController::class, 'storeCashPayment'])->name('admin.payments.cash-payments.store');
+
+    // Delete Transaction Route
+    Route::delete('/payments/transaction/delete', [App\Http\Controllers\PaymentController::class, 'deleteTransaction'])->name('admin.payments.transaction.delete');
+
+    /*************************History_Routes***************************/
+    Route::get('/history/purchases', [HistoryController::class, 'purchases'])->name('admin.history.purchases');
+    Route::get('/history/sales', [HistoryController::class, 'sales'])->name('admin.history.sales');
+    Route::get('/history/bank-receivings', [HistoryController::class, 'bankReceivings'])->name('admin.history.bank-receivings');
+    Route::get('/history/bank-payments', [HistoryController::class, 'bankPayments'])->name('admin.history.bank-payments');
+    Route::get('/history/cash-receipts', [HistoryController::class, 'cashReceipts'])->name('admin.history.cash-receipts');
+    Route::get('/history/cash-payments', [HistoryController::class, 'cashPayments'])->name('admin.history.cash-payments');
+    Route::get('/history/journal-vouchers', [HistoryController::class, 'journalVouchers'])->name('admin.history.journal-vouchers');
+
+    /*************************Journal_Voucher_Routes***************************/
+    Route::get('/journal', [JournalController::class, 'index'])->name('admin.journal.index');
+    Route::post('/journal/store', [JournalController::class, 'store'])->name('admin.journal.store');
+    Route::delete('/journal/delete/{id}', [JournalController::class, 'destroy'])->name('admin.journal.destroy');
+    Route::get('/journal/vendors', [JournalController::class, 'getVendorsByType'])->name('admin.journal.vendors');
+
+    /*************************Trial_Balance_Routes***************************/
+    Route::get('/trial-balance', [TrialBalanceController::class, 'index'])->name('admin.trial-balance.index');
+    Route::get('/trial-balance/export', [TrialBalanceController::class, 'export'])->name('admin.trial-balance.export');
+
+    /*************************Profit_Routes***************************/
+    Route::get('/profit', [ProfitController::class, 'index'])->name('admin.profit.index');
+
+    /*************************Dips_Routes***************************/
+    Route::get('/dips', [DipController::class, 'index'])->name('admin.dips.index');
+    Route::post('/dips/store', [DipController::class, 'store'])->name('admin.dips.store');
+    Route::post('/dips/get-liters', [DipController::class, 'getDipLiters'])->name('admin.dips.get-liters');
+    Route::post('/dips/get-tank-product', [DipController::class, 'getTankProduct'])->name('admin.dips.get-tank-product');
+    Route::delete('/dips/delete', [DipController::class, 'destroy'])->name('admin.dips.delete');
+
+    /*************************Wet_Stock_Routes***************************/
+    Route::get('/wet-stock', [WetStockController::class, 'index'])->name('admin.wet-stock.index');
+    Route::get('/wet-stock/export', [WetStockController::class, 'export'])->name('admin.wet-stock.export');
+
+    /*************************Ledger_Routes***************************/
+    Route::get('/ledger/product', [LedgerController::class, 'productLedger'])->name('admin.ledger.product');
+    Route::get('/ledger/supplier', [LedgerController::class, 'supplierLedger'])->name('admin.ledger.supplier');
+    Route::get('/ledger/customer', [LedgerController::class, 'customerLedger'])->name('admin.ledger.customer');
+    Route::get('/ledger/bank', [LedgerController::class, 'bankLedger'])->name('admin.ledger.bank');
+    Route::get('/ledger/cash', [LedgerController::class, 'cashLedger'])->name('admin.ledger.cash');
+    Route::get('/ledger/mp', [LedgerController::class, 'mpLedger'])->name('admin.ledger.mp');
+    Route::get('/ledger/expense', [LedgerController::class, 'expenseLedger'])->name('admin.ledger.expense');
+    Route::get('/ledger/income', [LedgerController::class, 'incomeLedger'])->name('admin.ledger.income');
+    Route::get('/ledger/employee', [LedgerController::class, 'employeeLedger'])->name('admin.ledger.employee');
+
+    /*************************Reports_Routes***************************/
+    Route::get('/reports/account-history', [AccountHistoryController::class, 'index'])->name('admin.reports.account-history');
+    Route::get('/reports/all-stocks', [App\Http\Controllers\ReportsController::class, 'allStocks'])->name('admin.reports.all-stocks');
+    Route::get('/reports/summary', [App\Http\Controllers\ReportsController::class, 'summary'])->name('admin.reports.summary');
+
+    Route::get('/reports/purchase-transport', [App\Http\Controllers\ReportsController::class, 'purchaseTransportReport'])->name('admin.reports.purchase-transport');
+    Route::get('/reports/sale-transport', [App\Http\Controllers\ReportsController::class, 'saleTransportReport'])->name('admin.reports.sale-transport');
+    Route::post('/reports/chamber-data', [App\Http\Controllers\ReportsController::class, 'getChamberData'])->name('admin.reports.chamber-data');
 });
 
 Route::prefix('admin')->name('admin.management.')->group(function () {

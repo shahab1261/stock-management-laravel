@@ -396,7 +396,7 @@
         border-color: #4154f1;
     }
     .btn-primary:hover {
-        background-color: #3a4cd8;
+        background-color: #ffffff;
         border-color: #3a4cd8;
     }
     .badge {
