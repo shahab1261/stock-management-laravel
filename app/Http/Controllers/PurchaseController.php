@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\Management\Tank;
 use App\Models\PurchaseChamber;
 use App\Models\Management\Banks;
-use App\Models\Management\Vendor;
+
 use App\Models\Management\Drivers;
 use App\Models\Management\Incomes;
 use App\Models\Management\Product;
@@ -26,6 +26,7 @@ use App\Models\Management\Terminal;
 use App\Models\Management\Customers;
 use App\Models\Management\Suppliers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PurchaseController extends Controller
 {
@@ -35,8 +36,10 @@ class PurchaseController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        // dd($purchases);
-        return view('admin.pages.purchase.index', compact('purchases'));
+        // Get purchase summary data for cards
+        $purchaseStock = $this->getProductPurchase($settingLocked, $settingLocked);
+
+        return view('admin.pages.purchase.index', compact('purchases', 'purchaseStock'));
     }
 
     public function create() {
@@ -52,55 +55,62 @@ class PurchaseController extends Controller
         $employees = User::where('user_type', 3)->get();
         $terminals = Terminal::all();
         $settings = Settings::first();
-        // dd($vehicles);
 
         return view('admin.pages.purchase.create', compact(
             'incomes', 'users', 'expenses', 'banks', 'products', 'customers', 'suppliers', 'settings', 'vehicles', 'drivers', 'terminals', 'employees'
         ));
     }
 
+    /**
+     * Get tanks by product ID for AJAX request
+     */
     public function productTankUpdate(Request $request) {
-        try{
+        try {
             $productId = $request->input('product_id');
-
             $tanks = Tank::where('product_id', $productId)->get();
 
-            // dd($tanks);
             return response()->json(['success' => true, 'tanks' => $tanks]);
-        } catch(Exception $e){
+        } catch(Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 
-    public function productRateUpdate(Request $request){
-        try{
+    /**
+     * Get product rate for AJAX request
+     */
+    public function productRateUpdate(Request $request) {
+        try {
             $productId = $request->input('product_id');
-
             $rate = Product::where('id', $productId)->value('current_purchase');
 
-            // dd($tanks);
             return response()->json(['success' => true, 'rate' => $rate]);
-        } catch(Exception $e){
+        } catch(Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 
-    public function tankChamberData(Request $request){
-        try{
-            $tank_id = $request->input('tank_id');
-
-            $data = TankLari::where('id', $tank_id)->get();
+    /**
+     * Get tank chamber data for AJAX request
+     */
+    public function tankChamberData(Request $request) {
+        try {
+            $tankId = $request->input('tank_id');
+            $data = TankLari::where('id', $tankId)->get();
 
             return response()->json(['success' => true, 'data' => $data]);
-        } catch(Exception $e){
+        } catch(Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 
+    /**
+     * Store a new purchase
+     */
     public function store(Request $request) {
         try {
             DB::beginTransaction();
-            // dd($request->all());
+
+            // Validate the request
             $validatedData = $request->validate([
                 'vendor_id' => 'required',
                 'product_id' => 'required',
@@ -115,7 +125,7 @@ class PurchaseController extends Controller
                 'tank_id' => 'nullable',
                 'purchase_date' => 'required',
                 'vendor_data_type' => 'required',
-                'chamber.*.capacity' => 'required|numeric|min:0',
+                'chamber.*.capacity' => 'nullable|numeric|min:0',
                 'chamber.*.dip' => 'nullable|numeric',
                 'chamber.*.rec_dip' => 'nullable|numeric',
                 'chamber.*.gain_loss' => 'nullable|numeric',
@@ -129,6 +139,7 @@ class PurchaseController extends Controller
                 'actual_short_loss_gain' => 'nullable|numeric',
             ]);
 
+            // Check tank capacity
             if ($request->tank_id) {
                 $tank = Tank::find($request->tank_id);
                 if ($tank) {
@@ -149,6 +160,7 @@ class PurchaseController extends Controller
             $product = Product::find($request->product_id);
             $previousStock = Tank::where('product_id', $product->id)->sum('opening_stock');
 
+            // Handle file upload
             $imagePath = '';
             if ($request->hasFile('receipt')) {
                 $file = $request->file('receipt');
@@ -157,6 +169,7 @@ class PurchaseController extends Controller
                 $imagePath = '/storage/' . $filePath;
             }
 
+            // Create measurements string
             $measurements = '';
             if ($request->fuel_type) {
                 $measurements = implode('_', [
@@ -170,6 +183,7 @@ class PurchaseController extends Controller
                 ]);
             }
 
+            // Create purchase record
             $purchase = new Purchase();
             $purchase->purchase_date = Carbon::createFromFormat('d/m/Y', $request->purchase_date)->format('Y-m-d');
             $purchase->supplier_id = $request->vendor_id;
@@ -220,6 +234,7 @@ class PurchaseController extends Controller
                 ]);
             }
 
+            // Create chamber records
             if ($request->has('chamber')) {
                 foreach ($request->chamber as $key => $chamberData) {
                     PurchaseChamber::create([
@@ -270,13 +285,16 @@ class PurchaseController extends Controller
 
             DB::commit();
 
-            Logs::create(
-                [
-                    'user_id' => Auth::id(),
-                    'action_type' => 'Create',
-                    'action_description' => 'Purchased ' . $product->product_name . ' for PKR ' . $request->amount. 'RS',
-                ]
-            );
+            // Create detailed log entry
+            $vendorInfo = $this->getVendorByType($request->vendor_data_type, $request->vendor_id);
+            $vendorName = $vendorInfo->vendor_name ?? 'Unknown Vendor';
+            $tankName = $tank ? $tank->tank_name : 'No Tank';
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Purchase: {$product->name} | Qty: {$request->stock} L | Rate: PKR {$request->rate} | Total: PKR {$request->amount} | Vendor: {$vendorName} | Tank: {$tankName}",
+            ]);
 
             if ($request->ajax()) {
                 return response()->json([
@@ -300,51 +318,84 @@ class PurchaseController extends Controller
         }
     }
 
-
     /**
      * Delete a purchase
      */
     public function delete(Request $request)
     {
         try {
+            DB::beginTransaction();
+
             $purchaseId = $request->input('purchase_id');
             $tankId = $request->input('tank_id');
-            $purchasedStock = $request->input('purchasedStock');
+            $purchasedStock = $request->input('purchasedstock');
 
+            // Find the purchase record
             $purchase = Purchase::findOrFail($purchaseId);
+            $product = Product::find($purchase->product_id);
 
-            Ledger::where('transaction_id', $purchaseId)
+            // Delete ledger entries (purchase type 1 for purchases in ledger)
+            $ledgerDeleted = Ledger::where('transaction_id', $purchaseId)
                 ->where('purchase_type', 1)
                 ->delete();
 
-            $tank = Tank::findOrFail($tankId);
-            $tank->opening_stock -= $purchasedStock;
-            $tank->save();
+            if ($ledgerDeleted) {
+                // Update tank stock (negate tank stock)
+                $tank = Tank::findOrFail($tankId);
+                $tank->opening_stock -= $purchasedStock;
+                $tank->save();
 
-            if (file_exists($purchase->image_path)) {
-                unlink($purchase->image_path);
-            }
+                // Update product stock (reverse the purchase effect)
+                if ($product) {
+                    $product->book_stock -= $purchase->stock;
+                    $product->product_amount += $purchase->total_amount;
+                    $product->save();
+                }
 
-            $purchase->delete();
+                // Update current stock
+                $currentStock = Tank::where('product_id', $purchase->product_id)->sum('opening_stock');
+                $currentStockRecord = CurrentStock::where('product_id', $purchase->product_id)
+                    ->where('stock_date', $purchase->purchase_date)
+                    ->first();
 
-            Logs::create(
-                [
+                if ($currentStockRecord) {
+                    $currentStockRecord->stock = $currentStock;
+                    $currentStockRecord->save();
+                }
+
+                // Delete purchase chambers
+                PurchaseChamber::where('purchase_id', $purchaseId)->delete();
+
+                // Delete receipt file if exists
+                if ($purchase->image_path && file_exists(public_path($purchase->image_path))) {
+                    unlink(public_path($purchase->image_path));
+                }
+
+                // Delete the purchase record
+                $purchase->delete();
+
+                // Create detailed log entry for deletion
+                $vendorInfo = $this->getVendorByType($purchase->vendor_type, $purchase->supplier_id);
+                $vendorName = $vendorInfo->vendor_name ?? 'Unknown Vendor';
+                $tankName = $tank ? $tank->tank_name : 'No Tank';
+
+                Logs::create([
                     'user_id' => Auth::id(),
                     'action_type' => 'Delete',
-                    'action_description' => 'Deleted purchase record with ID ' . $purchase->id,
-                ]
-            );
+                    'action_description' => "Deleted Purchase: {$product->name} | Qty: {$purchase->stock} L | Rate: PKR {$purchase->rate} | Total: PKR {$purchase->total_amount} | Vendor: {$vendorName} | Tank: {$tankName}",
+                ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Purchase deleted successfully'
-            ]);
+                DB::commit();
+
+                return response("true");
+            } else {
+                DB::rollBack();
+                return response("false");
+            }
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ]);
+            DB::rollBack();
+            return response("false");
         }
     }
 
@@ -369,4 +420,120 @@ class PurchaseController extends Controller
         }
     }
 
+    /**
+     * Get product purchase summary for cards
+     */
+    private function getProductPurchase($startDate = "", $endDate = "", $vendorId = "", $vendorType = "")
+    {
+        $query = Purchase::query();
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('purchase_date', [$startDate, $endDate]);
+        }
+
+        if ($vendorId && $vendorType) {
+            $query->where('supplier_id', $vendorId)->where('vendor_type', $vendorType);
+        }
+
+        return $query->join('products', 'purchase.product_id', '=', 'products.id')
+                    ->select('purchase.product_id', 'products.name as product_name',
+                            DB::raw('SUM(purchase.stock) as total_quantity'),
+                            DB::raw('SUM(purchase.total_amount) as total_amount'))
+                    ->groupBy('purchase.product_id', 'products.name')
+                    ->get();
+    }
+
+    /**
+     * Get vendor by type (similar to old project's getvendorbytype function)
+     */
+    public function getVendorByType($vendorType, $vendorId)
+    {
+        $vendorDetails = [];
+        $vendorName = '';
+        $vendorTypeName = '';
+
+        switch ($vendorType) {
+            case 1:
+                $vendorDetails = Suppliers::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'Supplier';
+                break;
+            case 2:
+                $vendorDetails = Customers::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'customer';
+                break;
+            case 3:
+                $vendorDetails = Product::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'product';
+                break;
+            case 4:
+                $vendorDetails = Expenses::find($vendorId);
+                $vendorName = $vendorDetails->expense_name ?? '';
+                $vendorTypeName = 'expense';
+                break;
+            case 5:
+                $vendorDetails = Incomes::find($vendorId);
+                $vendorName = $vendorDetails->income_name ?? '';
+                $vendorTypeName = 'income';
+                break;
+            case 6:
+                $vendorDetails = Banks::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'bank';
+                break;
+            case 7:
+                $vendorName = 'cash';
+                $vendorTypeName = 'cash';
+                break;
+            case 8:
+                $vendorName = 'MP';
+                $vendorTypeName = 'MP';
+                break;
+            case 9:
+                $vendorDetails = User::where('user_type', 3)->first();
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'employee';
+                break;
+        }
+
+        return (object)[
+            'vendor_details' => $vendorDetails,
+            'vendor_name' => $vendorName,
+            'vendor_type' => $vendorTypeName
+        ];
+    }
+
+    /**
+     * Get product stock in tanks
+     */
+    public function getProductStockInTanks($productId)
+    {
+        return Tank::where('product_id', $productId)->sum('opening_stock');
+    }
+
+    /**
+     * Update stock status
+     */
+    public function updateStockStatus($productId, $stockDate)
+    {
+        $productStockInTanks = $this->getProductStockInTanks($productId);
+        $productPreviousStock = $productStockInTanks ?: 0;
+
+        $currentStock = CurrentStock::where('product_id', $productId)
+                                   ->where('stock_date', $stockDate)
+                                   ->first();
+
+        if ($currentStock) {
+            $currentStock->stock = $productPreviousStock;
+            $currentStock->save();
+        } else {
+            CurrentStock::create([
+                'product_id' => $productId,
+                'stock' => $productPreviousStock,
+                'stock_date' => $stockDate,
+            ]);
+        }
+    }
 }

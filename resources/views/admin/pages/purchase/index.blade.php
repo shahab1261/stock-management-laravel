@@ -98,7 +98,7 @@
                                     <td class="ps-3 text-start"><small>Rs</small> {{ $purchase->rate_adjustment }}</td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
-                                            <button type="button" class="btn btn-sm btn-info text-white show-chambers-btn"
+                                            <button type="button" class="btn btn-sm btn-primary show-chambers-btn"
                                                 data-id="{{ $purchase->id }}" data-name>
                                                 <i class="bi bi-eye"></i>
                                             </button>
@@ -245,6 +245,55 @@
             </div>
         </div>
     </div>
+
+    <!-- Purchase Cards Section -->
+    {{-- <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0"><i class="bi bi-card-list me-2"></i>Purchase Summary</h5>
+                    <button onclick="printDiv('purchasecard')" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-printer me-1"></i>Print
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0" id="purchasecard">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $totalstock = 0;
+                                    $totalamount = 0;
+                                @endphp
+                                @foreach($purchaseStock as $sale)
+                                    @php
+                                        $totalstock += $sale->total_quantity;
+                                        $totalamount += $sale->total_amount;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $sale->product_name }}</td>
+                                        <td>{{ number_format($sale->total_quantity, 0, '', ',') }}</td>
+                                        <td>Rs {{ number_format($sale->total_amount, 0, '', ',') }}</td>
+                                    </tr>
+                                @endforeach
+                                <tr class="table-primary fw-bold">
+                                    <td>Total</td>
+                                    <td>{{ number_format($totalstock, 0, '', ',') }}</td>
+                                    <td>Rs {{ number_format($totalamount, 0, '', ',') }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --}}
 
     <!-- Print Button -->
     <div class="row mt-4 mb-4">
@@ -423,163 +472,5 @@
 
 @push('scripts')
 <script src="{{ asset('js/purchase-ajax.js') }}"></script>
-<script>
-    $(document).ready(function() {
-        $('#purchaseTable').DataTable({
-            processing: true,
-            responsive: false,
-            scrollX: true,
-            dom: '<"row align-items-center"<"col-md-6"l><"col-md-6 text-end"f>>t<"row align-items-center"<"col-md-6"i><"col-md-6 text-end"p>>',
-            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
-            pageLength: 10,
-            order: [[0, 'asc']],
-        });
-
-        $('#addNewPurchaseBtn').click(function() {
-            window.location.href = "{{ route('purchase.create') }}";
-        });
-
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-
-        $('.show-chambers-btn').on('click', function() {
-            var purchaseId = $(this).data('id');
-
-            $('#chamber_table_body').html('');
-            $('#measurements_div').html('');
-            $('#message_div').html('<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>');
-
-            $('#chambersModal').modal('show');
-
-            $.ajax({
-                url: "{{ route('purchase.chamber.data') }}",
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: purchaseId
-                },
-                success: function(response) {
-                    $('#message_div').html('');
-
-                    if(response.success && response.product_list.length > 0) {
-                        // Populate chambers table
-                        $.each(response.product_list, function(key, value) {
-                            $('#chamber_table_body').append(`
-                                <tr>
-                                    <td>${key+1}</td>
-                                    <td>${value.capacity}</td>
-                                    <td>${value.dip_value}</td>
-                                    <td>${value.rec_dip_value}</td>
-                                    <td>${value.gain_loss}</td>
-                                    <td>${value.dip_liters}</td>
-                                </tr>
-                            `);
-                        });
-
-                        // Process measurements
-                        var measurements = response.product_list[0].measurements.split('_');
-
-                        $('#measurements_div').html(`
-                            <div class="fw-bold text-primary mb-2">Product Information</div>
-                            <p><strong>Product:</strong> ${measurements[0]}</p>
-                            <p><strong>Invoice.Temp:</strong> ${measurements[1]}</p>
-                            <p><strong>Rec.Temp:</strong> ${measurements[2]}</p>
-                            <p><strong>Temp Loss/Gain:</strong> ${measurements[3]}</p>
-                            <p><strong>Dip Loss/Gain Ltr:</strong> ${measurements[4]}</p>
-                            <p><strong>Loss/Gain by temperature:</strong> ${measurements[5]}</p>
-                            <p><strong>Actual Short Loss/Gain:</strong> ${measurements[6]}</p>
-                        `);
-                    } else {
-                        $('#message_div').html('<div class="alert alert-info">No chamber data found for this purchase.</div>');
-                    }
-                },
-                error: function() {
-                    $('#message_div').html('<div class="alert alert-danger">Failed to load chamber data. Please try again.</div>');
-                }
-            });
-        });
-
-        // Handle print chambers button
-        $('#printChambersBtn').on('click', function() {
-            var printContent = document.getElementById('chambersModal').innerHTML;
-            var originalContent = document.body.innerHTML;
-
-            document.body.innerHTML = `
-                <div class="container mt-4">
-                    <h1 class="text-center mb-4">Chambers Information</h1>
-                    ${printContent}
-                </div>
-            `;
-
-            window.print();
-            document.body.innerHTML = originalContent;
-            location.reload();
-        });
-
-        // Handle print report button
-        $('#printReportBtn').on('click', function() {
-            window.print();
-        });
-
-        // Handle delete purchase button
-        $('.delete-purchase-btn').on('click', function() {
-            var purchaseId = $(this).data('id');
-            var tank = $(this).data('tank');
-            var stock = $(this).data('stock');
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `/admin/purchases/delete`,
-                        type: 'DELETE',
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr('content'),
-                            purchase_id: purchaseId,
-                            tank_id: tank,
-                            purchasedStock: stock
-                        },
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: (response) => {
-                            if (response.success) {
-                                Swal.fire({
-                                    title: 'Deleted!',
-                                    text: response.message,
-                                    icon: 'success'
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: response.message,
-                                    icon: 'error'
-                                });
-                            }
-                        },
-                        error: (error) => {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: "Something went wrong. Please try again.",
-                                icon: 'error'
-                            });
-                        }
-                    });
-                }
-            });
-        });
-    });
-</script>
 @endpush
 

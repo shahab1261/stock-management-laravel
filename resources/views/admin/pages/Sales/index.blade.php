@@ -120,6 +120,52 @@
     </div>
 
 
+    <!-- Sales Cards Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Sales Summary</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0" id="sales_card">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Product Name</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $totalstock = 0;
+                                    $totalamount = 0;
+                                @endphp
+                                @foreach($salesSummary as $sale)
+                                    @php
+                                        $totalstock += $sale->total_quantity;
+                                        $totalamount += $sale->total_amount;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $sale->product_name }}</td>
+                                        <td>{{ number_format($sale->total_quantity) }}</td>
+                                        <td>Rs {{ number_format($sale->total_amount) }}</td>
+                                    </tr>
+                                @endforeach
+                                <tr class="table-primary fw-bold">
+                                    <td>Total</td>
+                                    <td><b>{{ number_format($totalstock) }}</b></td>
+                                    <td><b>Rs {{ number_format($totalamount) }}</b></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Print Button -->
     <div class="row mt-4 mb-4">
         <div class="col-12 text-center">
@@ -245,86 +291,6 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/purchase-ajax.js') }}"></script>
-<script>
-    $(document).ready(function() {
-        $('#salesTable').DataTable({
-            processing: true,
-            responsive: false,
-            scrollX: true,
-            dom: '<"row align-items-center"<"col-md-6"l><"col-md-6 text-end"f>>t<"row align-items-center"<"col-md-6"i><"col-md-6 text-end"p>>',
-            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
-            pageLength: 10,
-            order: [[0, 'asc']],
-        });
-
-        $('#addNewSalesBtn').click(function() {
-            window.location.href = "{{ route('sales.create') }}";
-        });
-
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-
-        // Handle print report button
-        $('#printReportBtn').on('click', function() {
-            window.print();
-        });
-
-        // Handle delete purchase button
-        $('.delete-sales-btn').on('click', function() {
-            var salesId = $(this).data('id');
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `/admin/sales/delete`,
-                        type: 'DELETE',
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr('content'),
-                            sales_id: salesId,
-                        },
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: (response) => {
-                            if (response.success) {
-                                Swal.fire({
-                                    title: 'Deleted!',
-                                    text: response.message,
-                                    icon: 'success'
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: response.message,
-                                    icon: 'error'
-                                });
-                            }
-                        },
-                        error: (error) => {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: "Something went wrong. Please try again.",
-                                icon: 'error'
-                            });
-                        }
-                    });
-                }
-            });
-        });
-    });
-</script>
+<script src="{{ asset('js/sales-ajax.js') }}"></script>
 @endpush
 

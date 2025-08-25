@@ -17,4 +17,8 @@ class Suppliers extends Model
     {
         return $this->hasMany(TankLari::class, 'supplier_id');
     }
+    public function getNameAttribute($value)
+    {
+        return str_replace('&amp;', '&', $value);
+    }
 }

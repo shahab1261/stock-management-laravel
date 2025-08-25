@@ -145,13 +145,14 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::post('product/rate/update', [PurchaseController::class, 'productRateUpdate'])->name('product.rate.update');
     Route::post('tank/chamber/data', [PurchaseController::class, 'tankChamberData'])->name('tank.chamber.data');
     Route::post('purchase/chamber/data', [PurchaseController::class, 'getChamberData'])->name('purchase.chamber.data');
-    Route::delete('/purchases/delete', [PurchaseController::class, 'delete'])->name('purchase.delete');
+    Route::post('/purchases/delete', [PurchaseController::class, 'delete'])->name('purchase.delete');
 
     /*************************Sales_Routes***************************/
     Route::get('/sales', [SalesController::class, 'index'])->name('sales.index');
-    Route::post('/sales/store', [SalesController::class, 'store'])->name('sales.store');
+    Route::post('/sales', [SalesController::class, 'store'])->name('sales.store');
     Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create');
-    Route::delete('/sales/delete', [SalesController::class, 'delete'])->name('sales.delete');
+    Route::post('/sales/delete', [SalesController::class, 'delete'])->name('sales.delete');
+    Route::post('/product/tank/update', [SalesController::class, 'productTankUpdate'])->name('sales.product.tank.update');
 
         /*************************Daybook_Routes***************************/
     Route::get('/daybook', [App\Http\Controllers\DaybookController::class, 'index'])->name('admin.daybook.index');
@@ -226,7 +227,7 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::get('/reports/summary', [App\Http\Controllers\ReportsController::class, 'summary'])->name('admin.reports.summary');
 
     Route::get('/reports/purchase-transport', [App\Http\Controllers\ReportsController::class, 'purchaseTransportReport'])->name('admin.reports.purchase-transport');
-    Route::get('/reports/sale-transport', [App\Http\Controllers\ReportsController::class, 'saleTransportReport'])->name('admin.reports.sale-transport');
+    Route::match(['get', 'post'], '/reports/sale-transport', [App\Http\Controllers\ReportsController::class, 'saleTransportReport'])->name('admin.reports.sale-transport');
     Route::post('/reports/chamber-data', [App\Http\Controllers\ReportsController::class, 'getChamberData'])->name('admin.reports.chamber-data');
 });
 

@@ -115,7 +115,7 @@
                         <button type="button" id="exportBtn" class="btn btn-success d-flex align-items-center">
                             <i class="bi bi-download me-2"></i> Export to Excel
                         </button>
-                        <button type="button" id="printBtn" class="btn btn-info d-flex align-items-center">
+                        <button type="button" id="printBtn" class="btn btn-primary d-flex align-items-center">
                             <i class="bi bi-printer me-2"></i> Print
                         </button>
                     </div>

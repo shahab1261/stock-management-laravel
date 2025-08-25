@@ -17,6 +17,66 @@
         </div>
     </div>
 
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-primary bg-opacity-10 p-3 me-3"
+                        style="width: 66px; height: 66px;">
+                        <i class="bi bi-cart-check text-primary" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Total Sales</h6>
+                        <h3 class="mb-0" style="font-size: 1.7rem;">{{ number_format($sales->count()) }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-success bg-opacity-10 p-3 me-3"
+                        style="width: 66px; height: 66px;">
+                        <i class="bi bi-layers text-success" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Total Quantity</h6>
+                        <h3 class="mb-0" style="font-size: 1.7rem;">{{ number_format($sales->sum('quantity')) }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-info bg-opacity-10 p-3 me-3"
+                        style="width: 66px; height: 66px;">
+                        <i class="bi bi-currency-dollar text-info" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Total Amount</h6>
+                        <h3 class="mb-0" style="font-size: 1.7rem;">{{ number_format($sales->sum('amount')) }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-warning bg-opacity-10 p-3 me-3"
+                        style="width: 66px; height: 66px;">
+                        <i class="bi bi-truck text-warning" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Freight Charges</h6>
+                        <h3 class="mb-0" style="font-size: 1.7rem;">{{ number_format($sales->sum('freight_charges')) }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Filters Section -->
     <div class="row mb-4">
         <div class="col-12">
@@ -25,25 +85,88 @@
                     <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Filters</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.reports.sale-transport') }}" method="get">
-                        <!-- First Row of Filters -->
+                    <form action="{{ route('admin.reports.sale-transport') }}" method="post">
+                        @csrf
+                        <!-- First Row of Filters (3 fields) -->
                         <div class="row align-items-end mb-3">
-                            <div class="col-md-3 mb-3">
-                                <label for="vendor_dropdown" class="form-label">Customer</label>
-                                <select name="vendor_dropdown" id="vendor_dropdown" class="form-select">
-                                    <option value="">All Customers</option>
+                            <div class="col-md-4 mb-3">
+                                <label for="vendor_id" class="form-label">Select Vendor</label>
+                                <select name="vendor_id" id="vendor_id" class="form-select">
+                                    <option value="">All Vendors</option>
+                                    @foreach(App\Models\Management\Suppliers::orderBy('name')->get() as $supplier)
+                                        <option value="{{ $supplier->id }}"
+                                                data-name="{{ $supplier->name }}"
+                                                data-type="1"
+                                                {{ ($vendorId == $supplier->id && $vendorType == '1') ? 'selected' : '' }}>
+                                            {{ $supplier->name }} (Supplier)
+                                        </option>
+                                    @endforeach
                                     @foreach(App\Models\Management\Customers::orderBy('name')->get() as $customer)
                                         <option value="{{ $customer->id }}"
-                                                data-type="2"
                                                 data-name="{{ $customer->name }}"
+                                                data-type="2"
                                                 {{ ($vendorId == $customer->id && $vendorType == '2') ? 'selected' : '' }}>
-                                            {{ $customer->name }}
+                                            {{ $customer->name }} (Customer)
+                                        </option>
+                                    @endforeach
+                                    @foreach(App\Models\Management\Product::orderBy('name')->get() as $product)
+                                        <option value="{{ $product->id }}"
+                                                data-name="{{ $product->name }}"
+                                                data-type="3"
+                                                {{ ($vendorId == $product->id && $vendorType == '3') ? 'selected' : '' }}>
+                                            {{ $product->name }} (Product)
+                                        </option>
+                                    @endforeach
+                                    @foreach(App\Models\Management\Expenses::orderBy('expense_name')->get() as $expense)
+                                        <option value="{{ $expense->eid }}"
+                                                data-name="{{ $expense->expense_name }}"
+                                                data-type="4"
+                                                {{ ($vendorId == $expense->eid && $vendorType == '4') ? 'selected' : '' }}>
+                                            {{ $expense->expense_name }} (Expense)
+                                        </option>
+                                    @endforeach
+                                    @foreach(App\Models\Management\Incomes::orderBy('income_name')->get() as $income)
+                                        <option value="{{ $income->id }}"
+                                                data-name="{{ $income->income_name }}"
+                                                data-type="5"
+                                                {{ ($vendorId == $income->id && $vendorType == '5') ? 'selected' : '' }}>
+                                            {{ $income->income_name }} (Income)
+                                        </option>
+                                    @endforeach
+                                    @foreach(App\Models\Management\Banks::orderBy('name')->get() as $bank)
+                                        <option value="{{ $bank->id }}"
+                                                data-name="{{ $bank->name }}"
+                                                data-type="6"
+                                                {{ ($vendorId == $bank->id && $vendorType == '6') ? 'selected' : '' }}>
+                                            {{ $bank->name }} (Bank)
+                                        </option>
+                                    @endforeach
+                                    @foreach(App\Models\User::where('user_type', 3)->orderBy('name')->get() as $employee)
+                                        <option value="{{ $employee->id }}"
+                                                data-name="{{ $employee->name }}"
+                                                data-type="9"
+                                                {{ ($vendorId == $employee->id && $vendorType == '9') ? 'selected' : '' }}>
+                                            {{ $employee->name }} (Employee)
+                                        </option>
+                                    @endforeach
+                                    <option value="7" data-name="cash" data-type="7" {{ ($vendorId == '7' && $vendorType == '7') ? 'selected' : '' }}>Cash</option>
+                                    <option value="8" data-name="mp" data-type="8" {{ ($vendorId == '8' && $vendorType == '8') ? 'selected' : '' }}>Mp</option>
+                                </select>
+                                <input type="hidden" id="vendor_type" name="vendor_type" value="{{ $vendorType }}">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="transport_id" class="form-label">Transport</label>
+                                <select class="form-select" id="transport_id" name="transport_id">
+                                    <option value="">All Transports</option>
+                                    @foreach($lorries as $lorry)
+                                        <option value="{{ $lorry->id }}" {{ $transportId == $lorry->id ? 'selected' : '' }}>
+                                            {{ $lorry->larry_name }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="product_filter" class="form-label">Product</label>
+                            <div class="col-md-4 mb-3">
+                                <label for="product_filter" class="form-label">Products</label>
                                 <select class="form-select" id="product_filter" name="product_filter">
                                     <option value="">All Products</option>
                                     @foreach($products as $product)
@@ -53,45 +176,29 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="transport_id" class="form-label">Transport</label>
-                                <select class="form-select" id="transport_id" name="transport_id">
-                                    <option value="">All Transports</option>
-                                    @foreach($lorries as $lorry)
-                                        <option value="{{ $lorry->tid }}" {{ $transportId == $lorry->tid ? 'selected' : '' }}>
-                                            {{ $lorry->larry_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        </div>
+
+                        <!-- Second Row of Filters (4 fields) -->
+                        <div class="row align-items-end mb-3">
                             <div class="col-md-3 mb-3">
                                 <label for="start_date" class="form-label">Start Date</label>
                                 <input type="date" class="form-control" id="start_date" name="start_date" value="{{ $startDate }}">
                             </div>
-                        </div>
-
-                        <!-- Second Row of Filters -->
-                        <div class="row align-items-end">
                             <div class="col-md-3 mb-3">
                                 <label for="end_date" class="form-label">End Date</label>
                                 <input type="date" class="form-control" id="end_date" name="end_date" value="{{ $endDate }}">
                             </div>
                             <div class="col-md-3 mb-3">
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="bi bi-search me-2"></i>Filter
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="bi bi-search me-2"></i>Submit
                                 </button>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <a href="{{ route('admin.reports.sale-transport') }}" class="btn btn-secondary w-100">
-                                    <i class="bi bi-arrow-counterclockwise me-2"></i>Clear
+                                <a href="{{ route('admin.reports.sale-transport') }}" class="btn btn-danger w-100">
+                                    <i class="bi bi-x-circle me-2"></i>Clear
                                 </a>
                             </div>
-                            <div class="col-md-3 mb-3"></div>
                         </div>
-
-                        <!-- Hidden fields -->
-                        <input type="hidden" name="vendor_id" id="vendor_id" value="{{ $vendorId }}">
-                        <input type="hidden" name="vendor_type" id="vendor_type" value="{{ $vendorType }}">
                     </form>
                 </div>
             </div>
@@ -108,229 +215,117 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover history-table" style="width:100%">
-                            <thead class="table-light">
+                        <table class="table dataTable table-striped" style="width: 100%" id="table01">
+                            <thead>
                                 <tr>
-                                    <th class="text-center">#</th>
-                                    <th class="text-center">Date</th>
-                                    <th class="text-center">Customer</th>
-                                    <th class="text-center">Product</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-center">Rate</th>
-                                    <th class="text-center">Amount</th>
-                                    <th class="text-center">Vehicle</th>
-                                    <th class="text-center">Status</th>
+                                    <th>Sale ID</th>
+                                    <th>Sale Date</th>
+                                    <th>Vendor</th>
+                                    <th>Product</th>
+                                    <th>Tank Lorry</th>
+                                    <th>Sold Stock</th>
+                                    <th>Rate</th>
+                                    <th>Amount</th>
+                                    <th>Freight Charges</th>
+                                    <th>Comments</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @php
-                                    $totalQuantity = 0;
-                                    $totalAmount = 0;
+                                    $stocks = 0;
+                                    $amounts = 0;
+                                    $freight_sum = 0;
                                 @endphp
 
-                                @foreach($sales as $sale)
+                                @foreach($sales as $key => $sale)
                                     @php
-                                        $totalQuantity += $sale->quantity;
-                                        $totalAmount += $sale->amount;
+                                        $stocks += $sale->quantity;
+                                        $amounts += $sale->amount;
+                                        $freight_sum += $sale->freight_charges;
 
-                                        // Get customer name
-                                        $customer = null;
-                                        if ($sale->vendor_type == '2') {
-                                            $customer = App\Models\Management\Customers::find($sale->customer_id);
+                                        // Get vendor details
+                                        $vendor = null;
+                                        if ($sale->vendor_type == '1') {
+                                            $vendor = App\Models\Management\Suppliers::find($sale->customer_id);
+                                            $vendorType = 'Supplier';
+                                        } elseif ($sale->vendor_type == '2') {
+                                            $vendor = App\Models\Management\Customers::find($sale->customer_id);
+                                            $vendorType = 'Customer';
+                                        } elseif ($sale->vendor_type == '3') {
+                                            $vendor = App\Models\Management\Product::find($sale->customer_id);
+                                            $vendorType = 'Product';
+                                        } elseif ($sale->vendor_type == '4') {
+                                            $vendor = App\Models\Management\Expenses::find($sale->customer_id);
+                                            $vendorType = 'Expense';
+                                        } elseif ($sale->vendor_type == '5') {
+                                            $vendor = App\Models\Management\Incomes::find($sale->customer_id);
+                                            $vendorType = 'Income';
+                                        } elseif ($sale->vendor_type == '6') {
+                                            $vendor = App\Models\Management\Banks::find($sale->customer_id);
+                                            $vendorType = 'Bank';
+                                        } elseif ($sale->vendor_type == '7') {
+                                            $vendor = (object)['name' => 'Cash'];
+                                            $vendorType = 'Cash';
+                                        } elseif ($sale->vendor_type == '8') {
+                                            $vendor = (object)['name' => 'MP'];
+                                            $vendorType = 'MP';
+                                        } elseif ($sale->vendor_type == '9') {
+                                            $vendor = App\Models\User::find($sale->customer_id);
+                                            $vendorType = 'Employee';
                                         }
 
-                                        // Get product name
+                                        // Get product details
                                         $product = App\Models\Management\Product::find($sale->product_id);
 
-                                        // Get transport name
-                                        $transport = App\Models\Management\TankLari::find($sale->tank_lari_id);
+                                        // Get tank lorry details
+                                        $tankLari = App\Models\Management\TankLari::find($sale->tank_lari_id);
                                     @endphp
                                     <tr>
-                                        <td class="text-center">{{ $sale->id }}</td>
-                                        <td class="text-center">{{ date('d-m-Y', strtotime($sale->create_date)) }}</td>
-                                        <td class="text-center">
-                                            @if($customer)
-                                                <span class="badge bg-success">{{ $customer->name }}</span>
+                                        <td>{{ $sale->id }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($sale->create_date)) }}</td>
+                                        <td>
+                                            @if($vendor)
+                                                {{ $vendor->name ?? $vendor->expense_name ?? $vendor->income_name ?? 'Unknown' }}
+                                                <span class="badge bg-secondary">{{ $vendorType }}</span>
                                             @else
                                                 <span class="text-muted">Unknown</span>
                                             @endif
                                         </td>
-                                        <td class="text-center">
+                                        <td>
                                             @if($product)
                                                 {{ $product->name }}
                                             @else
-                                                <span class="text-muted">Unknown Product</span>
+                                                <span class="text-muted">Not found / deleted</span>
                                             @endif
                                         </td>
-                                        <td class="text-center">{{ number_format($sale->quantity, 2) }}</td>
-                                        <td class="text-center">Rs {{ number_format($sale->rate, 2) }}</td>
-                                        <td class="text-center">Rs {{ number_format($sale->amount, 2) }}</td>
-                                        <td class="text-center">
-                                            @if($transport)
-                                                <span class="badge bg-info">{{ $transport->larry_name }}</span>
+                                        <td>
+                                            @if($tankLari)
+                                                {{ $tankLari->larry_name }}
                                             @else
-                                                <span class="text-muted">Unknown</span>
+                                                <span class="text-muted">Not found</span>
                                             @endif
                                         </td>
-                                        <td class="text-center">
-                                            @if($sale->status ?? 1)
-                                                <span class="badge bg-success">
-                                                    <i class="bi bi-check-circle me-1"></i>Completed
-                                                </span>
-                                            @else
-                                                <span class="badge bg-warning">
-                                                    <i class="bi bi-clock me-1"></i>Pending
-                                                </span>
-                                            @endif
-                                        </td>
+                                        <td>{{ number_format($sale->quantity) }} <small>ltr</small></td>
+                                        <td>{{ number_format($sale->rate) }}</td>
+                                        <td>{{ number_format($sale->amount) }}</td>
+                                        <td>{{ number_format($sale->freight_charges) }}</td>
+                                        <td>{{ $sale->notes }}</td>
                                     </tr>
                                 @endforeach
-                            </tbody>
-                            <tfoot class="table-light">
                                 <tr>
-                                    <th colspan="4" class="text-end">Totals:</th>
-                                    <th class="text-center">{{ number_format($totalQuantity, 2) }}</th>
-                                    <th class="text-center">-</th>
-                                    <th class="text-center">Rs {{ number_format($totalAmount, 2) }}</th>
-                                    <th colspan="2">-</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ number_format($stocks) }}</td>
+                                    <td></td>
+                                    <td>{{ number_format($amounts) }}</td>
+                                    <td>{{ number_format($freight_sum) }}</td>
+                                    <td></td>
                                 </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Transport Summary Section -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-3">
-                    <h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Transport Summary</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover" style="width:100%">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="text-center">Transport</th>
-                                    <th class="text-center">Total Trips</th>
-                                    <th class="text-center">Total Quantity</th>
-                                    <th class="text-center">Total Amount</th>
-                                    <th class="text-center">Average per Trip</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $transportSummary = collect($sales)->groupBy('tank_lari_id')->map(function($transportSales, $transportId) {
-                                        $transport = App\Models\Management\TankLari::find($transportId);
-                                        return [
-                                            'name' => $transport ? $transport->larry_name : 'Unknown',
-                                            'trips' => $transportSales->count(),
-                                            'quantity' => $transportSales->sum('quantity'),
-                                            'amount' => $transportSales->sum('amount'),
-                                            'average' => $transportSales->count() > 0 ? $transportSales->sum('amount') / $transportSales->count() : 0
-                                        ];
-                                    })->sortByDesc('amount');
-                                @endphp
-
-                                @foreach($transportSummary as $summary)
-                                    <tr>
-                                        <td class="text-center">
-                                            <span class="badge bg-primary">{{ $summary['name'] }}</span>
-                                        </td>
-                                        <td class="text-center">{{ $summary['trips'] }}</td>
-                                        <td class="text-center">{{ number_format($summary['quantity'], 2) }}</td>
-                                        <td class="text-center">Rs {{ number_format($summary['amount'], 2) }}</td>
-                                        <td class="text-center">Rs {{ number_format($summary['average'], 2) }}</td>
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Summary Cards -->
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Sales
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ count($sales) }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-cart-check fa-2x text-primary"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total Quantity
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ number_format($totalQuantity, 2) }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-box-seam fa-2x text-success"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Total Amount
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Rs {{ number_format($totalAmount, 2) }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-currency-dollar fa-2x text-info"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Avg per Sale
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Rs {{ count($sales) > 0 ? number_format($totalAmount / count($sales), 2) : '0.00' }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-calculator fa-2x text-warning"></i>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -339,19 +334,61 @@
 </div>
 @endsection
 
-@section('js')
+@push('scripts')
 <script src="{{ asset('assets/js/reports.js') }}"></script>
 <script>
-    // Handle vendor dropdown selection for sale transport
     $(document).ready(function() {
-        $('#vendor_dropdown').on('change', function() {
-            var selectedOption = $(this).find('option:selected');
-            var vendorId = selectedOption.val();
-            var vendorType = selectedOption.data('type');
-
-            $('#vendor_id').val(vendorId);
-            $('#vendor_type').val(vendorType);
+        // Initialize DataTable
+        $('#table01').DataTable({
+            processing: true,
+            responsive: false,
+            scrollX: true,
+            dom: '<"row align-items-center"<"col-md-6"l><"col-md-6 text-end"f>>t<"row align-items-center"<"col-md-6"i><"col-md-6 text-end"p>>',
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            pageLength: 10,
+            order: [[0, 'desc']],
         });
+
+        // Handle vendor dropdown selection
+        $('#vendor_id').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var vendorType = selectedOption.data('type');
+            $('#vendor_type').val(vendorType);
+            console.log('Vendor selected:', selectedOption.val(), 'Type:', vendorType);
+        });
+
+        // Remove auto-submit to prevent logout issues
+        // $('#vendor_id').on('change', function() {
+        //     if ($(this).val()) {
+        //         setTimeout(function() {
+        //             $('form').first().submit();
+        //         }, 500);
+        //     }
+        // });
+
+        // Set vendor type on page load if vendor is already selected
+        $(document).ready(function() {
+            var selectedVendor = $('#vendor_id option:selected');
+            if (selectedVendor.val()) {
+                var vendorType = selectedVendor.data('type');
+                $('#vendor_type').val(vendorType);
+            }
+        });
+
+        // Debug form submission
+        $('form').on('submit', function(e) {
+            console.log('Form submitting with data:', {
+                vendor_id: $('#vendor_id').val(),
+                vendor_type: $('#vendor_type').val(),
+                product_filter: $('#product_filter').val(),
+                transport_id: $('#transport_id').val(),
+                start_date: $('#start_date').val(),
+                end_date: $('#end_date').val()
+            });
+        });
+
+        // Set document title
+        document.title = "Sale Transport Report";
     });
 </script>
-@endsection
+@endpush

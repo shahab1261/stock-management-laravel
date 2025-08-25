@@ -368,4 +368,369 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Delete purchase function (matching old PHP project)
+    function deletePurchase(purchase_id, tank_id, purchasedstock) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/admin/purchases/delete",
+                    type: "POST",
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        purchase_id: purchase_id,
+                        tank_id: tank_id,
+                        purchasedstock: purchasedstock,
+                    },
+                    success: function (data) {
+                        if (data.trim() == "true") {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Purchase deleted successfully!',
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to delete purchase, please try again!'
+                            });
+                        }
+                    }//success
+                });//ajax
+            }
+        });
+    }//Delete purchase
+
+    /**
+     * Print purchase report
+     */
+    function printPurchaseReport() {
+        const printWindow = window.open('', '_blank');
+        const printContent = generatePurchasePrintContent();
+
+        printWindow.document.write(printContent);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    /**
+     * Generate purchase print content
+     */
+    function generatePurchasePrintContent() {
+        const currentDate = new Date().toLocaleDateString();
+        const tableHTML = $('#purchaseTable')[0].outerHTML;
+
+        return `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Purchase Report</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                        font-size: 12px;
+                    }
+                    .header {
+                        text-align: center;
+                        margin-bottom: 30px;
+                        border-bottom: 2px solid #333;
+                        padding-bottom: 15px;
+                    }
+                    .header h1 {
+                        margin: 0;
+                        color: #333;
+                        font-size: 24px;
+                    }
+                    .header p {
+                        margin: 5px 0;
+                        color: #666;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+                    th, td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }
+                    th {
+                        background-color: #f5f5f5;
+                        font-weight: bold;
+                        text-align: center;
+                    }
+                    .text-end {
+                        text-align: right;
+                    }
+                    .text-center {
+                        text-align: center;
+                    }
+                    .fw-bold {
+                        font-weight: bold;
+                    }
+                    .table-light {
+                        background-color: #f8f9fa;
+                    }
+                    .table-primary {
+                        background-color: #e3f2fd;
+                    }
+                    .text-success {
+                        color: #28a745;
+                    }
+                    .text-danger {
+                        color: #dc3545;
+                    }
+                    .text-warning {
+                        color: #ffc107;
+                    }
+                    .footer {
+                        margin-top: 30px;
+                        text-align: center;
+                        font-size: 10px;
+                        color: #666;
+                        border-top: 1px solid #ddd;
+                        padding-top: 10px;
+                    }
+                    @media print {
+                        body { margin: 0; }
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>Purchase Report</h1>
+                    <p>Generated on: ${currentDate}</p>
+                </div>
+                ${tableHTML}
+                <div class="footer">
+                    <p>This report was generated automatically by the Stock Management System</p>
+                </div>
+            </body>
+            </html>
+        `;
+    }
+
+    /**
+     * Print chambers report
+     */
+    function printChambersReport() {
+        const printWindow = window.open('', '_blank');
+        const printContent = generateChambersPrintContent();
+
+        printWindow.document.write(printContent);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    /**
+     * Generate chambers print content
+     */
+    function generateChambersPrintContent() {
+        const currentDate = new Date().toLocaleDateString();
+        const tableHTML = $('#chamber_table_body').closest('table')[0].outerHTML;
+        const measurementsHTML = $('#measurements_div').html();
+
+        return `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Chambers Information Report</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                        font-size: 12px;
+                    }
+                    .header {
+                        text-align: center;
+                        margin-bottom: 30px;
+                        border-bottom: 2px solid #333;
+                        padding-bottom: 15px;
+                    }
+                    .header h1 {
+                        margin: 0;
+                        color: #333;
+                        font-size: 24px;
+                    }
+                    .header p {
+                        margin: 5px 0;
+                        color: #666;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+                    th, td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: left;
+                    }
+                    th {
+                        background-color: #f5f5f5;
+                        font-weight: bold;
+                        text-align: center;
+                    }
+                    .text-end {
+                        text-align: right;
+                    }
+                    .text-center {
+                        text-align: center;
+                    }
+                    .fw-bold {
+                        font-weight: bold;
+                    }
+                    .measurements {
+                        background-color: #f8f9fa;
+                        padding: 15px;
+                        border: 1px solid #ddd;
+                        border-radius: 5px;
+                        margin-bottom: 20px;
+                    }
+                    .footer {
+                        margin-top: 30px;
+                        text-align: center;
+                        font-size: 10px;
+                        color: #666;
+                        border-top: 1px solid #ddd;
+                        padding-top: 10px;
+                    }
+                    @media print {
+                        body { margin: 0; }
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>Chambers Information Report</h1>
+                    <p>Generated on: ${currentDate}</p>
+                </div>
+                ${tableHTML}
+                <div class="measurements">
+                    <h3>Measurements Information</h3>
+                    ${measurementsHTML}
+                </div>
+                <div class="footer">
+                    <p>This report was generated automatically by the Stock Management System</p>
+                </div>
+            </body>
+            </html>
+        `;
+    }
+
+    // Initialize purchase index page functionality
+    if (typeof $('#purchaseTable').length !== 'undefined' && $('#purchaseTable').length > 0) {
+        $('#purchaseTable').DataTable({
+            processing: true,
+            responsive: false,
+            scrollX: true,
+            dom: '<"row align-items-center"<"col-md-6"l><"col-md-6 text-end"f>>t<"row align-items-center"<"col-md-6"i><"col-md-6 text-end"p>>',
+            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+            pageLength: 10,
+            order: [[0, 'asc']],
+        });
+
+        $('#addNewPurchaseBtn').click(function() {
+            window.location.href = "/admin/purchase/create";
+        });
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        $('.show-chambers-btn').on('click', function() {
+            var purchaseId = $(this).data('id');
+
+            $('#chamber_table_body').html('');
+            $('#measurements_div').html('');
+            $('#message_div').addClass('spinner-border text-primary');
+
+            $('#chambersModal').modal('show');
+
+            $.ajax({
+                url: "/admin/purchase/chamber/data",
+                type: "POST",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    id: purchaseId
+                },
+                success: function(response) {
+                    $('#message_div').html('');
+                    $('#message_div').removeClass('spinner-border text-primary');
+
+                    if(response.success && response.product_list.length > 0) {
+                        // Populate chambers table
+                        $.each(response.product_list, function(key, value) {
+                            $('#chamber_table_body').append(`
+                                <tr>
+                                    <td>${key+1}</td>
+                                    <td>${value.capacity}</td>
+                                    <td>${value.dip_value}</td>
+                                    <td>${value.rec_dip_value}</td>
+                                    <td>${value.gain_loss}</td>
+                                    <td>${value.dip_liters}</td>
+                                </tr>
+                            `);
+                        });
+
+                        // Process measurements
+                        var measurements = response.product_list[0].measurements.split('_');
+
+                        $('#measurements_div').html(`
+                            <div class="fw-bold text-primary mb-2">Product Information</div>
+                            <p><strong>Product:</strong> ${measurements[0]}</p>
+                            <p><strong>Invoice.Temp:</strong> ${measurements[1]}</p>
+                            <p><strong>Rec.Temp:</strong> ${measurements[2]}</p>
+                            <p><strong>Temp Loss/Gain:</strong> ${measurements[3]}</p>
+                            <p><strong>Dip Loss/Gain Ltr:</strong> ${measurements[4]}</p>
+                            <p><strong>Loss/Gain by temperature:</strong> ${measurements[5]}</p>
+                            <p><strong>Actual Short Loss/Gain:</strong> ${measurements[6]}</p>
+                        `);
+                    } else {
+                        $('#message_div').html('<div class="alert alert-primary text-center">No chamber data found for this purchase.</div>');
+                    }
+                },
+                error: function() {
+                    $('#message_div').removeClass('spinner-border text-primary');
+                    $('#message_div').html('<div class="alert alert-danger text-center">Failed to load chamber data. Please try again.</div>');
+                }
+            });
+        });
+
+        // Handle print chambers button
+        $('#printChambersBtn').on('click', function() {
+            printChambersReport();
+        });
+
+        // Handle print report button
+        $('#printReportBtn').on('click', function() {
+            printPurchaseReport();
+        });
+
+        // Handle delete purchase button
+        $('.delete-purchase-btn').on('click', function() {
+            var purchaseId = $(this).data('id');
+            var tank = $(this).data('tank');
+            var stock = $(this).data('stock');
+
+            deletePurchase(purchaseId, tank, stock);
+        });
+    }
 });

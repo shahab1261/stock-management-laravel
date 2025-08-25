@@ -27,7 +27,6 @@ class Purchase extends Model
         return $this->hasMany(PurchaseChamber::class);
     }
 
-
     /**
      * Get the product for this purchase
      */
@@ -52,6 +51,9 @@ class Purchase extends Model
         return $this->belongsTo(Drivers::class, 'driver_no');
     }
 
+    /**
+     * Get vendor details by type (similar to old project's getvendorbytype function)
+     */
     public function getVendorByType($vendorType, $supplierId)
     {
         $vendorDetails = [];

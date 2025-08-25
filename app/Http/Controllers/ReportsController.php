@@ -22,6 +22,7 @@ use App\Models\Management\Settings;
 use App\Models\User;
 use App\Models\CurrentStock;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReportsController extends Controller
 {
@@ -355,7 +356,7 @@ class ReportsController extends Controller
 
         $products = Product::where('is_dippable', 1)->orderBy('id', 'desc')->get();
         $purchases = $this->searchPurchase('', $productId, $startDate, $endDate, $vendorId, $vendorType, $transportId);
-        $lorries = TankLari::where('tank_type', '2')->orderBy('tid', 'desc')->get();
+        $lorries = TankLari::where('tank_type', '2')->orderBy('id', 'desc')->get();
 
         return view('admin.pages.reports.purchase-transport-report', compact(
             'vendorId',
@@ -370,11 +371,12 @@ class ReportsController extends Controller
         ));
     }
 
-    /**
+            /**
      * Sale Transport Report
      */
     public function saleTransportReport(Request $request)
     {
+        // Get filter parameters (exact same logic as old PHP project)
         $vendorId = $request->get('vendor_id', '');
         $vendorType = $request->get('vendor_type', '');
         $productId = $request->get('product_filter', '');
@@ -382,10 +384,26 @@ class ReportsController extends Controller
         $endDate = $request->get('end_date', date('Y-m-d'));
         $transportId = $request->get('transport_id', '');
 
-        $products = Product::where('is_dippable', 1)->orderBy('id', 'desc')->get();
-        $sales = $this->searchSales($productId, '', $startDate, $endDate, $vendorId, $vendorType, $transportId);
-        $lorries = TankLari::where('tank_type', '2')->orderBy('tid', 'desc')->get();
+        // Debug: Log the parameters to see what's being received
+        Log::info('Sale Transport Report Parameters:', [
+            'vendor_id' => $vendorId,
+            'vendor_type' => $vendorType,
+            'product_filter' => $productId,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'transport_id' => $transportId
+        ]);
 
+        // Get all products (not just dippable ones)
+        $products = Product::orderBy('id', 'desc')->get();
+
+        // Get sales using the same search logic as old project
+        $sales = $this->searchSales($productId, '', $startDate, $endDate, $vendorId, $vendorType, $transportId);
+
+        // Get tank lorries (type 2 for sales transport)
+        $lorries = TankLari::where('tank_type', '2')->orderBy('id', 'desc')->get();
+
+        // Ensure all variables are properly set for the view
         return view('admin.pages.reports.sale-transport-report', compact(
             'vendorId',
             'vendorType',
