@@ -8,12 +8,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Logs;
 
 class EmployeeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:management.employees.view')->only(['index']);
+        $this->middleware('permission:management.employees.create')->only(['store']);
+        $this->middleware('permission:management.employees.edit')->only(['update']);
+        $this->middleware('permission:management.employees.delete')->only(['delete']);
+    }
+
     public function index()
     {
-        $employees = User::where('user_type', 3)->orderBy('created_at', 'desc')->get();
+        $employees = User::where('user_type', 2)->orderBy('created_at', 'desc')->get();
         return view('admin.pages.management.employees.index', compact('employees'));
     }
 
@@ -40,11 +49,19 @@ class EmployeeController extends Controller
             $employee->bank_account_number = $request->bank_account_number;
             $employee->address = $request->address;
             $employee->notes = $request->notes;
-            $employee->user_type = 3; // employee
+            $employee->user_type = 2; // employee
             $employee->status = 1; // active by default
             $employee->password = Hash::make('password'); // default password
             $employee->entery_by_user = Auth::id();
             $employee->save();
+
+            $employee->syncRoles(['Employee']);
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Employee created: {$employee->name} ({$employee->email})",
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -86,6 +103,12 @@ class EmployeeController extends Controller
             $employee->notes = $request->notes;
             $employee->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => "Employee updated: {$employee->name} ({$employee->email})",
+            ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Employee updated successfully',
@@ -114,6 +137,12 @@ class EmployeeController extends Controller
             }
 
             $employee->delete();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Employee deleted: {$employee->name} ({$employee->email})",
+            ]);
 
             return response()->json([
                 'success' => true,

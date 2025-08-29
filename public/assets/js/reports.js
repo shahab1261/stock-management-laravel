@@ -168,7 +168,7 @@ function viewChambers(purchaseId) {
 
     // Make AJAX request
     $.ajax({
-        url: window.chamberDataUrl || "/admin/reports/chamber-data",
+        url: window.chamberDataUrl || "/reports/chamber-data",
         type: "POST",
         data: {
             id: purchaseId,
@@ -177,40 +177,49 @@ function viewChambers(purchaseId) {
         success: function (response) {
             if (response.product_list && response.product_list.length > 0) {
                 let html = '<div class="table-responsive">';
-                html += '<table class="table table-sm table-bordered">';
+                html += '<table class="table table-striped" id="purchase_table1">';
                 html += '<thead class="table-light">';
-                html += "<tr>";
-                html += "<th>Chamber</th>";
-                html += "<th>Product</th>";
-                html += "<th>Quantity</th>";
-                html += "<th>Rate</th>";
-                html += "<th>Amount</th>";
-                html += "</tr>";
-                html += "</thead>";
-                html += "<tbody>";
+                html += '<tr>';
+                html += '<th style="font-size: 11px;">Chamber #</th>';
+                html += '<th style="font-size: 11px;">Capacity (ltr)</th>';
+                html += '<th style="font-size: 11px;">Dip</th>';
+                html += '<th style="font-size: 11px;">Rec. Dip</th>';
+                html += '<th style="font-size: 11px;">Gain/Loss</th>';
+                html += '<th style="font-size: 11px;">Ltr</th>';
+                html += '</tr>';
+                html += '</thead>';
+                html += '<tbody id="chamber_table_body">';
 
-                response.product_list.forEach(function (item) {
-                    html += "<tr>";
-                    html += "<td>" + (item.chamber_no || "-") + "</td>";
-                    html += "<td>" + (item.product_name || "Unknown") + "</td>";
-                    html +=
-                        "<td>" +
-                        parseFloat(item.quantity || 0).toFixed(2) +
-                        "</td>";
-                    html +=
-                        "<td>Rs " +
-                        parseFloat(item.rate || 0).toFixed(2) +
-                        "</td>";
-                    html +=
-                        "<td>Rs " +
-                        parseFloat(item.amount || 0).toFixed(2) +
-                        "</td>";
-                    html += "</tr>";
+                response.product_list.forEach(function (item, index) {
+                    html += '<tr>';
+                    html += '<td>' + (index + 1) + '</td>';
+                    html += '<td>' + (item.capacity ?? '-') + '</td>';
+                    html += '<td>' + (item.dip_value ?? '-') + '</td>';
+                    html += '<td>' + (item.rec_dip_value ?? '-') + '</td>';
+                    html += '<td>' + (item.gain_loss ?? '-') + '</td>';
+                    html += '<td>' + (item.dip_liters ?? '-') + '</td>';
+                    html += '</tr>';
                 });
 
-                html += "</tbody>";
-                html += "</table>";
-                html += "</div>";
+                html += '</tbody>';
+                html += '</table>';
+
+                // Measurements block like old project
+                var measurementsRaw = response.product_list[0].measurements || '';
+                if (measurementsRaw) {
+                    var m = (measurementsRaw + '').split('_');
+                    html += '<div id="measurements_div" class="mt-2">';
+                    html += '<span><strong> Product: </strong> ' + (m[0] || '-') + '</span><br>';
+                    html += '<span><strong> Invoice.Temp: </strong> ' + (m[1] || '-') + '</span><br>';
+                    html += '<span><strong> Rec. Temp: </strong> ' + (m[2] || '-') + '</span><br>';
+                    html += '<span><strong> Temp Loss/Gain: </strong> ' + (m[3] || '-') + '</span><br>';
+                    html += '<span><strong> Dip Loss/Gain Ltr: </strong> ' + (m[4] || '-') + '</span><br>';
+                    html += '<span><strong> Loss/Gain <small>by temperature</small>: </strong> ' + (m[5] || '-') + '</span><br>';
+                    html += '<span><strong> <small>Actual Short</small> Loss/Gain: </strong> ' + (m[6] || '-') + '</span><br>';
+                    html += '</div>';
+                } else {
+                    html += '<div id="message_div" class="text-center text-danger">No Measurements Found</div>';
+                }
 
                 $("#chamberContent").html(html);
             } else {

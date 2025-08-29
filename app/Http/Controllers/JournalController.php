@@ -17,6 +17,13 @@ use Illuminate\Support\Facades\Log;
 
 class JournalController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:journal.view')->only('index');
+        $this->middleware('permission:journal.create')->only('store');
+        $this->middleware('permission:journal.delete')->only('destroy');
+    }
+
     /**
      * Display journal voucher page
      */
@@ -96,6 +103,13 @@ class JournalController extends Controller
                 $request->journal_date
             );
 
+            // Log the journal entry creation
+            \App\Models\Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'create',
+                'action_description' => "Created journal entry: {$request->journal_description}, amount: {$request->journal_amount}, date: {$request->journal_date}"
+            ]);
+
             DB::commit();
 
             return response()->json(['status' => 'success', 'message' => 'Journal entry saved successfully!']);
@@ -124,6 +138,13 @@ class JournalController extends Controller
                 ->delete();
 
             $journalEntry->delete();
+
+            // Log the journal entry deletion
+            \App\Models\Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'delete',
+                'action_description' => "Deleted journal entry: {$journalEntry->description}, amount: {$journalEntry->amount}, date: {$journalEntry->transaction_date}"
+            ]);
 
             DB::commit();
 

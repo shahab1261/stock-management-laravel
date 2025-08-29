@@ -139,7 +139,7 @@ $(document).ready(function() {
         deleteBtn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: `/admin/terminals/delete/${id}`,
+            url: `/terminals/delete/${id}`,
             method: 'DELETE',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content')

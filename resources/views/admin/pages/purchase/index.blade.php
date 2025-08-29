@@ -20,6 +20,7 @@
         }
     }
 @endphp
+@permission('purchase.view')
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -34,9 +35,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-cart-check me-2"></i>Purchase</h5>
+                    @permission('purchase.create')
                     <button type="button" id="addNewPurchaseBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add New Purchase
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -102,10 +105,12 @@
                                                 data-id="{{ $purchase->id }}" data-name>
                                                 <i class="bi bi-eye"></i>
                                             </button>
+                                            @permission('purchase.delete')
                                             <button type="button" class="btn btn-sm btn-danger delete-purchase-btn"
                                                 data-id="{{ $purchase->id }}" data-tank="{{ $purchase->tank_id }}" data-stock="{{ $purchase->stock }}">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            @endpermission
                                         </div>
                                     </td>
                                 </tr>
@@ -304,6 +309,7 @@
         </div>
     </div>
 </div>
+@endpermission
 
 <!-- Chambers Information Modal -->
 <div class="modal fade" id="chambersModal" tabindex="-1" aria-labelledby="chambersModalLabel" aria-hidden="true">

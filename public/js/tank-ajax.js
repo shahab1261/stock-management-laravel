@@ -148,7 +148,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: `/admin/tanks/delete/${tankId}`,
+            url: `/tanks/delete/${tankId}`,
             type: 'DELETE',
             dataType: 'json',
             headers: {
@@ -194,6 +194,6 @@ $(document).ready(function() {
     // View Dip Charts functionality
     $(document).on('click', '.view-dip-charts', function() {
         var tankId = $(this).data('id');
-        window.location.href = `/admin/tanks/${tankId}/dip-charts-page`;
+        window.location.href = `/tanks/${tankId}/dip-charts-page`;
     });
 });

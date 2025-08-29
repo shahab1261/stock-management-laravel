@@ -5,7 +5,7 @@ $(document).ready(function() {
         let tank_id = $(this).find('option:selected').val();
 
         $.ajax({
-            url: "/admin/tank/chamber/data",
+            url: "/tank/chamber/data",
             method: 'POST',
             data: {
                 _token: csrfToken,
@@ -50,7 +50,7 @@ $(document).ready(function() {
         const productId = selectedOption.val();
 
         $.ajax({
-            url: "/admin/product/tank/update",
+            url: "/product/tank/update",
             type: "POST",
             data: {
                 _token: csrfToken,
@@ -89,7 +89,7 @@ $(document).ready(function() {
         const productId = selectedOption.val();
 
         $.ajax({
-            url: "/admin/product/rate/update",
+            url: "/product/rate/update",
             type: "POST",
             data: {
                 _token: csrfToken,
@@ -326,7 +326,7 @@ $(document).ready(function() {
                         text: response.message || 'Purchase added successfully',
                         confirmButtonColor: '#4154f1'
                     }).then(function() {
-                        window.location.href = response.redirect || '/admin/purchase';
+                        window.location.href = response.redirect || '/purchase';
                     });
                 } else if(response.error === 'tank-limit-exceed') {
                     Swal.fire({
@@ -383,7 +383,7 @@ $(document).ready(function() {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "/admin/purchases/delete",
+                    url: "/purchases/delete",
                     type: "POST",
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content'),
@@ -647,7 +647,7 @@ $(document).ready(function() {
         });
 
         $('#addNewPurchaseBtn').click(function() {
-            window.location.href = "/admin/purchase/create";
+            window.location.href = "/purchase/create";
         });
 
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -665,7 +665,7 @@ $(document).ready(function() {
             $('#chambersModal').modal('show');
 
             $.ajax({
-                url: "/admin/purchase/chamber/data",
+                url: "/purchase/chamber/data",
                 type: "POST",
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content'),

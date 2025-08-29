@@ -4,12 +4,21 @@ namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
 use App\Models\Management\Customers;
+use App\Models\Logs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:management.customers.view')->only(['index', 'getCustomerDetails']);
+        $this->middleware('permission:management.customers.create')->only(['store']);
+        $this->middleware('permission:management.customers.edit')->only(['update']);
+        $this->middleware('permission:management.customers.delete')->only(['delete']);
+    }
+
     public function index()
     {
         $customers = Customers::orderBy('created_at', 'desc')->get();
@@ -49,6 +58,12 @@ class CustomerController extends Controller
             $customer->entery_by_user = Auth::id();
             $customer->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Customer created: {$customer->name} ({$customer->email})",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Customer added successfully', 'customer' => $customer]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to add customer', 'error' => $e->getMessage()], 500);
@@ -87,6 +102,12 @@ class CustomerController extends Controller
             $customer->status = $request->status;
             $customer->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => "Customer updated: {$customer->name} ({$customer->email})",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Customer updated successfully', 'customer' => $customer]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to update customer', 'error' => $e->getMessage()], 500);
@@ -97,7 +118,15 @@ class CustomerController extends Controller
     {
         try {
             $customer = Customers::findOrFail($id);
+            $name = $customer->name;
+            $email = $customer->email;
             $customer->delete();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Customer deleted: {$name} ({$email})",
+            ]);
 
             return response()->json(['success' => true, 'message' => 'Customer deleted successfully']);
         } catch (\Exception $e) {

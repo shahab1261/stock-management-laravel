@@ -14,7 +14,7 @@ $(document).ready(function() {
         $submitBtn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/suppliers/store',
+            url: '/suppliers/store',
             method: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
@@ -102,7 +102,7 @@ $(document).ready(function() {
         $submitBtn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/suppliers/update',
+            url: '/suppliers/update',
             method: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
@@ -170,7 +170,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: `/admin/suppliers/delete/${supplierId}`,
+            url: `/suppliers/delete/${supplierId}`,
             method: 'GET',
             dataType: 'json',
             headers: {

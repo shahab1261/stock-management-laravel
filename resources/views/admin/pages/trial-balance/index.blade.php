@@ -8,6 +8,7 @@
 @endpush
 
 @section('content')
+@permission('trial-balance.view')
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -48,12 +49,12 @@
         <div class="col-md-4 mb-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-info bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
-                        <i class="bi bi-calculator text-info" style="font-size: 1.5rem;"></i>
+                    <div class="d-flex justify-content-center align-items-center rounded-circle  {{ $turnoverDifference == 0 ? 'bg-success' : 'bg-primary' }} bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
+                        <i class="bi bi-calculator {{ $turnoverDifference == 0 ? 'text-success' : 'text-primary' }}" style="font-size: 1.5rem;"></i>
                     </div>
                     <div>
                         <h6 class="text-muted mb-1">Difference</h6>
-                        <h3 class="mb-0 {{ $turnoverDifference == 0 ? 'text-success' : 'text-warning' }}" style="font-size: 1.7rem;">
+                        <h3 class="mb-0 {{ $turnoverDifference == 0 ? 'text-success' : 'text-primary' }}" style="font-size: 1.7rem;">
                             Rs {{ number_format(abs($turnoverDifference)) }}
                         </h3>
                     </div>
@@ -127,7 +128,7 @@
                                 <tr>
                                     <th width="50" class="ps-3 text-center">#</th>
                                     <th class="ps-3 text-center">A/c Code</th>
-                                    <th class="ps-3 text-center">Account Title</th>
+                                    <th class="ps-3">Account Title</th>
                                     <th class="ps-3 text-center">Debit</th>
                                     <th class="ps-3 text-center">Credit</th>
                                 </tr>
@@ -174,14 +175,14 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="text-end">
+                                            <td class="text-center">
                                                 @if(($entry->debit ?? 0) > ($entry->credit ?? 0))
                                                     <span class="text-success fw-bold">{{ number_format(abs($entry->final_balance)) }}</span>
                                                 @else
                                                     <span class="text-muted">-</span>
                                                 @endif
                                             </td>
-                                            <td class="text-end">
+                                            <td class="text-center">
                                                 @if(($entry->debit ?? 0) > ($entry->credit ?? 0))
                                                     <span class="text-muted">-</span>
                                                 @else
@@ -245,6 +246,7 @@
         </div>
     </div>
 </div>
+@endpermission
 @endsection
 
 <style>

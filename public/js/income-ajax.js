@@ -148,7 +148,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: `/admin/incomes/delete/${incomeId}`,
+            url: `/incomes/delete/${incomeId}`,
             type: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

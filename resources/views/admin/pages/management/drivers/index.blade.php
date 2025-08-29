@@ -36,9 +36,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Drivers</h5>
+                    @permission('management.drivers.create')
                     <button type="button" id="addNewDriverBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add New Driver
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -82,6 +84,7 @@
                                     <td>{{ $driver->address }}</td>
                                     <td>{{ $driver->reference }}</td>
                                     <td class="text-center">
+                                        @permission('management.drivers.edit')
                                         <button class="btn btn-sm btn-outline-primary edit-btn me-1"
                                             data-id="{{ $driver->id }}"
                                             data-driver-type="{{ $driver->driver_type }}"
@@ -96,9 +99,12 @@
                                             title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.drivers.delete')
                                         <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{{ $driver->id }}" title="Delete">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @endforeach

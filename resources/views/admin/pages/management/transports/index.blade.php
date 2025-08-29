@@ -20,9 +20,11 @@
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Transports</h5>
                     <div>
+                        @permission('management.transports.create')
                         <button id="addNewTransportBtn" class="btn btn-primary d-flex align-items-center">
                             <i class="bi bi-plus-circle me-2"></i> Add Transport
                         </button>
+                        @endpermission
                     </div>
                 </div>
                 <div class="card-body p-0 pt-0">
@@ -66,6 +68,7 @@
                                     <td>{{ $transport->chamber_dip_four }}</td>
                                     <td>{{ $transport->chamber_capacity_four }}</td>
                                     <td class="text-center">
+                                        @permission('management.transports.edit')
                                         <button class="btn btn-sm btn-outline-primary edit-transport me-1"
                                             data-id="{{ $transport->id }}"
                                             data-name="{{ $transport->larry_name }}"
@@ -81,12 +84,15 @@
                                             title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.transports.delete')
                                         <button class="btn btn-sm btn-outline-danger delete-transport"
                                             data-id="{{ $transport->id }}"
                                             data-name="{{ $transport->larry_name }}"
                                             title="Delete">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @endforeach

@@ -151,7 +151,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: `/admin/expenses/delete/${expenseId}`,
+            url: `/expenses/delete/${expenseId}`,
             type: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

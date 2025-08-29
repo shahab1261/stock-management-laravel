@@ -12,6 +12,11 @@ use Carbon\Carbon;
 
 class WetStockController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:wet-stock.view')->only('index');
+    }
+
     public function index(Request $request)
     {
         // Get filter parameters

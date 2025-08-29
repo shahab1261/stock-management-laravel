@@ -150,7 +150,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: `/admin/nozzles/delete/${nozzleId}`,
+            url: `/nozzles/delete/${nozzleId}`,
             type: 'DELETE',
             dataType: 'json',
             headers: {
@@ -196,7 +196,7 @@ $(document).ready(function() {
     $("#product_id").on('change', function(){
         var productId = $(this).val();
         $.ajax({
-            url: `/admin/products/${productId}/tank`,
+            url: `/products/${productId}/tank`,
             type: 'GET',
             dataType: 'json',
             headers: {
@@ -223,7 +223,7 @@ $(document).ready(function() {
     $("#edit_product_id").on('change', function(){
         var productId = $(this).val();
         $.ajax({
-            url: `/admin/products/${productId}/tank`,
+            url: `/products/${productId}/tank`,
             type: 'GET',
             dataType: 'json',
             headers: {

@@ -29,6 +29,14 @@ use Illuminate\Support\Facades\Auth;
 
 class SalesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:sales.view')->only(['index', 'create']);
+        $this->middleware('permission:sales.create')->only('store');
+        $this->middleware('permission:sales.edit')->only('update');
+        $this->middleware('permission:sales.delete')->only('destroy');
+    }
+
     public function index(){
         $dateLock = Settings::first()->date_lock;
         $sales = Sales::where('create_date', $dateLock)

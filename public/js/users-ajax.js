@@ -14,7 +14,7 @@ $(document).ready(function() {
         $submitBtn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/users/store',
+            url: '/users/store',
             method: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
@@ -79,6 +79,7 @@ $(document).ready(function() {
         $('#edit_phone').val(user.data('phone'));
         $('#edit_bank_account_number').val(user.data('bank-account'));
         $('#edit_status').val(user.data('status'));
+        $('#edit_user_type').val(user.data('user-type'));
         $('#edit_address').val(user.data('address'));
         $('#edit_notes').val(user.data('notes'));
 
@@ -96,7 +97,7 @@ $(document).ready(function() {
         $submitBtn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/users/update',
+            url: '/users/update',
             method: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
@@ -178,7 +179,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: `/admin/users/delete/${userId}`,
+            url: `/users/delete/${userId}`,
             method: 'GET',
             dataType: 'json',
             headers: {

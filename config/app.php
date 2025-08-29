@@ -123,4 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    // Custom application settings
+    'software_type' => (int) env('SOFTWARE_TYPE', 1),
+
 ];

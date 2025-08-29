@@ -7,12 +7,20 @@ use App\Models\Management\TankLari;
 use App\Models\Management\Customers;
 use App\Models\Management\Suppliers;
 use App\Models\Management\Drivers;
+use App\Models\Logs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TankLariController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:management.tanklari.view')->only(['index', 'getTankLariDetails']);
+        $this->middleware('permission:management.tanklari.create')->only(['store']);
+        $this->middleware('permission:management.tanklari.edit')->only(['update']);
+        $this->middleware('permission:management.tanklari.delete')->only(['delete']);
+    }
     public function index()
     {
         $tanklaris = TankLari::with(['customer', 'supplier', 'driver'])
@@ -61,6 +69,12 @@ class TankLariController extends Controller
             $tanklari->entery_by_user = Auth::id();
             $tanklari->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Tank Lari created: {$tanklari->larry_name} (Customer ID {$tanklari->customer_id})",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Tank Lari added successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to add Tank Lari', 'error' => $e->getMessage()]);
@@ -102,6 +116,12 @@ class TankLariController extends Controller
                 $tanklari->chamber_capacity_four = $request->chamber_capacity_four ?? 0;
                 $tanklari->save();
 
+                Logs::create([
+                    'user_id' => Auth::id(),
+                    'action_type' => 'Update',
+                    'action_description' => "Tank Lari updated: {$tanklari->larry_name} (Customer ID {$tanklari->customer_id})",
+                ]);
+
                 return response()->json(['success' => true, 'message' => 'Tank Lari updated successfully', 'tanklari' => $tanklari]);
             } catch (\Exception $e) {
                 return response()->json(['success' => false, 'message' => 'Failed to update Tank Lari', 'error' => $e->getMessage()], 500);
@@ -115,7 +135,15 @@ class TankLariController extends Controller
     {
         try {
             $tanklari = TankLari::findOrFail($id);
+            $name = $tanklari->larry_name;
+            $cust = $tanklari->customer_id;
             $tanklari->delete();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Tank Lari deleted: {$name} (Customer ID {$cust})",
+            ]);
 
             return response()->json(['success' => true, 'message' => 'Tank Lari deleted successfully']);
         } catch (\Exception $e) {

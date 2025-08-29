@@ -16,7 +16,17 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->user_type == 1) {
+        if (!Auth::check()) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Unauthorized.'], 401);
+            }
+            return redirect()->route('admin.login');
+        }
+
+        $user = Auth::user();
+
+        // Allow SuperAdmin, Admin, and Employee to access
+        if (in_array($user->user_type, [0, 1, 2])) {
             return $next($request);
         }
 

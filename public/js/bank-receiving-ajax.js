@@ -91,7 +91,7 @@ $(document).ready(function() {
         $("#confirmDeleteBtn .spinner-border").removeClass("d-none");
 
         $.ajax({
-            url: '/admin/payments/transaction/delete',
+            url: '/payments/transaction/delete',
             type: "DELETE",
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),

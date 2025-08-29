@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:dashboard.view')->only('dashboard');
+    }
+
     public function dashboard()
     {   Log::info('Admin Dashboard');
         return view('admin.pages.dashboard');
@@ -59,6 +64,7 @@ class AdminController extends Controller
 
     public function logout()
     {
+        // dd('logout');
         Auth::logout();
 
         return redirect()->route('admin.login');

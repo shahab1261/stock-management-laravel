@@ -16,6 +16,11 @@ use Carbon\Carbon;
 
 class TrialBalanceController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:trial-balance.view')->only('index');
+    }
+
     public function index(Request $request)
     {
         // Set default date range

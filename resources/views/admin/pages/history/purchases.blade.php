@@ -8,6 +8,7 @@
 @endsection
 
 @section('content')
+@permission('history.purchases.view')
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -188,6 +189,7 @@
         </div>
     </div>
 </div>
+@endpermission
 
 @endsection
 

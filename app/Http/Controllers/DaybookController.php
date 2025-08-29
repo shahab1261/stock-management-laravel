@@ -20,6 +20,11 @@ use Illuminate\Support\Facades\DB;
 
 class DaybookController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:daybook.view')->only('index');
+    }
+
     public function index(Request $request)
     {
         $startDate = $request->get('start_date', date('Y-m-d'));

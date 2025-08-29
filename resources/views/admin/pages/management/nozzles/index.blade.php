@@ -19,9 +19,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Nozzles</h5>
+                    @permission('management.nozzles.create')
                     <button type="button" id="addNewNozzleBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add New Nozzle
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -57,6 +59,7 @@
                                     <td class="ps-3">{{ date('d M Y', strtotime($nozzle->created_at)) }}
                                     </td>
                                     <td class="text-center">
+                                        @permission('management.nozzles.edit')
                                         <button type="button" class="btn btn-sm btn-outline-primary edit-nozzle me-1"
                                             data-id="{{ $nozzle->id }}"
                                             data-name="{{ $nozzle->name }}"
@@ -67,9 +70,12 @@
                                             data-tanks="{{ $nozzle->tank }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.nozzles.delete')
                                         <button type="button" class="btn btn-sm btn-outline-danger delete-nozzle" data-id="{{ $nozzle->id }}">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @endforeach

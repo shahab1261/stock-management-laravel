@@ -30,6 +30,14 @@ use Illuminate\Support\Facades\Storage;
 
 class PurchaseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:purchase.view')->only(['index', 'create']);
+        $this->middleware('permission:purchase.create')->only('store');
+        $this->middleware('permission:purchase.edit')->only('update');
+        $this->middleware('permission:purchase.delete')->only('destroy');
+    }
+
     public function index() {
         $settingLocked = Settings::first()->value('date_lock');
         $purchases = Purchase::where('purchase_date', '=', $settingLocked)

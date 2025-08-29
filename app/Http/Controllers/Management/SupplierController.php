@@ -4,12 +4,20 @@ namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
 use App\Models\Management\Suppliers;
+use App\Models\Logs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SupplierController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:management.suppliers.view')->only(['index']);
+        $this->middleware('permission:management.suppliers.create')->only(['store']);
+        $this->middleware('permission:management.suppliers.edit')->only(['update']);
+        $this->middleware('permission:management.suppliers.delete')->only(['delete']);
+    }
     public function index()
     {
         $suppliers = Suppliers::orderBy('created_at', 'desc')->get();
@@ -56,6 +64,12 @@ class SupplierController extends Controller
             $supplier->terms = $request->terms;
             $supplier->entery_by_user = Auth::id();
             $supplier->save();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Supplier created: {$supplier->name} ({$supplier->email})",
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -112,6 +126,12 @@ class SupplierController extends Controller
             $supplier->terms = $request->terms;
             $supplier->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => "Supplier updated: {$supplier->name} ({$supplier->email})",
+            ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Supplier updated successfully',
@@ -130,7 +150,15 @@ class SupplierController extends Controller
     {
         try {
             $supplier = Suppliers::findOrFail($id);
+            $name = $supplier->name;
+            $email = $supplier->email;
             $supplier->delete();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Supplier deleted: {$name} ({$email})",
+            ]);
 
             return response()->json([
                 'success' => true,

@@ -30,21 +30,29 @@ use App\Http\Controllers\DipController;
 use App\Http\Controllers\WetStockController;
 use App\Http\Controllers\AccountHistoryController;
 
-Route::get('/', function(){
+// Dashboard at root, protected
+Route::get('/', [AdminController::class, 'dashboard'])->middleware('admin')->name('admin.dashboard');
+
+// Auth routes (redirect to dashboard if already logged in)
+Route::get('/login', function(){
     return view('pages.login');
-})->name('admin.login');
-Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.post');
+})->middleware('login')->name('admin.login');
+Route::post('/login', [AdminController::class, 'login'])->middleware('login')->name('admin.login.post');
+
+// Backwards compatibility: /admin -> /
+Route::get('/admin', function(){
+    return redirect()->route('admin.dashboard');
+})->middleware('admin');
 
 
-Route::prefix('admin')->middleware('admin')->group(function () {
-    Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+Route::middleware('admin')->group(function () {
+    Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
     /*************************Customers_Routes***************************/
-    Route::get('customers/', [CustomerController::class, 'index'])->name('admin.customers.index');
-    Route::post('customers/store', [CustomerController::class, 'store'])->name('admin.customers.store');
-    Route::post('customers/update', [CustomerController::class, 'update'])->name('admin.customers.update');
-    Route::delete('customers/delete/{id}', [CustomerController::class, 'delete'])->name('admin.customers.delete');
+    Route::get('/customers', [CustomerController::class, 'index'])->name('admin.customers.index');
+    Route::post('/customers/store', [CustomerController::class, 'store'])->name('admin.customers.store');
+    Route::post('/customers/update', [CustomerController::class, 'update'])->name('admin.customers.update');
+    Route::delete('/customers/delete/{id}', [CustomerController::class, 'delete'])->name('admin.customers.delete');
 
     /*************************Banks_Routes***************************/
     Route::get('/banks', [BankController::class, 'index'])->name('admin.banks.index');
@@ -105,6 +113,16 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::post('/users/update', [UserController::class, 'update'])->name('admin.users.update');
     Route::get('/users/delete/{id}', [UserController::class, 'delete'])->name('admin.users.delete');
 
+    /*************************Roles_Permissions_Routes***************************/
+    Route::middleware(['admin', 'superadmin'])->group(function () {
+        Route::get('/roles-permissions', [App\Http\Controllers\Management\RolePermissionController::class, 'index'])->name('admin.roles-permissions.index');
+        Route::post('/roles/store', [App\Http\Controllers\Management\RolePermissionController::class, 'storeRole'])->name('admin.roles.store');
+        Route::post('/roles/update', [App\Http\Controllers\Management\RolePermissionController::class, 'updateRole'])->name('admin.roles.update');
+        Route::delete('/roles/delete/{id}', [App\Http\Controllers\Management\RolePermissionController::class, 'deleteRole'])->name('admin.roles.delete');
+        Route::post('/roles/assign', [App\Http\Controllers\Management\RolePermissionController::class, 'assignRoleToUser'])->name('admin.roles.assign');
+        Route::get('/roles/{id}/permissions', [App\Http\Controllers\Management\RolePermissionController::class, 'getRolePermissions'])->name('admin.roles.permissions');
+    });
+
     /*************************Terminals_Routes***************************/
     Route::get('/terminals', [TerminalController::class, 'index'])->name('admin.terminals.index');
     Route::post('/terminals/store', [TerminalController::class, 'store'])->name('admin.terminals.store');
@@ -153,6 +171,16 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create');
     Route::post('/sales/delete', [SalesController::class, 'delete'])->name('sales.delete');
     Route::post('/product/tank/update', [SalesController::class, 'productTankUpdate'])->name('sales.product.tank.update');
+
+    // Nozzle Sales
+    Route::get('/sales/nozzle', [App\Http\Controllers\NozzleSalesController::class, 'index'])->name('sales.nozzle.index');
+    Route::post('/sales/nozzle/precheck', [App\Http\Controllers\NozzleSalesController::class, 'precheck'])->name('sales.nozzle.precheck');
+    Route::post('/sales/nozzle/product-nozzles', [App\Http\Controllers\NozzleSalesController::class, 'productNozzles'])->name('sales.nozzle.product_nozzles');
+    Route::post('/sales/nozzle/store', [App\Http\Controllers\NozzleSalesController::class, 'store'])->name('sales.nozzle.store');
+
+    // Lubricant (General) Sales
+    Route::get('/sales/lubricant', [App\Http\Controllers\LubricantSalesController::class, 'index'])->name('sales.lubricant.index');
+    Route::post('/sales/lubricant/store', [App\Http\Controllers\LubricantSalesController::class, 'store'])->name('sales.lubricant.store');
 
         /*************************Daybook_Routes***************************/
     Route::get('/daybook', [App\Http\Controllers\DaybookController::class, 'index'])->name('admin.daybook.index');
@@ -231,12 +259,12 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::post('/reports/chamber-data', [App\Http\Controllers\ReportsController::class, 'getChamberData'])->name('admin.reports.chamber-data');
 });
 
-Route::prefix('admin')->name('admin.management.')->group(function () {
+Route::name('admin.management.')->group(function () {
     Route::get('/settings', [App\Http\Controllers\Management\SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings/update', [App\Http\Controllers\Management\SettingsController::class, 'update'])->name('settings.update');
 });
 
 Route::middleware(['auth'])->group(function () {
     // Logs Routes
-    Route::get('/admin/logs', [LogsController::class, 'index'])->name('admin.logs.index');
+    Route::get('/logs', [LogsController::class, 'index'])->name('admin.logs.index');
 });

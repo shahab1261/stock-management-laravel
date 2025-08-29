@@ -19,9 +19,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Users</h5>
+                    @permission('management.users.create')
                     <button type="button" id="addNewUserBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add New User
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -34,7 +36,7 @@
                                     <th width="10%" class="ps-3">Phone Number</th>
                                     <th width="15%" class="ps-3">Bank Account Number</th>
                                     <th width="10%" class="ps-3">Address</th>
-                                    <th width="10%" class="ps-3">Notes</th>
+                                    <th width="10%" class="ps-3">Role</th>
                                     <th width="10%" class="ps-3">Status</th>
                                     <th width="10%" class="ps-3">Registered Date</th>
                                     <th width="10%" class="text-center">Actions</th>
@@ -56,9 +58,11 @@
                                     <td class="ps-3">{{ $user->phone }}</td>
                                     <td class="ps-3">{{ $user->bank_account_number }}</td>
                                     <td class="ps-3">{{ $user->address }}</td>
-                                    <td class="ps-3">{{ $user->notes }}</td>
                                     <td class="ps-3">
-                                        @if($user->status == 1)
+                                        <span class="badge bg-primary">{{ $user->role_name }}</span>
+                                    </td>
+                                    <td class="ps-3">
+                                        @if((int)$user->status == 1)
                                             <span class="badge bg-success">Active</span>
                                         @else
                                             <span class="badge bg-danger">Inactive</span>
@@ -66,21 +70,26 @@
                                     </td>
                                     <td class="ps-3">{{ date('d-m-Y', strtotime($user->created_at)) }}</td>
                                     <td class="text-center">
+                                        @permission('management.users.edit')
                                         <button type="button" class="btn btn-sm btn-outline-primary edit-user me-1"
                                             data-id="{{ $user->id }}"
                                             data-name="{{ $user->name }}"
                                             data-email="{{ $user->email }}"
                                             data-phone="{{ $user->phone }}"
                                             data-bank-account="{{ $user->bank_account_number }}"
-                                            data-status="{{ $user->status }}"
+                                            data-status="{{ (int)$user->status }}"
+                                            data-user-type="{{ $user->user_type }}"
                                             data-address="{{ $user->address }}"
                                             data-notes="{{ $user->notes }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
                                         @if(Auth::id() != $user->id)
+                                        @permission('management.users.delete')
                                         <button type="button" class="btn btn-sm btn-outline-danger delete-user" data-id="{{ $user->id }}">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                         @endif
                                     </td>
                                 </tr>
@@ -191,6 +200,21 @@
                             </select>
                         </div>
                         <div class="invalid-feedback" id="status-error"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="user_type" class="form-label fw-medium">User Type <span class="text-danger">*</span></label>
+                        <div class="input-group mb-0">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-person-badge"></i>
+                            </span>
+                            <select class="form-select border-start-0" id="user_type" name="user_type"  >
+                                <option value="2">Employee</option>
+                                <option value="1">Admin</option>
+                                <option value="0">SuperAdmin</option>
+                            </select>
+                        </div>
+                        <div class="invalid-feedback" id="user_type-error"></div>
                     </div>
 
                     <div class="col-md-6">
@@ -326,6 +350,21 @@
                             </select>
                         </div>
                         <div class="invalid-feedback" id="edit-status-error"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="edit_user_type" class="form-label fw-medium">User Type <span class="text-danger">*</span></label>
+                        <div class="input-group mb-0">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-person-badge"></i>
+                            </span>
+                            <select class="form-select border-start-0" id="edit_user_type" name="user_type"  >
+                                <option value="2">Employee</option>
+                                <option value="1">Admin</option>
+                                <option value="0">SuperAdmin</option>
+                            </select>
+                        </div>
+                        <div class="invalid-feedback" id="edit-user_type-error"></div>
                     </div>
 
                     <div class="col-md-6">

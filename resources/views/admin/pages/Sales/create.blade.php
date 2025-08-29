@@ -4,6 +4,7 @@
 @section('description', 'Create a new sales record')
 
 @section('content')
+@permission('sales.create')
     <div class="container-fluid py-4">
         <!-- Header Section -->
         <div class="row mb-4">
@@ -229,6 +230,7 @@
             </div>
         </form>
     </div>
+@endpermission
 
     @push('scripts')
         <script src="{{ asset('js/sales-ajax.js') }}"></script>

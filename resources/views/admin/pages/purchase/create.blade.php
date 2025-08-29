@@ -4,6 +4,7 @@
 @section('description', 'Create a new purchase record')
 
 @section('content')
+@permission('purchase.create')
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -411,6 +412,7 @@
         </div>
     </form>
 </div>
+@endpermission
 
 @push('scripts')
 <script src="{{ asset('js/purchase-ajax.js') }}"></script>

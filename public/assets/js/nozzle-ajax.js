@@ -195,7 +195,7 @@ $(document).ready(function() {
     $("#product_id").on('change', function(){
         var productId = $(this).val();
         $.ajax({
-            url: `/admin/products/${productId}/tank`,
+            url: `/products/${productId}/tank`,
             type: 'GET',
             dataType: 'json',
             headers: {

@@ -19,9 +19,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Tanks</h5>
+                    @permission('management.tanks.create')
                     <button type="button" id="addNewTankBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add New Tank
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -60,11 +62,14 @@
                                     <td class="ps-3">{{ date('d M Y', strtotime($tank->ob_date)) }}</td>
                                     <td class="ps-3">{{ Str::limit($tank->notes, 20) }}</td>
                                     <td class="text-center">
+                                        @permission('management.tanks.view')
                                         <button type="button" class="btn btn-sm btn-outline-primary view-dip-charts me-1"
                                             data-id="{{ $tank->id }}"
                                             data-name="{{ $tank->tank_name }}">
                                             <i class="bi bi-eye"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.tanks.edit')
                                         <button type="button" class="btn btn-sm btn-outline-primary edit-tank me-1"
                                             data-id="{{ $tank->id }}"
                                             data-tank_name="{{ $tank->tank_name }}"
@@ -78,9 +83,12 @@
                                             data-notes="{{ $tank->notes }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.tanks.delete')
                                         <button type="button" class="btn btn-sm btn-outline-danger delete-tank" data-id="{{ $tank->id }}">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @endforeach

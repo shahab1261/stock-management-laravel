@@ -5,12 +5,20 @@ namespace App\Http\Controllers\Management;
 use App\Http\Controllers\Controller;
 use App\Models\Management\TankLari;
 use App\Models\Management\Drivers;
+use App\Models\Logs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TransportController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:management.transports.view')->only(['index']);
+        $this->middleware('permission:management.transports.create')->only(['store']);
+        $this->middleware('permission:management.transports.edit')->only(['update']);
+        $this->middleware('permission:management.transports.delete')->only(['delete']);
+    }
     public function index()
     {
         $transports = TankLari::with(['driver'])
@@ -57,6 +65,12 @@ class TransportController extends Controller
             $transport->tank_type = 2; // Transport type
             $transport->entery_by_user = Auth::id();
             $transport->save();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Transport created: {$transport->larry_name} (Driver ID {$transport->driver_id})",
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -106,6 +120,12 @@ class TransportController extends Controller
             $transport->chamber_capacity_four = $request->chamber_capacity_four ?? 0;
             $transport->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => "Transport updated: {$transport->larry_name} (Driver ID {$transport->driver_id})",
+            ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Transport updated successfully',
@@ -124,7 +144,15 @@ class TransportController extends Controller
     {
         try {
             $transport = TankLari::findOrFail($id);
+            $name = $transport->larry_name;
+            $driverId = $transport->driver_id;
             $transport->delete();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Transport deleted: {$name} (Driver ID {$driverId})",
+            ]);
 
             return response()->json([
                 'success' => true,

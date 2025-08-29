@@ -21,6 +21,7 @@
                     <h5 class="mb-0"><i class="bi bi-building me-2"></i>Company Information</h5>
                 </div>
                 <div class="card-body p-4">
+                    @permission('management.settings.edit')
                     <form id="settingsForm" action="{{ route('admin.management.settings.update') }}" method="POST" enctype="multipart/form-data" class="row g-3">
                         @csrf
 
@@ -98,6 +99,7 @@
                             </button>
                         </div>
                     </form>
+                    @endpermission
                 </div>
             </div>
         </div>

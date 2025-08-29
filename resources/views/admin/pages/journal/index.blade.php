@@ -8,6 +8,7 @@
 @endpush
 
 @section('content')
+@permission('journal.view')
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -48,12 +49,12 @@
         <div class="col-md-4 mb-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-info bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
-                        <i class="bi bi-currency-dollar text-info" style="font-size: 1.5rem;"></i>
+                    <div class="d-flex justify-content-center align-items-center rounded-circle  {{ ($totalDebit - $totalCredit) == 0 ? 'bg-primary' : 'bg-success' }} bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
+                        <i class="bi bi-currency-dollar {{ ($totalDebit - $totalCredit) == 0 ? 'text-primary' : 'text-success' }}" style="font-size: 1.5rem;"></i>
                     </div>
                     <div>
                         <h6 class="text-muted mb-1">Balance</h6>
-                        <h3 class="mb-0 {{ ($totalDebit - $totalCredit) == 0 ? 'text-success' : 'text-warning' }}" style="font-size: 1.7rem;" style="font-size: 1.7rem;">
+                        <h3 class="mb-0 {{ ($totalDebit - $totalCredit) == 0 ? 'text-primary' : 'text-success' }}" style="font-size: 1.7rem;" style="font-size: 1.7rem;">
                             Rs {{ number_format(abs($totalDebit - $totalCredit)) }}
                         </h3>
                     </div>
@@ -136,6 +137,7 @@
         </div>
     </div>
 </div>
+@endpermission
 
 <!-- Journal Entry Modal -->
 <div class="modal fade" id="journalModal" tabindex="-1" aria-labelledby="journalModalLabel" aria-hidden="true" data-bs-backdrop="static">

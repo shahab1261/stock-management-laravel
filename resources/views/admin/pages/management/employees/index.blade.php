@@ -19,9 +19,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Employees</h5>
+                    @permission('management.employees.create')
                     <button type="button" id="addNewEmployeeBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add Employee
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -58,6 +60,7 @@
                                     <td class="ps-3">{{ $employee->notes }}</td>
                                     <td class="ps-3">{{ date('d-m-Y', strtotime($employee->created_at)) }}</td>
                                     <td class="text-center">
+                                        @permission('management.employees.edit')
                                         <button type="button" class="btn btn-sm btn-outline-primary edit-employee me-1"
                                             data-id="{{ $employee->id }}"
                                             data-name="{{ $employee->name }}"
@@ -68,9 +71,12 @@
                                             data-notes="{{ $employee->notes }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.employees.delete')
                                         <button type="button" class="btn btn-sm btn-outline-danger delete-employee" data-id="{{ $employee->id }}">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @endforeach

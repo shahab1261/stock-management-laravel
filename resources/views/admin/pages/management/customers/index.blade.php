@@ -62,9 +62,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Customers</h5>
+                    @permission('management.customers.create')
                     <button type="button" id="addNewCustomerBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add New Customer
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -113,6 +115,7 @@
                                     </td>
                                     <td>{{ date('d M Y', strtotime($customer->created_at)) }}</td>
                                     <td class="text-center">
+                                        @permission('management.customers.edit')
                                         <button class="btn btn-sm btn-outline-primary edit-btn me-1"
                                             data-id="{{ $customer->id }}"
                                             data-name="{{ $customer->name }}"
@@ -128,9 +131,12 @@
                                             title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.customers.delete')
                                         <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{{ $customer->id }}" title="Delete">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @endforeach

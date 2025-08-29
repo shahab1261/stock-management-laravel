@@ -12,9 +12,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Models\Logs;
 
 class DipController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:dips.view')->only('index');
+        $this->middleware('permission:dips.create')->only('store');
+        $this->middleware('permission:dips.delete')->only('destroy');
+    }
+
     public function index()
     {
         // Get site settings for date lock
@@ -106,6 +114,13 @@ class DipController extends Controller
                 'previous_stock' => $previousStock,
             ]);
 
+            // Log the dip creation
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'create',
+                'action_description' => "Created dip entry for tank: {$tank->tank_name}, dip value: {$dipValue}, liters: {$literValue}, date: {$dipDate}"
+            ]);
+
             DB::commit();
 
             return response()->json([
@@ -162,7 +177,18 @@ class DipController extends Controller
 
         try {
             $dip = Dip::findOrFail($request->id);
+            $tankName = $dip->tank->tank_name ?? 'Unknown Tank';
+            $dipValue = $dip->dip_value;
+            $dipDate = $dip->dip_date;
+
             $dip->delete();
+
+            // Log the dip deletion
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'delete',
+                'action_description' => "Deleted dip entry for tank: {$tankName}, dip value: {$dipValue}, date: {$dipDate}"
+            ]);
 
             return response()->json([
                 'success' => true,

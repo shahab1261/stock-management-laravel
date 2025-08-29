@@ -8,6 +8,7 @@
 @endsection
 
 @section('content')
+@permission('reports.sale-transport.view')
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -64,9 +65,9 @@
         <div class="col-md-3 mb-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-warning bg-opacity-10 p-3 me-3"
+                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-primary bg-opacity-10 p-3 me-3"
                         style="width: 66px; height: 66px;">
-                        <i class="bi bi-truck text-warning" style="font-size: 1.5rem;"></i>
+                        <i class="bi bi-truck text-primary" style="font-size: 1.5rem;"></i>
                     </div>
                     <div>
                         <h6 class="text-muted mb-1">Freight Charges</h6>
@@ -189,12 +190,12 @@
                                 <input type="date" class="form-control" id="end_date" name="end_date" value="{{ $endDate }}">
                             </div>
                             <div class="col-md-3 mb-3">
-                                <button type="submit" class="btn btn-success w-100">
+                                <button type="submit" class="btn btn-primary w-100">
                                     <i class="bi bi-search me-2"></i>Submit
                                 </button>
                             </div>
                             <div class="col-md-3 mb-3">
-                                <a href="{{ route('admin.reports.sale-transport') }}" class="btn btn-danger w-100">
+                                <a href="{{ route('admin.reports.sale-transport') }}" class="btn btn-secondary w-100">
                                     <i class="bi bi-x-circle me-2"></i>Clear
                                 </a>
                             </div>
@@ -211,7 +212,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-truck-flatbed me-2"></i>Sale Transport Details</h5>
-                    <span class="badge bg-info">{{ count($sales) }} Records</span>
+                    <span class="badge bg-primary">{{ count($sales) }} Records</span>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -332,6 +333,7 @@
         </div>
     </div>
 </div>
+@endpermission
 @endsection
 
 @push('scripts')

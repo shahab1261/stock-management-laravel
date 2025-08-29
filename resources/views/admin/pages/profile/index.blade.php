@@ -4,6 +4,7 @@
 @section('description', 'View and update your profile information')
 
 @section('content')
+@permission('profile.view')
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -99,7 +100,7 @@
                     <div class="tab-content" id="profileTabsContent">
                         <!-- Overview Tab -->
                         <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                            <h5 class="card-title mb-4">Profile Overview</h5>
+                            <h5 class="card-title mt-2" style="margin-bottom: 40px !important;">Profile Overview</h5>
 
                             @php
                                 $fields = [
@@ -127,12 +128,12 @@
 
                         <!-- Edit Profile Tab -->
                         <div class="tab-pane fade" id="edit-profile" role="tabpanel" aria-labelledby="edit-profile-tab">
-                            <h5 class="card-title mb-4">Edit Profile Information</h5>
+                            <h5 class="card-title mt-3" style="margin-bottom: 40px !important;">Edit Profile Information</h5>
 
                             <form id="updateProfileForm" action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
 
-                                <div class="mb-4 text-center">
+                                {{-- <div class="mb-4 text-center">
                                     @if($user->profile_image)
                                         <img src="{{ asset('storage/' . $user->profile_image) }}" id="profile-image-preview" alt="Profile Image" class="avatar-md rounded-circle border shadow-sm mb-3" style="width: 100px; height: 100px; object-fit: cover;">
                                     @else
@@ -146,7 +147,7 @@
                                         </button>
                                         <input type="file" id="profile_image" name="profile_image" class="position-absolute" style="top: 0; left: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;">
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="row g-3">
                                     <div class="col-md-6">
@@ -232,7 +233,7 @@
 
                         <!-- Change Password Tab -->
                         <div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
-                            <h5 class="card-title mb-4">Change Password</h5>
+                            <h5 class="card-title mb-3" style="margin-bottom: 40px !important;">Change Password</h5>
 
                             <form id="changePasswordForm" action="{{ route('admin.profile.password') }}" method="POST" class="row g-3">
                                 @csrf
@@ -296,7 +297,7 @@
         </div>
     </div>
 </div>
-
+@endpermission
 @endsection
 
 @push('scripts')

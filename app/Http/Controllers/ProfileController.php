@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:profile.view')->only('index');
+        $this->middleware('permission:profile.edit')->only('update');
+        $this->middleware('permission:profile.change-password')->only('changePassword');
+    }
+
     /**
      * Display the user profile
      */
@@ -62,6 +69,13 @@ class ProfileController extends Controller
             $user->notes = $request->notes;
             $user->save();
 
+            // Log the profile update
+            \App\Models\Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'update',
+                'action_description' => "Updated profile information: {$user->name} ({$user->email})"
+            ]);
+
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Profile updated successfully.']);
         } catch (\Throwable $th) {
@@ -95,6 +109,13 @@ class ProfileController extends Controller
 
             $user->password = Hash::make($request->new_password);
             $user->save();
+
+            // Log the password change
+            \App\Models\Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'update',
+                'action_description' => "Changed password for user: {$user->name} ({$user->email})"
+            ]);
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Password changed successfully.']);

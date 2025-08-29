@@ -14,7 +14,7 @@
         display: none;
     }
 </style>
-
+@permission('reports.account-history.view')
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -795,6 +795,7 @@
         </div>
     @endif
 </div>
+@endpermission
 @endsection
 
 @push('scripts')

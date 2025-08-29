@@ -4,12 +4,21 @@ namespace App\Http\Controllers\Management;
 
 use App\Http\Controllers\Controller;
 use App\Models\Management\Drivers;
+use App\Models\Logs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class DriverController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:management.drivers.view')->only(['index', 'getDriverDetails']);
+        $this->middleware('permission:management.drivers.create')->only(['store']);
+        $this->middleware('permission:management.drivers.edit')->only(['update']);
+        $this->middleware('permission:management.drivers.delete')->only(['delete']);
+    }
+
     public function index()
     {
         $drivers = Drivers::orderBy('created_at', 'desc')->get();
@@ -47,6 +56,12 @@ class DriverController extends Controller
             $driver->reference = $request->reference;
             $driver->entery_by_user = Auth::id();
             $driver->save();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Driver created: {$driver->driver_name} ({$driver->vehicle_no})",
+            ]);
 
             return response()->json(['success' => true, 'message' => 'Driver added successfully', 'driver' => $driver]);
         } catch (\Exception $e) {
@@ -86,6 +101,12 @@ class DriverController extends Controller
             $driver->reference = $request->reference;
             $driver->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => "Driver updated: {$driver->driver_name} ({$driver->vehicle_no})",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Driver updated successfully', 'driver' => $driver]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to update driver', 'error' => $e->getMessage()], 500);
@@ -96,7 +117,15 @@ class DriverController extends Controller
     {
         try {
             $driver = Drivers::findOrFail($id);
+            $name = $driver->driver_name;
+            $vehicle = $driver->vehicle_no;
             $driver->delete();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Driver deleted: {$name} ({$vehicle})",
+            ]);
 
             return response()->json(['success' => true, 'message' => 'Driver deleted successfully']);
         } catch (\Exception $e) {

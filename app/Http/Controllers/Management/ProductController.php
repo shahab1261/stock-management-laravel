@@ -5,12 +5,20 @@ namespace App\Http\Controllers\Management;
 use App\Http\Controllers\Controller;
 use App\Models\Management\Product;
 use App\Models\Management\Tank;
+use App\Models\Logs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:management.products.view')->only(['index']);
+        $this->middleware('permission:management.products.create')->only(['store']);
+        $this->middleware('permission:management.products.edit')->only(['update']);
+        $this->middleware('permission:management.products.delete')->only(['destroy']);
+    }
     public function index()
     {
         $products = Product::with('tank')
@@ -67,6 +75,11 @@ class ProductController extends Controller
                     'product_id' => $prod->id,
                     'opening_stock' => 0,
                 ]);
+                Logs::create([
+                    'user_id' => Auth::id(),
+                    'action_type' => 'Create',
+                    'action_description' => "Product created: {$prod->name} (Unit {$prod->unit})",
+                ]);
             } else{
                 $product = new Product();
                 $product->name = $request->name;
@@ -84,6 +97,11 @@ class ProductController extends Controller
                 $tank->update([
                     'product_id' => $product->id,
                     'opening_stock' => 0,
+                ]);
+                Logs::create([
+                    'user_id' => Auth::id(),
+                    'action_type' => 'Create',
+                    'action_description' => "Product created: {$product->name} (Unit {$product->unit})",
                 ]);
             }
 
@@ -115,6 +133,12 @@ class ProductController extends Controller
             $product->current_sale = $request->current_sale;
             $product->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => "Product updated: {$product->name} (Unit {$product->unit})",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Product updated successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to update product', 'error' => $e->getMessage()]);
@@ -125,7 +149,15 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($id);
+            $name = $product->name;
+            $unit = $product->unit;
             $product->delete();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Product deleted: {$name} (Unit {$unit})",
+            ]);
 
             return response()->json(['success' => true, 'message' => 'Product deleted successfully']);
         } catch (\Exception $e) {

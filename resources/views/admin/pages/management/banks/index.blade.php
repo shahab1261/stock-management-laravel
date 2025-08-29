@@ -62,9 +62,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Banks</h5>
+                    @permission('management.banks.create')
                     <button type="button" id="addNewBankBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add New Bank
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -105,12 +107,16 @@
                                     </td>
                                     <td>{{ date('d M Y', strtotime($bank->created_at)) }}</td>
                                     <td class="text-center">
+                                        @permission('management.banks.edit')
                                         <button class="btn btn-sm btn-outline-primary edit-btn me-1" data-id="{{ $bank->id }}" data-name="{{ $bank->name }}" data-acc="{{ $bank->account_number }}" data-bank-code="{{ $bank->bank_code }}" data-address="{{ $bank->address }}" data-notes="{{ $bank->notes }}" data-balance="{{ $bank->balance }}" data-status="{{ $bank->status }}" title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.banks.delete')
                                         <button class="btn btn-sm btn-outline-danger delete-btn" data-id="{{ $bank->id }}" title="Delete">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @empty

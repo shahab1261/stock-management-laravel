@@ -8,11 +8,16 @@ use Illuminate\Support\Facades\Auth;
 
 class LogsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:logs.view')->only(['index', 'getRecentLogs']);
+    }
+
     public function index()
     {
         $logs = Logs::with('user')
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->get();
 
         return view('admin.pages.logs.index', compact('logs'));
     }

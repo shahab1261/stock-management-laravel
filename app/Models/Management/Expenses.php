@@ -12,4 +12,9 @@ class Expenses extends Model
     protected $table = "expenses";
     protected $primaryKey = "id";
     protected $guarded = [];
+
+    public function getExpenseNameAttribute($value)
+    {
+        return str_replace('&amp;', '&', $value);
+    }
 }

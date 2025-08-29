@@ -8,6 +8,7 @@
 @endsection
 
 @section('content')
+@permission('reports.all-stocks.view')
 <div class="container-fluid py-4">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -48,7 +49,7 @@
         <div class="col-md-3 mb-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-info bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
+                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-primary bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
                         <i class="bi bi-arrow-up-circle text-info" style="font-size: 1.5rem;"></i>
                     </div>
                     <div>
@@ -137,6 +138,7 @@
         </div>
     </div>
 </div>
+@endpermission
 @endsection
 
 @push('scripts')

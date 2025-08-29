@@ -4,6 +4,7 @@
 @section('description', 'Manage System Purchase')
 
 @section('content')
+@permission('sales.view')
 {{-- @php
     $HSDAmount = 0;
     $SuperAmount = 0;
@@ -34,9 +35,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-cart-plus me-2"></i>Sales</h5>
+                    @permission('sales.create')
                     <button type="button" id="addNewSalesBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add New Sales
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -103,10 +106,12 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
+                                            @permission('sales.delete')
                                             <button type="button" class="btn btn-sm btn-danger delete-sales-btn"
                                                 data-id="{{ $sale->id }}">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            @endpermission
                                         </div>
                                     </td>
                                 </tr>
@@ -132,9 +137,9 @@
                         <table class="table table-striped mb-0" id="sales_card">
                             <thead class="table-light">
                                 <tr>
-                                    <th scope="col">Product Name</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Amount</th>
+                                    <th class="ps-3 text-center" scope="col">Product Name</th>
+                                    <th class="ps-3 text-center" scope="col">Quantity</th>
+                                    <th class="ps-3 text-center" scope="col">Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -175,6 +180,7 @@
         </div>
     </div>
 </div>
+@endpermission
 
 
 <style>

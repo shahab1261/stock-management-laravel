@@ -8,9 +8,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Logs;
 
 class SettingsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:management.settings.view')->only(['index']);
+        $this->middleware('permission:management.settings.edit')->only(['update']);
+    }
     /**
      * Display the settings page
      */
@@ -59,6 +65,12 @@ class SettingsController extends Controller
             $settings->short_desc = $request->short_desc;
             $settings->date_lock = $request->date_lock;
             $settings->save();
+
+            Logs::create([
+                'user_id' => auth()->id(),
+                'action_type' => 'Update',
+                'action_description' => "Settings updated: {$settings->company_name} (Date lock {$settings->date_lock})",
+            ]);
 
             DB::commit();
             return response()->json(['status' => 'success', 'message' => 'Settings updated successfully.']);

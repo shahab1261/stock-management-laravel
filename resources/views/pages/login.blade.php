@@ -9,8 +9,13 @@
         #login-btn:hover {
             background-color: #5868f4 !important;
         }
+        .login-page{
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
     </style>
-    <div class="login-page py-5">
+    <div class="login-page">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-5">

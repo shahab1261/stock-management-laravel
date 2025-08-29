@@ -13,7 +13,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/tanklari/store',
+            url: '/tanklari/store',
             method: 'POST',
             data: $('#addTankLariForm').serialize(),
             dataType: 'json',
@@ -89,7 +89,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/tanklari/update',
+            url: '/tanklari/update',
             method: 'POST',
             data: $('#editTankLariForm').serialize(),
             dataType: 'json',
@@ -147,7 +147,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/tanklari/delete/' + tankLariId,
+            url: '/tanklari/delete/' + tankLariId,
             method: 'GET',
             dataType: 'json',
             headers: {

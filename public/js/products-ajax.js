@@ -154,7 +154,7 @@ $(document).ready(function() {
         let $btn = $(this);
 
         $.ajax({
-            url: `/admin/products/${productId}`,
+            url: `/products/${productId}`,
             type: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

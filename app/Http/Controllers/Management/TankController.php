@@ -6,12 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Management\Tank;
 use App\Models\Management\Product;
 use App\Models\Management\DipChart;
+use App\Models\Logs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TankController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:management.tanks.view')->only(['index', 'viewDipCharts', 'dipChartsIndex']);
+        $this->middleware('permission:management.tanks.create')->only(['store']);
+        $this->middleware('permission:management.tanks.edit')->only(['update']);
+        $this->middleware('permission:management.tanks.delete')->only(['delete']);
+    }
     public function index()
     {
         $tanks = Tank::with(['product', 'user'])
@@ -58,6 +66,12 @@ class TankController extends Controller
                 $product->save();
             }
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Tank created: {$tank->tank_name} (Limit {$tank->tank_limit})",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Tank added successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to add tank']);
@@ -91,6 +105,12 @@ class TankController extends Controller
             $tank->notes = $request->notes;
             $tank->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => "Tank updated: {$tank->tank_name} (Limit {$tank->tank_limit})",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Tank updated successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to update tank'. $e->getMessage()]);
@@ -101,7 +121,15 @@ class TankController extends Controller
     {
         try {
             $tank = Tank::findOrFail($id);
+            $name = $tank->tank_name;
+            $limit = $tank->tank_limit;
             $tank->delete();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Tank deleted: {$name} (Limit {$limit})",
+            ]);
 
             return response()->json(['success' => true, 'message' => 'Tank deleted successfully']);
         } catch (\Exception $e) {

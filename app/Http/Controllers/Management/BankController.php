@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Management;
 
 use Illuminate\Http\Request;
+use App\Models\Logs;
 use App\Models\Management\Banks;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -10,6 +11,13 @@ use Illuminate\Support\Facades\Auth;
 
 class BankController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:management.banks.view')->only(['index']);
+        $this->middleware('permission:management.banks.create')->only(['store']);
+        $this->middleware('permission:management.banks.edit')->only(['update']);
+        $this->middleware('permission:management.banks.delete')->only(['delete']);
+    }
     public function index()
     {
         $banks = Banks::orderBy('created_at', 'desc')->get();
@@ -44,6 +52,12 @@ class BankController extends Controller
             $bank->entery_by_user = Auth::id();
             $bank->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Bank created: {$bank->name} (Account {$bank->account_number})",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Bank added successfully', 'bank' => $bank]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to add bank', 'error' => $e->getMessage()], 500);
@@ -76,6 +90,12 @@ class BankController extends Controller
             $bank->status = $request->status;
             $bank->save();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => "Bank updated: {$bank->name} (Account {$bank->account_number})",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Bank updated successfully', 'bank' => $bank]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to update bank', 'error' => $e->getMessage()], 500);
@@ -86,7 +106,15 @@ class BankController extends Controller
     {
         try {
             $bank = Banks::findOrFail($id);
+            $name = $bank->name;
+            $acc = $bank->account_number;
             $bank->delete();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Bank deleted: {$name} (Account {$acc})",
+            ]);
 
             return response()->json(['success' => true, 'message' => 'Bank deleted successfully']);
         } catch (\Exception $e) {

@@ -13,7 +13,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/transports/store',
+            url: '/transports/store',
             method: 'POST',
             data: $('#addTransportForm').serialize(),
             dataType: 'json',
@@ -97,7 +97,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/transports/update',
+            url: '/transports/update',
             method: 'POST',
             data: $('#editTransportForm').serialize(),
             dataType: 'json',
@@ -164,7 +164,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/admin/transports/delete/' + transportId,
+            url: '/transports/delete/' + transportId,
             method: 'DELETE',
             dataType: 'json',
             headers: {

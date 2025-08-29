@@ -100,7 +100,7 @@ $(document).ready(function() {
             formData.append("selected_tank", $("#selected_tank").val() || 0);
 
             $.ajax({
-                url: "/admin/sales",
+                url: "/sales",
                 type: "POST",
                 processData: false,
                 contentType: false,
@@ -116,7 +116,7 @@ $(document).ready(function() {
                             text: response.message || 'Sales added successfully',
                             confirmButtonColor: '#4154f1'
                         }).then(function() {
-                            window.location.href = response.redirect || '/admin/sales';
+                            window.location.href = response.redirect || '/sales';
                         });
                     } else if(response.error === 'tank-limit-exceed') {
                         Swal.fire({
@@ -173,7 +173,7 @@ $(document).ready(function() {
             var product_id = selectedOption.val();
 
             $.ajax({
-                url: "/admin/product/tank/update",
+                url: "/product/tank/update",
                 type: "POST",
                 data: {
                     _token: csrfToken,
@@ -250,7 +250,7 @@ $(document).ready(function() {
         });
 
         $('#addNewSalesBtn').click(function() {
-            window.location.href = "/admin/sales/create";
+            window.location.href = "/sales/create";
         });
 
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -293,7 +293,7 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "/admin/sales/delete",
+                    url: "/sales/delete",
                     type: "POST",
                     data: {
                         _token: csrfToken,

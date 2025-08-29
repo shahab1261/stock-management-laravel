@@ -19,9 +19,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Terminals</h5>
+                    @permission('management.terminals.create')
                     <button type="button" id="addNewTerminalBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add Terminal
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -52,6 +54,7 @@
                                     <td class="ps-3 text-start">{{ $terminal->notes }}</td>
                                     <td class="ps-3 text-start">{{ date('d-m-Y', strtotime($terminal->created_at)) }}</td>
                                     <td class="text-center ps-0">
+                                        @permission('management.terminals.edit')
                                         <button type="button" class="btn btn-sm btn-outline-primary edit-terminal me-1"
                                             data-id="{{ $terminal->id }}"
                                             data-name="{{ $terminal->name }}"
@@ -59,9 +62,12 @@
                                             data-notes="{{ $terminal->notes }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.terminals.delete')
                                         <button type="button" class="btn btn-sm btn-outline-danger delete-terminal" data-id="{{ $terminal->id }}">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @endforeach

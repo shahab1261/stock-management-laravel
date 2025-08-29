@@ -44,8 +44,8 @@
         <div class="col-md-4 mb-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center">
-                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-info bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
-                        <i class="bi bi-currency-dollar text-info" style="font-size: 1.5rem;"></i>
+                    <div class="d-flex justify-content-center align-items-center rounded-circle bg-success bg-opacity-10 p-3 me-3" style="width: 66px; height: 66px;">
+                        <i class="bi bi-currency-dollar text-success" style="font-size: 1.5rem;"></i>
                     </div>
                     <div>
                         <h6 class="text-muted mb-1">Total Amount</h6>
@@ -62,9 +62,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Cash Receipts</h5>
+                    @permission('payments.cash-receiving.create')
                     <button type="button" id="addNewReceiptBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add New Receipt
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -90,7 +92,7 @@
                                     <td>{{ date('d M Y', strtotime($transaction->transaction_date)) }}</td>
                                     <td>
                                         @if($transaction->payment_type == 1)
-                                            <span class="badge bg-info">Cash</span>
+                                            <span class="badge bg-primary">Cash</span>
                                         @else
                                             <span class="badge bg-primary">{{ $transaction->bank_name }}</span>
                                         @endif
@@ -109,9 +111,9 @@
                                     <td class="fw-medium text-success">Rs {{ number_format($transaction->amount, 2) }}</td>
                                     <td>{{ $transaction->description }}</td>
                                     <td class="text-center">
-                                        @if(auth()->user()->user_type == 1)
+                                        @permission('payments.transaction.delete')
                                             @php
-                                                $ledgerPurchaseType = app('App\Http\Controllers\PaymentController')->getLedgerPurchaseType($transaction->transaction_type, $transaction->payment_type);
+                                                $ledgerPurchaseType = app('App\\Http\\Controllers\\PaymentController')->getLedgerPurchaseType($transaction->transaction_type, $transaction->payment_type);
                                             @endphp
                                             <button class="btn btn-sm btn-outline-danger delete-btn"
                                                 data-id="{{ $transaction->tid }}"
@@ -119,9 +121,7 @@
                                                 title="Delete">
                                                 <i class="bi bi-trash"></i>
                                             </button>
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @endforeach
@@ -194,16 +194,16 @@
                         </div>
                         <div class="invalid-feedback" id="transaction_description-error"></div>
                     </div>
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-light" style="background-color: #fdfdfd;" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i> Cancel
+                        </button>
+                        <button type="submit" id="saveBtn" class="btn btn-primary px-4">
+                            <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
+                            <i class="bi bi-save me-1"></i> <span id="saveBtnText">Save</span>
+                        </button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-light" style="background-color: #fdfdfd;" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i> Cancel
-                </button>
-                <button type="button" id="saveBtn" class="btn btn-primary px-4">
-                    <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
-                    <i class="bi bi-save me-1"></i> <span id="saveBtnText">Save</span>
-                </button>
             </div>
         </div>
     </div>

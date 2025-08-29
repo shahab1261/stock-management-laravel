@@ -76,9 +76,11 @@
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Tank Lari List</h5>
                     <div>
+                        @permission('management.tanklari.create')
                         <button id="addNewTankLariBtn" class="btn btn-primary btn-sm">
                             <i class="bi bi-plus-circle me-1"></i> Add New
                         </button>
+                        @endpermission
                     </div>
                 </div>
                 <div class="card-body p-0 pt-0">
@@ -122,6 +124,7 @@
                                     <td>{{ $tanklari->chamber_dip_four }}</td>
                                     <td>{{ $tanklari->chamber_capacity_four }}</td>
                                     <td class="text-center">
+                                        @permission('management.tanklari.edit')
                                         <button class="btn btn-sm btn-outline-primary edit-tank-lari me-1"
                                             data-id="{{ $tanklari->id }}"
                                             data-name="{{ $tanklari->larry_name }}"
@@ -137,12 +140,15 @@
                                             title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.tanklari.delete')
                                         <button class="btn btn-sm btn-outline-danger delete-tank-lari"
                                             data-id="{{ $tanklari->id }}"
                                             data-name="{{ $tanklari->larry_name }}"
                                             title="Delete">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @endforeach

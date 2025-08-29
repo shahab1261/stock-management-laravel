@@ -20,6 +20,18 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:payments.bank-receiving.view')->only(['bankReceiving']);
+        $this->middleware('permission:payments.bank-receiving.create')->only(['storeBankReceiving']);
+        $this->middleware('permission:payments.bank-payments.view')->only(['bankPayments']);
+        $this->middleware('permission:payments.bank-payments.create')->only(['storeBankPayment']);
+        $this->middleware('permission:payments.cash-receiving.view')->only(['cashReceiving']);
+        $this->middleware('permission:payments.cash-receiving.create')->only(['storeCashReceiving']);
+        $this->middleware('permission:payments.cash-payments.view')->only(['cashPayments']);
+        $this->middleware('permission:payments.cash-payments.create')->only(['storeCashPayment']);
+        $this->middleware('permission:payments.transaction.delete')->only(['deleteTransaction']);
+    }
     /**
      * Show bank receiving page
      */
@@ -277,6 +289,12 @@ class PaymentController extends Controller
 
             DB::commit();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Bank receiving: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Bank {$request->bank_name} (ID {$request->bank_id}) | Amount PKR {$request->transaction_amount} | Date {$request->transaction_date}",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Bank receiving transaction created successfully']);
 
         } catch (Exception $e) {
@@ -354,6 +372,12 @@ class PaymentController extends Controller
 
             DB::commit();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Bank payment: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Bank {$request->bank_name} (ID {$request->bank_id}) | Amount PKR {$request->transaction_amount} | Date {$request->transaction_date}",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Bank payment transaction created successfully']);
 
         } catch (Exception $e) {
@@ -426,6 +450,12 @@ class PaymentController extends Controller
             ]);
 
             DB::commit();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Cash receiving: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Amount PKR {$request->transaction_amount} | Date {$request->transaction_date}",
+            ]);
 
             return response()->json(['success' => true, 'message' => 'Cash receiving transaction created successfully']);
 
@@ -500,6 +530,12 @@ class PaymentController extends Controller
 
             DB::commit();
 
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Create',
+                'action_description' => "Cash payment: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Amount PKR {$request->transaction_amount} | Date {$request->transaction_date}",
+            ]);
+
             return response()->json(['success' => true, 'message' => 'Cash payment transaction created successfully']);
 
         } catch (Exception $e) {
@@ -528,6 +564,12 @@ class PaymentController extends Controller
             Transaction::where('tid', $transactionId)->delete();
 
             DB::commit();
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Payment transaction deleted: TID {$transactionId} (Ledger purchase type {$ledgerPurchaseType})",
+            ]);
 
             return response()->json(['success' => true, 'message' => 'Transaction deleted successfully']);
 

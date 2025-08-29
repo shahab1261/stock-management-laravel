@@ -2,6 +2,7 @@
 @section('title', 'Stock Management | Admin Dashboard')
 @section('description', 'Stock Management Admin Dashboard')
 @section('content')
+@permission('dashboard.view')
     @php
         $settings = App\Models\Management\Settings::first();
         $products = App\Models\Management\Product::with('tank')->get();
@@ -16,6 +17,10 @@
         $totalCurrentStock = 0;
 
         $dippableProducts = $products->where('is_dippable', 1)->sortByDesc('id')->values()->all();
+
+        // Data for charts
+        $productNames = [];
+        $productClosingStocks = [];
 
         foreach($dippableProducts as $product) {
             $openingStock = App\Models\CurrentStock::where('product_id', $product->id)
@@ -60,9 +65,20 @@
             $totalSoldStock += $soldStock;
             $totalClosingStock += $closedStock;
             $totalCurrentStock += $tankStock;
+
+            // Collect data for Products Stock chart (use closing stock on lock date)
+            $productNames[] = $product->name;
+            $productClosingStocks[] = (float) ($closedStock ?? 0);
         }
 
-
+        // Monthly sales data (sum of quantity per month for the year of lock date)
+        $year = \Carbon\Carbon::parse($settings->date_lock ?? now())->year;
+        $monthlySales = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthlySales[] = (float) \App\Models\Sales::whereYear('create_date', $year)
+                                ->whereMonth('create_date', $m)
+                                ->sum('quantity');
+        }
 
         // Product stock data for charts
         // $productNames = $dippableProducts->pluck('name')->toArray();
@@ -210,7 +226,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="dippableProductsTable" class="table table-hover align-middle mb-0">
+                            <table id="dippableProductsTable" class="table table-hover align-middle mb-0 w-100">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="text-center">#</th>
@@ -363,6 +379,7 @@
             </div>
         </div>
     </div>
+@endpermission
 
     <style>
         .timeline {
@@ -406,10 +423,10 @@
             font-size: 16px;
         }
 
-        .container-fluid {
+        /* .container-fluid {
             max-width: 100%;
             overflow-x: hidden;
-        }
+        } */
 
         .table-responsive {
             overflow-x: auto;
@@ -551,27 +568,9 @@
         new Chart(stockCtx, {
             type: 'doughnut',
             data: {
-                labels: [
-                    // Use actual product names
-                    @if(count($dippableProducts) > 0)
-                        @foreach($dippableProducts as $product)
-                            '{{ $product->name }}',
-                        @endforeach
-                    @else
-                        'HSD', 'Super'
-                    @endif
-                ],
+                labels: {!! json_encode($productNames) !!},
                 datasets: [{
-                    data: [
-                        // Use actual product stock data
-                        @if(count($dippableProducts) > 0)
-                            @foreach($dippableProducts as $product)
-                                {{ $product->book_stock > 0 ? $product->book_stock : mt_rand(1000, 10000) }},
-                            @endforeach
-                        @else
-                            5901, 9814
-                        @endif
-                    ],
+                    data: {!! json_encode($productClosingStocks) !!},
                     backgroundColor: ['#ffbb55', '#4154f1', '#ff771d', '#2eca6a'],
                     borderWidth: 1
                 }]
@@ -610,7 +609,7 @@
                 datasets: [
                     {
                         label: 'Sales',
-                        data: [650, 590, 800, 810, 560, 550, 730, 780, 820, 650, 590, 690],
+                        data: {!! json_encode($monthlySales) !!},
                         borderColor: '#4154f1',
                         backgroundColor: 'rgba(65, 84, 241, 0.2)',
                         tension: 0.3,

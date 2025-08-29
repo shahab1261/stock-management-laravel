@@ -20,6 +20,17 @@ use Illuminate\Support\Facades\DB;
 
 class HistoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:history.purchases.view')->only('purchases');
+        $this->middleware('permission:history.sales.view')->only('sales');
+        $this->middleware('permission:history.bank-receivings.view')->only('bankReceivings');
+        $this->middleware('permission:history.bank-payments.view')->only('bankPayments');
+        $this->middleware('permission:history.cash-receipts.view')->only('cashReceipts');
+        $this->middleware('permission:history.cash-payments.view')->only('cashPayments');
+        $this->middleware('permission:history.journal-vouchers.view')->only('journalVouchers');
+    }
+
     /**
      * Display purchases history
      */

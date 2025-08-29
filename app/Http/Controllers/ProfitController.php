@@ -12,6 +12,11 @@ use App\Models\Management\Tank;
 
 class ProfitController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:profit.view')->only('index');
+    }
+
     public function index(Request $request)
     {
         $productId = $request->get('product_id', '');

@@ -26,6 +26,14 @@ use Illuminate\Support\Facades\Log;
 
 class ReportsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:reports.account-history.view')->only('accountHistory');
+        $this->middleware('permission:reports.all-stocks.view')->only('allStocks');
+        $this->middleware('permission:reports.summary.view')->only('summary');
+        $this->middleware('permission:reports.purchase-transport.view')->only('purchaseTransportReport');
+        $this->middleware('permission:reports.sale-transport.view')->only('saleTransportReport');
+    }
 
     /**
      * Account History Report
@@ -814,7 +822,7 @@ class ReportsController extends Controller
     /**
      * Get vendor by type and ID
      */
-    private function getVendorByType($vendorType, $vendorId)
+    public function getVendorByType($vendorType, $vendorId)
     {
         $obj = new \stdClass();
 

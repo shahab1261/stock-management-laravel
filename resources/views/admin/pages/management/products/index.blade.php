@@ -65,9 +65,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Products</h5>
+                    @permission('management.products.create')
                     <button type="button" id="addNewProductBtn" class="btn btn-primary d-flex align-items-center">
                         <i class="bi bi-plus-circle me-2"></i> Add New Product
                     </button>
+                    @endpermission
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -104,6 +106,7 @@
                                     <td class="ps-3">{{ Str::limit($product->notes, 20) }}</td>
                                     <td class="ps-3">{{ date('d M Y', strtotime($product->created_at)) }}</td>
                                     <td class="text-center">
+                                        @permission('management.products.edit')
                                         <button type="button" class="btn btn-sm btn-outline-primary edit-product me-1"
                                             data-id="{{ $product->id }}"
                                             data-name="{{ $product->name }}"
@@ -115,9 +118,12 @@
                                             data-notes="{{ $product->notes }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
+                                        @endpermission
+                                        @permission('management.products.delete')
                                         <button type="button" class="btn btn-sm btn-outline-danger delete-product" data-id="{{ $product->id }}">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                        @endpermission
                                     </td>
                                 </tr>
                                 @endforeach
