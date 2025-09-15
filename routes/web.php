@@ -219,6 +219,7 @@ Route::middleware('admin')->group(function () {
     Route::post('/journal/store', [JournalController::class, 'store'])->name('admin.journal.store');
     Route::delete('/journal/delete/{id}', [JournalController::class, 'destroy'])->name('admin.journal.destroy');
     Route::get('/journal/vendors', [JournalController::class, 'getVendorsByType'])->name('admin.journal.vendors');
+    Route::get('/journal/voucher-details/{id}', [JournalController::class, 'getVoucherDetails'])->name('admin.journal.voucher-details');
 
     /*************************Trial_Balance_Routes***************************/
     Route::get('/trial-balance', [TrialBalanceController::class, 'index'])->name('admin.trial-balance.index');
@@ -226,6 +227,7 @@ Route::middleware('admin')->group(function () {
 
     /*************************Profit_Routes***************************/
     Route::get('/profit', [ProfitController::class, 'index'])->name('admin.profit.index');
+    Route::post('/profit/update-rates', [ProfitController::class, 'updateRates'])->name('admin.profit.update-rates');
 
     /*************************Dips_Routes***************************/
     Route::get('/dips', [DipController::class, 'index'])->name('admin.dips.index');

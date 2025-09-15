@@ -346,8 +346,8 @@
                             @foreach($recentLogs as $log)
                             <div class="timeline-item d-flex mb-3">
                                 <div class="timeline-marker flex-shrink-0 me-3">
-                                    <div class="avatar-sm bg-{{ $log->action_type === 'create' ? 'success' : ($log->action_type === 'update' ? 'primary' : ($log->action_type === 'delete' ? 'danger' : 'info')) }} bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                        <i class="bi bi-{{ $log->action_type === 'create' ? 'plus' : ($log->action_type === 'update' ? 'pencil' : ($log->action_type === 'delete' ? 'trash' : 'info-circle')) }} text-{{ $log->action_type === 'create' ? 'success' : ($log->action_type === 'update' ? 'primary' : ($log->action_type === 'delete' ? 'danger' : 'info')) }}"></i>
+                                    <div class="avatar-sm bg-{{ $log->action_type === 'Create' ? 'success' : ($log->action_type === 'Update' ? 'primary' : ($log->action_type === 'Delete' ? 'danger' : 'info')) }} bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-{{ $log->action_type === 'Create' ? 'plus' : ($log->action_type === 'Update' ? 'pencil' : ($log->action_type === 'Delete' ? 'trash' : 'info-circle')) }} text-{{ $log->action_type === 'Create' ? 'success' : ($log->action_type === 'Update' ? 'primary' : ($log->action_type === 'Delete' ? 'danger' : 'info')) }}"></i>
                                     </div>
                                 </div>
                                 <div class="timeline-content flex-grow-1">

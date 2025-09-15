@@ -1,4 +1,51 @@
 $(document).ready(function() {
+    // Update Rates (reuse profit endpoint)
+    $(document).on('click', '#updateRatesBtn', function() {
+        const btn = $(this);
+        const url = btn.data('url');
+
+        if (!url) {
+            Swal.fire({ icon: 'error', title: 'Error!', text: 'Update URL not found.', confirmButtonColor: '#4154f1' });
+            return;
+        }
+
+        Swal.fire({
+            text: 'Are you sure to update the purchase rate of all products as current rate?',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, update',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#4154f1',
+            cancelButtonColor: '#6c757d'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const originalHtml = btn.html();
+                btn.prop('disabled', true).html('<i class="bi bi-hourglass-split me-1"></i>Updating...');
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(resp) {
+                        if (resp && resp.success) {
+                            Swal.fire({ icon: 'success', title: 'Success!', text: 'Rate updated successfully!', confirmButtonColor: '#4154f1' })
+                                .then(() => { location.reload(); });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: (resp && resp.message) ? resp.message : 'Please try again!', confirmButtonColor: '#4154f1' });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'Request failed. Please try again!', confirmButtonColor: '#4154f1' });
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false).html(originalHtml);
+                    }
+                });
+            }
+        });
+    });
     $(document).on('change', '#is_dippable', function() {
         if ($(this).val() == '1') {
             $('.tank-field').show();

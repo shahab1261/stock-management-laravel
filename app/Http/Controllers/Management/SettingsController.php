@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Logs;
 
 class SettingsController extends Controller
@@ -23,7 +24,8 @@ class SettingsController extends Controller
     public function index()
     {
         $settings = Settings::first();
-        return view('admin.pages.management.settings.index', compact('settings'));
+        $hasSystemLockedPermission = Auth::user()->can('system_locked');
+        return view('admin.pages.management.settings.index', compact('settings', 'hasSystemLockedPermission'));
     }
 
     /**
@@ -31,6 +33,8 @@ class SettingsController extends Controller
      */
     public function update(Request $request)
     {
+        $hasSystemLockedPermission = Auth::user()->can('system_locked');
+
         $validator = Validator::make($request->all(), [
             'company_name' => 'required|string|max:255',
             'short_desc' => 'nullable|string|max:255',
@@ -40,6 +44,17 @@ class SettingsController extends Controller
 
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
+        }
+
+        // Check if user can set date lock to past/future dates
+        if (!$hasSystemLockedPermission) {
+            $today = now()->format('Y-m-d');
+            if ($request->date_lock !== $today) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'You can only set the date lock to today\'s date. Contact administrator for advanced date locking.'
+                ]);
+            }
         }
 
         try {
@@ -67,7 +82,7 @@ class SettingsController extends Controller
             $settings->save();
 
             Logs::create([
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'action_type' => 'Update',
                 'action_description' => "Settings updated: {$settings->company_name} (Date lock {$settings->date_lock})",
             ]);

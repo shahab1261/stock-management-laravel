@@ -55,6 +55,7 @@ class RolePermissionSeeder extends Seeder
 
             // Profit and Loss
             'profit.view',
+            'profit.update-rates',
 
             // Dips
             'dips.view',
@@ -177,6 +178,7 @@ class RolePermissionSeeder extends Seeder
 
             'management.settings.view',
             'management.settings.edit',
+            'system_locked',
 
             // Profile
             'profile.view',
@@ -213,7 +215,7 @@ class RolePermissionSeeder extends Seeder
             'sales.lubricant.view', 'sales.lubricant.create',
             'journal.view', 'journal.create', 'journal.edit',
             'trial-balance.view', 'trial-balance.export',
-            'profit.view',
+            'profit.view', 'profit.update-rates',
             'dips.view', 'dips.create', 'dips.edit',
             'wet-stock.view', 'wet-stock.export',
             'payments.bank-receiving.view', 'payments.bank-receiving.create',

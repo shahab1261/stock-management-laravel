@@ -65,11 +65,18 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Products</h5>
-                    @permission('management.products.create')
-                    <button type="button" id="addNewProductBtn" class="btn btn-primary d-flex align-items-center">
-                        <i class="bi bi-plus-circle me-2"></i> Add New Product
-                    </button>
-                    @endpermission
+                    <div class="d-flex gap-2">
+                        @permission('profit.update-rates')
+                        <button type="button" id="updateRatesBtn" class="btn btn-outline-primary d-flex align-items-center" data-url="{{ route('admin.profit.update-rates') }}">
+                            <i class="bi bi-arrow-clockwise me-2"></i> Update Rates
+                        </button>
+                        @endpermission
+                        @permission('management.products.create')
+                        <button type="button" id="addNewProductBtn" class="btn btn-primary d-flex align-items-center">
+                            <i class="bi bi-plus-circle me-2"></i> Add New Product
+                        </button>
+                        @endpermission
+                    </div>
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">

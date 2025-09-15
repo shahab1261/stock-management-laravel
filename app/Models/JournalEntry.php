@@ -22,6 +22,27 @@ class JournalEntry extends Model
     ];
 
     /**
+     * Generate next voucher ID
+     */
+    public static function generateVoucherId()
+    {
+        // Get the highest voucher ID number
+        $lastEntry = self::where('voucher_id', 'like', 'J%')
+            ->whereNotNull('voucher_id')
+            ->orderByRaw('CAST(SUBSTRING(voucher_id, 2) AS UNSIGNED) DESC')
+            ->first();
+
+        if ($lastEntry && $lastEntry->voucher_id) {
+            $lastNumber = (int) substr($lastEntry->voucher_id, 1);
+            $nextNumber = $lastNumber + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
+        return 'J' . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
+    }
+
+    /**
      * Get the user that created this journal entry
      */
     public function user()

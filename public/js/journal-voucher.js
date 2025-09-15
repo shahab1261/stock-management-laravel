@@ -5,6 +5,7 @@
 
 $(document).ready(function() {
     let partyCounter = 1;
+    let currentVoucherId = null;
 
     // Initialize
     initializeJournalForm();
@@ -18,6 +19,7 @@ $(document).ready(function() {
             $('#journalModal').modal('show');
             resetForm();
             addInitialPartyRows();
+            currentVoucherId = null; // Reset voucher ID for new entry
         });
 
         // Add party button
@@ -31,10 +33,14 @@ $(document).ready(function() {
             submitJournalEntries();
         });
 
-        // Delete journal entry - open confirmation modal (cash receiving flow)
+        // Delete journal entry - open confirmation modal
         $(document).on('click', '.delete-btn', function() {
             const id = $(this).data('id');
+            const voucherId = $(this).data('voucher-id');
             $('#delete_entry_id').val(id);
+
+            // Load voucher details
+            loadVoucherDetails(id);
             $('#deleteModal').modal('show');
         });
 
@@ -328,7 +334,8 @@ $(document).ready(function() {
                     journal_amount: debitAmount > 0 ? debitAmount : creditAmount,
                     journal_description: description,
                     journal_date: $('#journal_date').val(),
-                    debit_credit: debitAmount > 0 ? '2' : '1' // 2=debit, 1=credit
+                    debit_credit: debitAmount > 0 ? '2' : '1', // 2=debit, 1=credit
+                    voucher_id: null // Will be set after first entry gets voucher_id
                 });
             }
         });
@@ -368,6 +375,15 @@ $(document).ready(function() {
             },
             success: function(response) {
                 if (response.status === 'success') {
+                    // Store voucher_id from first entry for subsequent entries
+                    if (index === 0 && response.voucher_id) {
+                        currentVoucherId = response.voucher_id;
+                        // Update all remaining entries with the same voucher_id
+                        for (let i = index + 1; i < entries.length; i++) {
+                            entries[i].voucher_id = response.voucher_id;
+                        }
+                    }
+
                     // Submit next entry
                     submitEntries(entries, index + 1, submitBtn);
                 } else {
@@ -419,6 +435,52 @@ $(document).ready(function() {
             }
         });
     });
+
+    /**
+     * Load voucher details for delete confirmation
+     */
+    function loadVoucherDetails(entryId) {
+        $.ajax({
+            url: window.routes.getVoucherDetails.replace(':id', entryId),
+            type: 'GET',
+            success: function(response) {
+                if (response.status === 'success') {
+                    $('#voucher-id-display').text(response.voucher_id);
+                    $('#total-entries-display').text(response.total_entries);
+
+                    // Build entries list
+                    let entriesHtml = '<div class="list-group">';
+                    response.entries.forEach(function(entry) {
+                        const type = entry.debit_credit == 2 ? 'Debit' : 'Credit';
+                        const amount = parseFloat(entry.amount).toFixed(2);
+                        entriesHtml += `
+                            <div class="list-group-item py-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>${entry.vendor_name}</strong>
+                                        <br><small class="text-muted">${entry.description}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge ${entry.debit_credit == 2 ? 'bg-success' : 'bg-danger'}">${type}</span>
+                                        <br><strong>Rs ${amount}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    entriesHtml += '</div>';
+
+                    $('#entries-list').html(entriesHtml);
+                    $('#voucher-details').show();
+                } else {
+                    $('#voucher-details').hide();
+                }
+            },
+            error: function() {
+                $('#voucher-details').hide();
+            }
+        });
+    }
 
     /**
      * Show alert message

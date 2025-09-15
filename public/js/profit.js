@@ -225,10 +225,67 @@ $(document).ready(function() {
     }
 
     /**
-     * Update product rates (placeholder function)
+     * Update product rates (confirm + AJAX)
      */
     function updateProductRates() {
-        showAlert('info', 'Update rates functionality will be implemented based on your requirements.');
+        const btn = $('#updateRatesBtn');
+        const url = btn.data('url');
+
+        if (!url) {
+            showAlert('error', 'Update URL not found.');
+            return;
+        }
+
+        Swal.fire({
+            text: 'Are you sure to update the purchase rate of all products as current rate?',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, update',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#4154f1',
+            cancelButtonColor: '#6c757d'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const originalHtml = btn.html();
+                btn.prop('disabled', true).html('<i class="bi bi-hourglass-split me-1"></i>Updating...');
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {},
+                    success: function (resp) {
+                        if (resp && resp.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Rate updated successfully!'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: (resp && resp.message) ? resp.message : 'Please try again!'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Request failed. Please try again!'
+                        });
+                    },
+                    complete: function () {
+                        btn.prop('disabled', false).html(originalHtml);
+                    }
+                });
+            }
+        });
     }
 
     /**

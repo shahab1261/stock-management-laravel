@@ -76,10 +76,17 @@ class JournalController extends Controller
                 'journal_amount' => 'required|numeric|min:0.01',
                 'journal_description' => 'required|string',
                 'journal_date' => 'required|date',
-                'debit_credit' => 'required|in:1,2'
+                'debit_credit' => 'required|in:1,2',
+                'voucher_id' => 'nullable|string'
             ]);
 
             DB::beginTransaction();
+
+            // Generate voucher_id if not provided (first entry in a group)
+            $voucherId = $request->voucher_id;
+            if (!$voucherId || $voucherId === 'null') {
+                $voucherId = JournalEntry::generateVoucherId();
+            }
 
             // Create journal entry
             $journalEntry = JournalEntry::create([
@@ -89,7 +96,8 @@ class JournalController extends Controller
                 'amount' => $request->journal_amount,
                 'debit_credit' => $request->debit_credit,
                 'description' => $request->journal_description,
-                'transaction_date' => $request->journal_date
+                'transaction_date' => $request->journal_date,
+                'voucher_id' => $voucherId
             ]);
 
             // Insert into ledger (following the old system pattern)
@@ -106,13 +114,17 @@ class JournalController extends Controller
             // Log the journal entry creation
             \App\Models\Logs::create([
                 'user_id' => Auth::id(),
-                'action_type' => 'create',
-                'action_description' => "Created journal entry: {$request->journal_description}, amount: {$request->journal_amount}, date: {$request->journal_date}"
+                'action_type' => 'Create',
+                'action_description' => "Created journal entry: {$request->journal_description}, amount: {$request->journal_amount}, date: {$request->journal_date}, voucher: {$voucherId}"
             ]);
 
             DB::commit();
 
-            return response()->json(['status' => 'success', 'message' => 'Journal entry saved successfully!']);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Journal entry saved successfully!',
+                'voucher_id' => $voucherId
+            ]);
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -122,7 +134,7 @@ class JournalController extends Controller
     }
 
     /**
-     * Delete journal entry
+     * Delete journal entry and all related entries with same voucher_id
      */
     public function destroy($id)
     {
@@ -130,30 +142,71 @@ class JournalController extends Controller
             DB::beginTransaction();
 
             $journalEntry = JournalEntry::findOrFail($id);
+            $voucherId = $journalEntry->voucher_id;
 
-            // Delete related ledger entries
+            $relatedEntries = JournalEntry::where('voucher_id', $voucherId)->get();
+            $entryIds = $relatedEntries->pluck('id')->toArray();
+
             DB::table('ledger')
-                ->where('transaction_id', $id)
+                ->whereIn('transaction_id', $entryIds)
                 ->where('purchase_type', 10) // Journal type
                 ->delete();
 
-            $journalEntry->delete();
+            JournalEntry::where('voucher_id', $voucherId)->delete();
 
             // Log the journal entry deletion
             \App\Models\Logs::create([
                 'user_id' => Auth::id(),
-                'action_type' => 'delete',
-                'action_description' => "Deleted journal entry: {$journalEntry->description}, amount: {$journalEntry->amount}, date: {$journalEntry->transaction_date}"
+                'action_type' => 'Delete',
+                'action_description' => "Deleted journal voucher: {$voucherId} with {$relatedEntries->count()} entries"
             ]);
 
             DB::commit();
 
-            return response()->json(['status' => 'success', 'message' => 'Journal entry deleted successfully!']);
+            return response()->json([
+                'status' => 'success',
+                'message' => "Journal voucher {$voucherId} and all related entries deleted successfully!",
+                'deleted_count' => $relatedEntries->count()
+            ]);
 
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Journal Delete Error: ' . $e->getMessage());
             return response()->json(['status' => 'error', 'message' => 'Failed to delete journal entry.'], 500);
+        }
+    }
+
+    /**
+     * Get voucher details for delete confirmation
+     */
+    public function getVoucherDetails($id)
+    {
+        try {
+            $journalEntry = JournalEntry::findOrFail($id);
+            $voucherId = $journalEntry->voucher_id;
+
+            // Get all entries with the same voucher_id
+            $relatedEntries = JournalEntry::where('voucher_id', $voucherId)
+                ->with('user')
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'voucher_id' => $voucherId,
+                'entries' => $relatedEntries->map(function($entry) {
+                    return [
+                        'id' => $entry->id,
+                        'vendor_name' => $entry->vendor_name,
+                        'amount' => $entry->amount,
+                        'debit_credit' => $entry->debit_credit,
+                        'description' => $entry->description
+                    ];
+                }),
+                'total_entries' => $relatedEntries->count()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Failed to get voucher details.'], 500);
         }
     }
 

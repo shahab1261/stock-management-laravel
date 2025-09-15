@@ -133,14 +133,16 @@
                             <a href="{{ route('admin.profit.index', ['start_date' => $startDate, 'end_date' => $endDate]) }}" class="btn btn-danger btn-sm">
                                 <i class="bi bi-x-circle me-1"></i>Clear Settlement
                             </a>
-                            <button type="button" id="updateRatesBtn" class="btn btn-info btn-sm">
-                                <i class="bi bi-arrow-clockwise me-1"></i>Update Rates
-                            </button>
                         @else
                             <a href="{{ route('admin.profit.index', ['start_date' => $startDate, 'end_date' => $endDate, 'enable_settlement' => 'true']) }}" class="btn btn-primary btn-sm">
                                 <i class="bi bi-gear me-1"></i>Rate Settlement
                             </a>
                         @endif
+                        @permission('profit.update-rates')
+                            <button type="button" id="updateRatesBtn" class="btn btn-outline-primary btn-sm" data-url="{{ route('admin.profit.update-rates') }}">
+                                <i class="bi bi-arrow-clockwise me-1"></i>Update Rates
+                            </button>
+                        @endpermission
                         <button type="button" id="exportBtn" class="btn btn-success btn-sm">
                             <i class="bi bi-download me-1"></i>Export
                         </button>

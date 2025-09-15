@@ -14,7 +14,8 @@ class ProfitController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:profit.view')->only('index');
+        $this->middleware('permission:profit.view')->only(['index']);
+        $this->middleware('permission:profit.update-rates')->only(['updateRates']);
     }
 
     public function index(Request $request)
@@ -69,6 +70,27 @@ class ProfitController extends Controller
             'endDate' => $endDate,
             'productId' => $productId,
         ]);
+    }
+
+    public function updateRates(Request $request)
+    {
+        try {
+            $products = Product::orderBy('id')->get(['id', 'current_purchase']);
+
+            foreach ($products as $product) {
+                $currentPurchaseRate = $product->current_purchase;
+
+                if (!is_null($currentPurchaseRate) && $currentPurchaseRate !== '') {
+                    Purchase::where('product_id', $product->id)
+                        ->whereRaw('CAST(sold_quantity AS UNSIGNED) < CAST(stock AS UNSIGNED)')
+                        ->update(['rate_adjustment' => $currentPurchaseRate]);
+                }
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'message' => 'Update failed'], 500);
+        }
     }
 
     private function getProfitSheetInfo(string $startDate, string $endDate, $productId)

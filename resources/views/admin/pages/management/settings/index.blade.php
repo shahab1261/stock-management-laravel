@@ -87,9 +87,21 @@
                                     <i class="bi bi-lock"></i>
                                 </span>
                                 <input type="date" class="form-control border-start-0" id="date_lock" name="date_lock"
-                                    value="{{ $settings->date_lock ?? '' }}" required>
+                                    value="{{ $settings->date_lock ?? '' }}"
+                                    @if(!$hasSystemLockedPermission)
+                                        min="{{ date('Y-m-d') }}"
+                                        max="{{ date('Y-m-d') }}"
+                                    @endif
+                                    required>
                             </div>
-                            <div class="form-text">Entries before this date cannot be modified</div>
+                            @if($hasSystemLockedPermission)
+                                <div class="form-text">Entries before this date cannot be modified</div>
+                            @else
+                                <div class="form-text text-warning">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    You can only set the date lock to today's date. Contact administrator for advanced date locking.
+                                </div>
+                            @endif
                             <div class="invalid-feedback" id="date_lock-error"></div>
                         </div>
 

@@ -81,6 +81,7 @@
                             <thead>
                                 <tr>
                                     <th width="50" class="ps-3 text-center">#</th>
+                                    <th class="ps-3 text-center">Voucher ID</th>
                                     <th class="ps-3 text-center">Date</th>
                                     <th class="ps-3 text-center">Account</th>
                                     <th class="ps-3 text-center">Debit</th>
@@ -93,6 +94,9 @@
                                 @foreach($journalEntries as $key => $entry)
                                 <tr>
                                     <td class="text-center">{{ $key + 1 }}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-primary">{{ $entry->voucher_id ?? 'N/A' }}</span>
+                                    </td>
                                     <td>{{ $entry->transaction_date->format('d M Y') }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
@@ -123,7 +127,8 @@
                                     <td class="text-center">
                                         <button class="btn btn-sm btn-outline-danger delete-btn p-2"
                                                 data-id="{{ $entry->id }}"
-                                                title="Delete">
+                                                data-voucher-id="{{ $entry->voucher_id }}"
+                                                title="Delete Voucher">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </td>
@@ -227,8 +232,15 @@
                 <div class="mb-3">
                     <i class="bi bi-trash text-danger" style="font-size: 3rem;"></i>
                 </div>
-                <h5 class="mb-3">Are you sure?</h5>
-                <p class="text-muted mb-0">You won't be able to revert this action!</p>
+                <h5 class="mb-3">Delete Journal Voucher</h5>
+                <div id="voucher-details" class="mb-3" style="display: none;">
+                    <p class="text-muted mb-2">Voucher ID: <strong id="voucher-id-display"></strong></p>
+                    <p class="text-muted mb-2">Total Entries: <strong id="total-entries-display"></strong></p>
+                    <div id="entries-list" class="text-start" style="max-height: 200px; overflow-y: auto;">
+                        <!-- Entries will be loaded here -->
+                    </div>
+                </div>
+                <p class="text-muted mb-0">This will delete the entire voucher and all related entries. You won't be able to revert this action!</p>
                 <input type="hidden" id="delete_entry_id">
             </div>
             <div class="modal-footer border-0 justify-content-center pt-0">
@@ -258,7 +270,8 @@
     window.routes = {
         store: '{{ route("admin.journal.store") }}',
         delete: '{{ route("admin.journal.destroy", ":id") }}',
-        getVendors: '{{ route("admin.journal.vendors") }}'
+        getVendors: '{{ route("admin.journal.vendors") }}',
+        getVoucherDetails: '{{ route("admin.journal.voucher-details", ":id") }}'
     };
 </script>
 @endsection
