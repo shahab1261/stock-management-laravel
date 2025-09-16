@@ -225,7 +225,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="dippableProductsTable" class="table table-hover align-middle mb-0 w-100">
+                            <table id="dippableProductsTable" class="table table-hover table-bordered align-middle mb-0 w-100">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="text-center">#</th>

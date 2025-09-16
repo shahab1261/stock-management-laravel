@@ -229,7 +229,7 @@
 
                 <!-- Chambers Table -->
                 <div class="table-responsive mb-4">
-                    <table class="table table-hover border bg-white rounded-3">
+                    <table class="table table-hover table-bordered border bg-white rounded-3">
                         <thead class="bg-light">
                             <tr>
                                 <th class="py-2 px-3 border-0">Chamber #</th>

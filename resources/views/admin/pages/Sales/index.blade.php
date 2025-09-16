@@ -43,7 +43,7 @@
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
-                        <table id="salesTable" class="table table-hover align-middle mb-0" style="width:100%">
+                        <table id="salesTable" class="table table-hover table-bordered align-middle mb-0" style="width:100%">
                             <thead class="table-light">
                                 <tr>
                                     <th class="ps-3">#</th>

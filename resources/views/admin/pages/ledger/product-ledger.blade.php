@@ -72,7 +72,7 @@
                 <div class="card-body">
 
                         <div class="table-responsive">
-                            <table class="table table-hover history-table" id="ledger_table" style="width:100%">
+                            <table class="table table-hover table-bordered history-table" id="ledger_table" style="width:100%">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="text-center">Date</th>

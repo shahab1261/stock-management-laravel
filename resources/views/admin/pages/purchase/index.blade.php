@@ -43,7 +43,7 @@
                         </div>
                         <div class="card-body p-0 pt-0">
                             <div class="table-responsive">
-                                <table id="purchaseTable" class="table table-hover align-middle mb-0" style="width:100%">
+                                <table id="purchaseTable" class="table table-hover table-bordered table-bordered align-middle mb-0" style="width:100%">
                                     <thead class="table-light">
                                         <tr>
                                             <th class="ps-3">#</th>
@@ -346,7 +346,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive mb-4">
-                        <table class="table table-hover border table-striped">
+                        <table class="table table-hover table-bordered border table-striped">
                             <thead class="table-light">
                                 <tr>
                                     <th class="text-center">Chamber #</th>

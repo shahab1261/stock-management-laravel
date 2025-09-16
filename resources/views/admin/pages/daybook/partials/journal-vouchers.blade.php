@@ -6,7 +6,7 @@
 </div>
 
 <div id="journal-vouchers-section" class="table-responsive">
-    <table class="table table-hover daybook-table" style="width:100%">
+    <table class="table table-hover table-bordered daybook-table" style="width:100%">
         <thead class="table-light">
             <tr>
                 <th class="text-center">#</th>

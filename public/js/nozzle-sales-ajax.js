@@ -346,46 +346,53 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Step 2: Loop through nozzles and prepare requests
                 var requests = [];
-                $(".closing_reading").each(function () {
-                    var nozzle_id = $(this).attr("id").split("_").pop();
+                async function sendRequestsSequentially() {
+                    for (let i = 0; i < $(".closing_reading").length; i++) {
+                        let elem = $(".closing_reading").eq(i);
+                        let nozzle_id = elem.attr("id").split("_").pop();
 
-                    if (
-                        $("#quantity_" + nozzle_id).val() == "0" &&
-                        $("#testbox_" + nozzle_id).val() == "0"
-                    ) {
-                        return true; // skip this nozzle
+                        if (
+                            $("#quantity_" + nozzle_id).val() == "0" &&
+                            $("#testbox_" + nozzle_id).val() == "0"
+                        ) {
+                            continue; // skip this nozzle
+                        }
+
+                        let payload = {
+                            _token: $('meta[name="csrf-token"]').attr("content"),
+                            product_id: $("#product_id").val(),
+                            customer_id: vendor_id,
+                            vendor_type: vendor_type,
+                            vendor_name: vendor_name,
+                            amount: $("#total_amount_" + nozzle_id).val(),
+                            quantity: $("#quantity_" + nozzle_id).val(),
+                            rate: $("#sale_rate").val(),
+                            notes: $("#notes").val(),
+                            sale_date: $("#sale_date").val(),
+                            selected_tank: $("#selected_tank_" + nozzle_id).val(),
+                            nozzle_id: $("#nozzle_id_" + nozzle_id).val(),
+                            opening_reading: $("#opening_reading_" + nozzle_id).val(),
+                            closing_reading: $("#closing_reading_" + nozzle_id).val(),
+                            test_sales: $("#testbox_" + nozzle_id).val(),
+                        };
+
+                        try {
+                            await $.ajax({
+                                url: window.nozzleStoreUrl || "/sales/nozzle/store",
+                                type: "POST",
+                                data: payload,
+                            });
+                            console.log("✅ Request sent for nozzle: " + nozzle_id);
+                        } catch (err) {
+                            console.error("❌ Error on nozzle: " + nozzle_id, err);
+                        }
                     }
 
-                    var payload = {
-                        _token: $('meta[name="csrf-token"]').attr("content"),
-                        product_id: $("#product_id").val(),
-                        customer_id: vendor_id,
-                        vendor_type: vendor_type,
-                        vendor_name: vendor_name,
-                        amount: $("#total_amount_" + nozzle_id).val(),
-                        quantity: $("#quantity_" + nozzle_id).val(),
-                        rate: $("#sale_rate").val(),
-                        notes: $("#notes").val(),
-                        sale_date: $("#sale_date").val(),
-                        selected_tank: $("#selected_tank_" + nozzle_id).val(),
-                        nozzle_id: $("#nozzle_id_" + nozzle_id).val(),
-                        opening_reading: $(
-                            "#opening_reading_" + nozzle_id
-                        ).val(),
-                        closing_reading: $(
-                            "#closing_reading_" + nozzle_id
-                        ).val(),
-                        test_sales: $("#testbox_" + nozzle_id).val(),
-                    };
+                    console.log("🎉 All requests completed one by one");
+                }
 
-                    requests.push(
-                        $.ajax({
-                            url: window.nozzleStoreUrl || "/sales/nozzle/store",
-                            type: "POST",
-                            data: payload,
-                        })
-                    );
-                });
+                sendRequestsSequentially();
+
 
                 // Step 3: Run all requests
                 $.when
@@ -401,15 +408,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         var allSuccess = true;
                         var errorMsg = "";
 
-                        $.each(responses, function (i, res) {
-                            var data = res[0]; // AJAX returns [data, statusText, jqXHR]
-                            if (!(data && data.success)) {
-                                allSuccess = false;
-                                errorMsg =
-                                    data.message ||
-                                    "Failed to add some sales, please try again";
-                            }
-                        });
+                        // $.each(responses, function (i, res) {
+                        //     var data = res[0]; // AJAX returns [data, statusText, jqXHR]
+                        //     if (!(data && data.success)) {
+                        //         allSuccess = false;
+                        //         errorMsg =
+                        //             data.message ||
+                        //             "Failed to add some sales, please try again";
+                        //     }
+                        // });
 
                         if (allSuccess) {
                             Swal.fire({

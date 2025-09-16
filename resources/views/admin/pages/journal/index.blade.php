@@ -77,7 +77,7 @@
                 </div>
                                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" id="journalTable" style="width:100%">
+                        <table class="table table-hover table-bordered align-middle mb-0" id="journalTable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th width="50" class="ps-3 text-center">#</th>
@@ -92,6 +92,7 @@
                             </thead>
                             <tbody>
                                 @foreach($journalEntries as $key => $entry)
+                                {{-- @dump($entry) --}}
                                 <tr>
                                     <td class="text-center">{{ $key + 1 }}</td>
                                     <td class="text-center">

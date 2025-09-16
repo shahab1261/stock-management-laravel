@@ -239,7 +239,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-hover account-history-table" style="width:100%">
+                                                <table class="table table-hover table-bordered account-history-table" style="width:100%">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th class="text-center">#</th>
@@ -297,7 +297,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-hover account-history-table" style="width:100%">
+                                                <table class="table table-hover table-bordered account-history-table" style="width:100%">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th>Product Name</th>
@@ -350,7 +350,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-hover account-history-table" style="width:100%">
+                                                <table class="table table-hover table-bordered account-history-table" style="width:100%">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th class="text-center">#</th>
@@ -409,7 +409,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-hover account-history-table" style="width:100%">
+                                                <table class="table table-hover table-bordered account-history-table" style="width:100%">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th>Product Name</th>
@@ -461,7 +461,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-hover account-history-table" style="width:100%">
+                                                <table class="table table-hover table-bordered account-history-table" style="width:100%">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th class="text-center">#</th>
@@ -521,7 +521,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-hover account-history-table" style="width:100%">
+                                                <table class="table table-hover table-bordered account-history-table" style="width:100%">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th class="text-center">#</th>
@@ -569,7 +569,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-hover account-history-table" style="width:100%">
+                                                <table class="table table-hover table-bordered account-history-table" style="width:100%">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th class="text-center">#</th>
@@ -622,7 +622,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-hover account-history-table" style="width:100%">
+                                                <table class="table table-hover table-bordered account-history-table" style="width:100%">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th class="text-center">#</th>
@@ -670,7 +670,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-hover account-history-table" style="width:100%">
+                                                <table class="table table-hover table-bordered account-history-table" style="width:100%">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th class="text-center">#</th>
@@ -722,7 +722,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table class="table table-hover account-history-table" style="width:100%">
+                                                <table class="table table-hover table-bordered account-history-table" style="width:100%">
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th class="text-center">#</th>

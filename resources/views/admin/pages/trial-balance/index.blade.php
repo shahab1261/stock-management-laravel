@@ -123,7 +123,7 @@
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" id="trialBalanceTable" style="width:100%">
+                        <table class="table table-hover table-bordered table-bordered align-middle mb-0" id="trialBalanceTable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th width="50" class="ps-3 text-center">#</th>
@@ -233,7 +233,7 @@
                                 <tr class="table-warning">
                                     <td class="text-center fw-bold">{{ $counter }}</td>
                                     <td class="text-center">-</td>
-                                    <td class="text-start fw-bold">Difference</td>
+                                    <td class="text-start fw-bold">Turnover Difference</td>
                                     <td class="text-center fw-bold @if($diff < 0) text-warning @endif">
                                         @if($diff < 0)
                                             Rs {{ number_format(abs($diff), 2) }}

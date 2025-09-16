@@ -31,7 +31,7 @@
                         </div>
                         <div class="card-body p-0 pt-0">
                             <div class="table-responsive">
-                                <table id="salesTable" class="table table-hover align-middle mb-0 text-center"
+                                <table id="salesTable" class="table table-hover table-bordered align-middle mb-0 text-center"
                                     style="width:100%">
                                     <thead class="table-light">
                                         <tr>

@@ -230,7 +230,7 @@
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0" id="summaryTable" style="width:100%">
+                                <table class="table table-hover table-bordered align-middle mb-0" id="summaryTable" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th class="ps-3 text-center">#</th>
@@ -310,7 +310,7 @@
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0" id="detailsTable" style="width:100%">
+                                <table class="table table-hover table-bordered align-middle mb-0" id="detailsTable" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th class="ps-3 text-center">Date</th>

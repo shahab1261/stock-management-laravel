@@ -85,7 +85,7 @@
                 </div>
                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" id="tanklariTable" style="width:100%">
+                        <table class="table table-hover table-bordered align-middle mb-0" id="tanklariTable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th width="50" class="ps-3 text-center">#</th>

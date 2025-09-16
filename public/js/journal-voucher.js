@@ -3,7 +3,7 @@
  * Handles dynamic form creation and validation for journal entries
  */
 
-$(document).ready(function() {
+$(document).ready(function () {
     let partyCounter = 1;
     let currentVoucherId = null;
 
@@ -15,42 +15,42 @@ $(document).ready(function() {
      */
     function initializeJournalForm() {
         // Add new journal entry button
-        $('#addJournalBtn').click(function() {
-            $('#journalModal').modal('show');
+        $("#addJournalBtn").click(function () {
+            $("#journalModal").modal("show");
             resetForm();
             addInitialPartyRows();
             currentVoucherId = null; // Reset voucher ID for new entry
         });
 
         // Add party button
-        $('#add_party_btn').click(function() {
+        $("#add_party_btn").click(function () {
             addPartyRow();
         });
 
         // Form submission
-        $('#journalForm').submit(function(e) {
+        $("#journalForm").submit(function (e) {
             e.preventDefault();
             submitJournalEntries();
         });
 
         // Delete journal entry - open confirmation modal
-        $(document).on('click', '.delete-btn', function() {
-            const id = $(this).data('id');
-            const voucherId = $(this).data('voucher-id');
-            $('#delete_entry_id').val(id);
+        $(document).on("click", ".delete-btn", function () {
+            const id = $(this).data("id");
+            const voucherId = $(this).data("voucher-id");
+            $("#delete_entry_id").val(id);
 
             // Load voucher details
             loadVoucherDetails(id);
-            $('#deleteModal').modal('show');
+            $("#deleteModal").modal("show");
         });
 
         // Amount input validation
-        $(document).on('input', '.amount-input', function() {
+        $(document).on("input", ".amount-input", function () {
             validateAmounts();
         });
 
         // Vendor selection change
-        $(document).on('change', '.vendor-dropdown', function() {
+        $(document).on("change", ".vendor-dropdown", function () {
             updateDescription();
         });
     }
@@ -59,12 +59,12 @@ $(document).ready(function() {
      * Reset form to initial state
      */
     function resetForm() {
-        $('#append_parties').empty();
+        $("#append_parties").empty();
         partyCounter = 1;
-        $('#debit_sum_div').text('Rs 0.00');
-        $('#credit_sum_div').text('Rs 0.00');
-        $('#balance_amount').text('Rs 0.00');
-        $('#transaction_btn').prop('disabled', true);
+        $("#debit_sum_div").text("Rs 0.00");
+        $("#credit_sum_div").text("Rs 0.00");
+        $("#balance_amount").text("Rs 0.00");
+        $("#transaction_btn").prop("disabled", true);
     }
 
     /**
@@ -124,11 +124,11 @@ $(document).ready(function() {
             </div>
         `;
 
-        $('#append_parties').append(rowHtml);
+        $("#append_parties").append(rowHtml);
 
         // Add account type change handler
-        $(`#account_type_${partyCounter}`).change(function() {
-            const row = $(this).data('row');
+        $(`#account_type_${partyCounter}`).change(function () {
+            const row = $(this).data("row");
             const accountType = $(this).val();
             loadVendorsByType(accountType, row);
         });
@@ -144,66 +144,77 @@ $(document).ready(function() {
         vendorSelect.empty().append('<option value="">Select Account</option>');
 
         if (!accountType) {
-            vendorSelect.prop('disabled', true);
+            vendorSelect.prop("disabled", true);
             return;
         }
 
         let vendors = [];
 
         switch (accountType) {
-            case '1': // Suppliers
+            case "1": // Suppliers
                 vendors = window.vendorData.suppliers;
                 break;
-            case '2': // Customers
+            case "2": // Customers
                 vendors = window.vendorData.customers;
                 break;
-            case '3': // Products
-                vendors = window.vendorData.products.map(p => ({
+            case "3": // Products
+                vendors = window.vendorData.products.map((p) => ({
                     id: p.id,
                     vendor_name: p.name,
                     name: p.name,
-                    vendor_type: 3
+                    vendor_type: 3,
                 }));
                 break;
-            case '4': // Expenses
-                vendors = window.vendorData.expenses.map(e => ({
+            case "4": // Expenses
+                vendors = window.vendorData.expenses.map((e) => ({
                     id: e.id,
                     // vendor_name: e.name,
                     name: e.expense_name,
-                    vendor_type: 4
+                    vendor_type: 4,
                 }));
                 break;
-            case '5': // Incomes
-                vendors = window.vendorData.incomes.map(i => ({
+            case "5": // Incomes
+                vendors = window.vendorData.incomes.map((i) => ({
                     id: i.id,
                     // vendor_name: i.name,
                     name: i.income_name,
-                    vendor_type: 5
+                    vendor_type: 5,
                 }));
                 break;
-            case '6': // Banks
+            case "6": // Banks
                 vendors = window.vendorData.banks;
                 break;
-            case '7': // Cash
-                vendors = [{id: 1, vendor_name: 'Cash', name: 'Cash', vendor_type: 7}];
+            case "7": // Cash
+                vendors = [
+                    {
+                        id: 1,
+                        vendor_name: "Cash",
+                        name: "Cash",
+                        vendor_type: 7,
+                    },
+                ];
                 break;
-            case '8': // MP
-                vendors = [{id: 1, vendor_name: 'MP', name: 'MP', vendor_type: 8}];
+            case "8": // MP
+                vendors = [
+                    { id: 1, vendor_name: "MP", name: "MP", vendor_type: 8 },
+                ];
                 break;
         }
 
-        vendors.forEach(vendor => {
+        vendors.forEach((vendor) => {
             const name = vendor.vendor_name || vendor.name;
-            vendorSelect.append(`<option value="${vendor.id}" data-type="${accountType}" data-name="${name}">${name}</option>`);
+            vendorSelect.append(
+                `<option value="${vendor.id}" data-type="${accountType}" data-name="${name}">${name}</option>`
+            );
         });
 
-        vendorSelect.prop('disabled', false);
+        vendorSelect.prop("disabled", false);
     }
 
     /**
      * Delete party row
      */
-    window.deletePartyRow = function(id) {
+    window.deletePartyRow = function (id) {
         $(`#row_${id}`).remove();
         validateAmounts();
     };
@@ -216,22 +227,27 @@ $(document).ready(function() {
         let creditSum = 0;
         let hasError = false;
 
-        $('.party-row').each(function() {
-            const debitAmount = parseFloat($(this).find('.debit-amount').val()) || 0;
-            const creditAmount = parseFloat($(this).find('.credit-amount').val()) || 0;
+        $(".party-row").each(function () {
+            const debitAmount =
+                parseFloat($(this).find(".debit-amount").val()) || 0;
+            const creditAmount =
+                parseFloat($(this).find(".credit-amount").val()) || 0;
 
             // Check if both debit and credit have values
             if (debitAmount > 0 && creditAmount > 0) {
                 hasError = true;
-                showAlert('error', 'One amount must be 0 in each row');
+                showAlert("error", "One amount must be 0 in each row");
                 return false;
             }
 
             // Check if vendor is selected when amount is entered
-            const vendorId = $(this).find('.vendor-dropdown').val();
+            const vendorId = $(this).find(".vendor-dropdown").val();
             if ((debitAmount > 0 || creditAmount > 0) && !vendorId) {
                 hasError = true;
-                showAlert('error', 'Please select an account for each entry with amount');
+                showAlert(
+                    "error",
+                    "Please select an account for each entry with amount"
+                );
                 return false;
             }
 
@@ -240,28 +256,48 @@ $(document).ready(function() {
         });
 
         // Update totals
-        $('#debit_sum_div').text(`Rs ${debitSum.toFixed(2)}`);
-        $('#credit_sum_div').text(`Rs ${creditSum.toFixed(2)}`);
+        $("#debit_sum_div").text(`Rs ${debitSum.toFixed(2)}`);
+        $("#credit_sum_div").text(`Rs ${creditSum.toFixed(2)}`);
 
         const balance = Math.abs(debitSum - creditSum);
-        $('#balance_amount').text(`Rs ${balance.toFixed(2)}`);
+        $("#balance_amount").text(`Rs ${balance.toFixed(2)}`);
 
         // Update balance alert
-        const balanceAlert = $('#balance_alert');
+        const balanceAlert = $("#balance_alert");
         if (balance === 0 && debitSum > 0 && creditSum > 0) {
-            balanceAlert.removeClass('alert-info alert-warning').addClass('alert-success');
-            balanceAlert.find('small').html('<i class="bi bi-check-circle me-1"></i>Balanced: <span id="balance_amount">Rs 0.00</span>');
+            balanceAlert
+                .removeClass("alert-info alert-warning")
+                .addClass("alert-success");
+            balanceAlert
+                .find("small")
+                .html(
+                    '<i class="bi bi-check-circle me-1"></i>Balanced: <span id="balance_amount">Rs 0.00</span>'
+                );
         } else if (balance > 0) {
-            balanceAlert.removeClass('alert-info alert-success').addClass('alert-warning');
-            balanceAlert.find('small').html('<i class="bi bi-exclamation-triangle me-1"></i>Unbalanced: <span id="balance_amount">Rs ' + balance.toFixed(2) + '</span>');
+            balanceAlert
+                .removeClass("alert-info alert-success")
+                .addClass("alert-warning");
+            balanceAlert
+                .find("small")
+                .html(
+                    '<i class="bi bi-exclamation-triangle me-1"></i>Unbalanced: <span id="balance_amount">Rs ' +
+                        balance.toFixed(2) +
+                        "</span>"
+                );
         } else {
-            balanceAlert.removeClass('alert-success alert-warning').addClass('alert-info');
-            balanceAlert.find('small').html('<i class="bi bi-info-circle me-1"></i>Balance: <span id="balance_amount">Rs 0.00</span>');
+            balanceAlert
+                .removeClass("alert-success alert-warning")
+                .addClass("alert-info");
+            balanceAlert
+                .find("small")
+                .html(
+                    '<i class="bi bi-info-circle me-1"></i>Balance: <span id="balance_amount">Rs 0.00</span>'
+                );
         }
 
         // Enable/disable submit button
         const canSubmit = !hasError && debitSum === creditSum && debitSum > 0;
-        $('#transaction_btn').prop('disabled', !canSubmit);
+        $("#transaction_btn").prop("disabled", !canSubmit);
 
         updateDescription();
     }
@@ -274,14 +310,17 @@ $(document).ready(function() {
         let fromCounter = 0;
         let toCounter = 0;
 
-        $('.party-row').each(function() {
-            const debitAmount = parseFloat($(this).find('.debit-amount').val()) || 0;
-            const creditAmount = parseFloat($(this).find('.credit-amount').val()) || 0;
-            const vendorSelect = $(this).find('.vendor-dropdown');
+        $(".party-row").each(function () {
+            const debitAmount =
+                parseFloat($(this).find(".debit-amount").val()) || 0;
+            const creditAmount =
+                parseFloat($(this).find(".credit-amount").val()) || 0;
+            const vendorSelect = $(this).find(".vendor-dropdown");
 
             if (vendorSelect[0].selectedIndex > 0) {
-                const selectedOption = vendorSelect[0].options[vendorSelect[0].selectedIndex];
-                const vendorName = selectedOption.getAttribute('data-name');
+                const selectedOption =
+                    vendorSelect[0].options[vendorSelect[0].selectedIndex];
+                const vendorName = selectedOption.getAttribute("data-name");
 
                 if (debitAmount > 0) {
                     fromCounter++;
@@ -301,24 +340,28 @@ $(document).ready(function() {
             }
         });
 
-        $('.description').val(description.trim());
+        $(".description").val(description.trim());
     }
 
     /**
      * Submit journal entries
      */
     function submitJournalEntries() {
-        const submitBtn = $('#transaction_btn');
-        submitBtn.prop('disabled', true).html('<i class="bi bi-hourglass-split me-1"></i> Please wait...');
+        const submitBtn = $("#transaction_btn");
+        submitBtn
+            .prop("disabled", true)
+            .html('<i class="bi bi-hourglass-split me-1"></i> Please wait...');
 
         const entries = [];
         let hasError = false;
 
-        $('.party-row').each(function() {
-            const debitAmount = parseFloat($(this).find('.debit-amount').val()) || 0;
-            const creditAmount = parseFloat($(this).find('.credit-amount').val()) || 0;
-            const vendorSelect = $(this).find('.vendor-dropdown');
-            const description = $(this).find('.description').val();
+        $(".party-row").each(function () {
+            const debitAmount =
+                parseFloat($(this).find(".debit-amount").val()) || 0;
+            const creditAmount =
+                parseFloat($(this).find(".credit-amount").val()) || 0;
+            const vendorSelect = $(this).find(".vendor-dropdown");
+            const description = $(this).find(".description").val();
 
             if (debitAmount > 0 || creditAmount > 0) {
                 if (!vendorSelect.val()) {
@@ -326,23 +369,29 @@ $(document).ready(function() {
                     return false;
                 }
 
-                const selectedOption = vendorSelect[0].options[vendorSelect[0].selectedIndex];
+                const selectedOption =
+                    vendorSelect[0].options[vendorSelect[0].selectedIndex];
 
                 entries.push({
                     vendor_id_from: vendorSelect.val(),
-                    vendor_from_type: selectedOption.getAttribute('data-type'),
-                    journal_amount: debitAmount > 0 ? debitAmount : creditAmount,
+                    vendor_from_type: selectedOption.getAttribute("data-type"),
+                    journal_amount:
+                        debitAmount > 0 ? debitAmount : creditAmount,
                     journal_description: description,
-                    journal_date: $('#journal_date').val(),
-                    debit_credit: debitAmount > 0 ? '2' : '1', // 2=debit, 1=credit
-                    voucher_id: null // Will be set after first entry gets voucher_id
+                    journal_date: $("#journal_date").val(),
+                    debit_credit: debitAmount > 0 ? "2" : "1", // 2=debit, 1=credit
+                    voucher_id: null, // Will be set after first entry gets voucher_id
                 });
             }
         });
 
         if (hasError || entries.length === 0) {
-            showAlert('error', 'Please complete all entries properly');
-            submitBtn.prop('disabled', false).html('<i class="bi bi-check-circle me-1"></i> Submit Journal Entry');
+            showAlert("error", "Please complete all entries properly");
+            submitBtn
+                .prop("disabled", false)
+                .html(
+                    '<i class="bi bi-check-circle me-1"></i> Submit Journal Entry'
+                );
             return;
         }
 
@@ -356,8 +405,8 @@ $(document).ready(function() {
     function submitEntries(entries, index, submitBtn) {
         if (index >= entries.length) {
             // All entries submitted successfully
-            showAlert('success', 'Journal entries saved successfully!');
-            $('#journalModal').modal('hide');
+            showAlert("success", "Journal entries saved successfully!");
+            $("#journalModal").modal("hide");
             setTimeout(() => {
                 location.reload();
             }, 1500);
@@ -368,17 +417,17 @@ $(document).ready(function() {
 
         $.ajax({
             url: window.routes.store,
-            type: 'POST',
+            type: "POST",
             data: {
                 ...entry,
-                _token: $('meta[name="csrf-token"]').attr('content')
+                _token: $('meta[name="csrf-token"]').attr("content"),
             },
-            success: function(response) {
-                if (response.status === 'success') {
+            success: function (response) {
+                if (response.status === "success") {
                     // Store voucher_id from first entry for subsequent entries
                     if (index === 0 && response.voucher_id) {
                         currentVoucherId = response.voucher_id;
- add                        // Update all remaining entries with the same voucher_id
+                        // Update all remaining entries with the same voucher_id
                         for (let i = index + 1; i < entries.length; i++) {
                             entries[i].voucher_id = response.voucher_id;
                         }
@@ -387,52 +436,69 @@ $(document).ready(function() {
                     // Submit next entry
                     submitEntries(entries, index + 1, submitBtn);
                 } else {
-                    showAlert('error', response.message || 'Failed to save entry');
-                    submitBtn.prop('disabled', false).html('<i class="bi bi-check-circle me-1"></i> Submit Journal Entry');
+                    showAlert(
+                        "error",
+                        response.message || "Failed to save entry"
+                    );
+                    submitBtn
+                        .prop("disabled", false)
+                        .html(
+                            '<i class="bi bi-check-circle me-1"></i> Submit Journal Entry'
+                        );
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 const response = xhr.responseJSON;
-                showAlert('error', response?.message || 'Failed to save entry');
-                submitBtn.prop('disabled', false).html('<i class="bi bi-check-circle me-1"></i> Submit Journal Entry');
-            }
+                showAlert("error", response?.message || "Failed to save entry");
+                submitBtn
+                    .prop("disabled", false)
+                    .html(
+                        '<i class="bi bi-check-circle me-1"></i> Submit Journal Entry'
+                    );
+            },
         });
     }
 
     // Confirm delete - perform AJAX delete
-    $(document).on('click', '#confirmDeleteBtn', function() {
-        const id = $('#delete_entry_id').val();
+    $(document).on("click", "#confirmDeleteBtn", function () {
+        const id = $("#delete_entry_id").val();
 
         // Button loading state
-        const btn = $('#confirmDeleteBtn');
-        btn.attr('disabled', true);
-        btn.find('.spinner-border').removeClass('d-none');
+        const btn = $("#confirmDeleteBtn");
+        btn.attr("disabled", true);
+        btn.find(".spinner-border").removeClass("d-none");
 
         $.ajax({
-            url: window.routes.delete.replace(':id', id),
-            type: 'DELETE',
+            url: window.routes.delete.replace(":id", id),
+            type: "DELETE",
             data: {
-                _token: $('meta[name="csrf-token"]').attr('content')
+                _token: $('meta[name="csrf-token"]').attr("content"),
             },
-            success: function(response) {
-                if (response.status === 'success') {
-                    $('#deleteModal').modal('hide');
-                    showAlert('success', response.message || 'Deleted successfully');
+            success: function (response) {
+                if (response.status === "success") {
+                    $("#deleteModal").modal("hide");
+                    showAlert(
+                        "success",
+                        response.message || "Deleted successfully"
+                    );
                     setTimeout(() => {
                         location.reload();
                     }, 1000);
                 } else {
-                    showAlert('error', response.message || 'Please try again');
+                    showAlert("error", response.message || "Please try again");
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 const response = xhr.responseJSON;
-                showAlert('error', response?.message || 'An error occurred. Please try again.');
+                showAlert(
+                    "error",
+                    response?.message || "An error occurred. Please try again."
+                );
             },
-            complete: function() {
-                btn.attr('disabled', false);
-                btn.find('.spinner-border').addClass('d-none');
-            }
+            complete: function () {
+                btn.attr("disabled", false);
+                btn.find(".spinner-border").addClass("d-none");
+            },
         });
     });
 
@@ -441,44 +507,51 @@ $(document).ready(function() {
      */
     function loadVoucherDetails(entryId) {
         $.ajax({
-            url: window.routes.getVoucherDetails.replace(':id', entryId),
-            type: 'GET',
-            success: function(response) {
-                if (response.status === 'success') {
-                    $('#voucher-id-display').text(response.voucher_id);
-                    $('#total-entries-display').text(response.total_entries);
+            url: window.routes.getVoucherDetails.replace(":id", entryId),
+            type: "GET",
+            success: function (response) {
+                if (response.status === "success") {
+                    $("#voucher-id-display").text(response.voucher_id);
+                    $("#total-entries-display").text(response.total_entries);
 
                     // Build entries list
                     let entriesHtml = '<div class="list-group">';
-                    response.entries.forEach(function(entry) {
-                        const type = entry.debit_credit == 2 ? 'Debit' : 'Credit';
+                    response.entries.forEach(function (entry) {
+                        const type =
+                            entry.debit_credit == 2 ? "Debit" : "Credit";
                         const amount = parseFloat(entry.amount).toFixed(2);
                         entriesHtml += `
                             <div class="list-group-item py-2">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong>${entry.vendor_name}</strong>
-                                        <br><small class="text-muted">${entry.description}</small>
+                                        <br><small class="text-muted">${
+                                            entry.description
+                                        }</small>
                                     </div>
                                     <div class="text-end">
-                                        <span class="badge ${entry.debit_credit == 2 ? 'bg-success' : 'bg-danger'}">${type}</span>
+                                        <span class="badge ${
+                                            entry.debit_credit == 2
+                                                ? "bg-success"
+                                                : "bg-danger"
+                                        }">${type}</span>
                                         <br><strong>Rs ${amount}</strong>
                                     </div>
                                 </div>
                             </div>
                         `;
                     });
-                    entriesHtml += '</div>';
+                    entriesHtml += "</div>";
 
-                    $('#entries-list').html(entriesHtml);
-                    $('#voucher-details').show();
+                    $("#entries-list").html(entriesHtml);
+                    $("#voucher-details").show();
                 } else {
-                    $('#voucher-details').hide();
+                    $("#voucher-details").hide();
                 }
             },
-            error: function() {
-                $('#voucher-details').hide();
-            }
+            error: function () {
+                $("#voucher-details").hide();
+            },
         });
     }
 
@@ -486,14 +559,24 @@ $(document).ready(function() {
      * Show alert message
      */
     function showAlert(type, message) {
-        const icon = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+        const icon =
+            type === "success"
+                ? "success"
+                : type === "error"
+                ? "error"
+                : "info";
 
         Swal.fire({
-            title: type === 'success' ? 'Success!' : type === 'error' ? 'Error!' : 'Info',
+            title:
+                type === "success"
+                    ? "Success!"
+                    : type === "error"
+                    ? "Error!"
+                    : "Info",
             text: message,
             icon: icon,
-            confirmButtonColor: '#4154f1',
-            confirmButtonText: 'OK'
+            confirmButtonColor: "#4154f1",
+            confirmButtonText: "OK",
         });
     }
 });
