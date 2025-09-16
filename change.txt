@@ -91,4 +91,12 @@ CHANGE COLUMN updated_date updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP O
 
 ALTER TABLE users
 ADD COLUMN remember_token VARCHAR(100) NULL AFTER password;
-    
+
+ALTER TABLE credit_sales
+ADD COLUMN updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
+ON UPDATE CURRENT_TIMESTAMP AFTER created_at;
+
+
+Trial balance table structure same and difference row at below
+delete action in Nozzle Sales and Lubricant Sales
+All tables date locks from setttings table (backend)

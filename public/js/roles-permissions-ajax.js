@@ -220,16 +220,21 @@ $(document).ready(function() {
             url: form.attr('action'),
             method: 'POST',
             data: form.serialize(),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                'Accept': 'application/json'
+            },
             success: function(response) {
                 if (response.success) {
+                    $('#assignRoleModal').modal('hide');
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
                         text: response.message,
-                        timer: 2000,
+                        timer: 1500,
                         showConfirmButton: false
                     }).then(function() {
-                        window.location.href = window.location.origin;
+                        window.location.reload();
                     });
                 }
             },

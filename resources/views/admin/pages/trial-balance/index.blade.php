@@ -198,15 +198,15 @@
                                         <tr class="table-light border-top-2">
                                             <td class="text-center fw-bold">{{ $counter }}</td>
                                             <td class="text-center">-</td>
-                                            <td class="fw-bold">{{ $type }} Total</td>
-                                            <td class="text-end fw-bold">
+                                            <td class="text-start fw-bold">{{ $type }} Total</td>
+                                            <td class="text-center fw-bold">
                                                 @if($typeDebitSum > 0)
                                                     {{ number_format($typeDebitSum) }}
                                                 @else
                                                     -
                                                 @endif
                                             </td>
-                                            <td class="text-end fw-bold">
+                                            <td class="text-center fw-bold">
                                                 @if($typeCreditSum > 0)
                                                     {{ number_format($typeCreditSum) }}
                                                 @else
@@ -222,22 +222,33 @@
                                 <tr class="table-primary border-top-3">
                                     <td class="text-center fw-bold">{{ $counter }}</td>
                                     <td class="text-center">-</td>
-                                    <td class="fw-bold">Grand Total</td>
-                                    <td class="text-end fw-bold">{{ number_format($debitTotal) }}</td>
-                                    <td class="text-end fw-bold">{{ number_format($creditTotal) }}</td>
+                                    <td class="text-start fw-bold">Grand Total</td>
+                                    <td class="text-center fw-bold">{{ number_format($debitTotal) }}</td>
+                                    <td class="text-center fw-bold">{{ number_format($creditTotal) }}</td>
                                 </tr>
                                 @php $counter++; @endphp
 
-                                <!-- Difference Row -->
-                                @if($turnoverDifference != 0)
+                                <!-- Difference Row (always show, placed in the column needed to balance) -->
+                                @php $diff = $debitTotal - $creditTotal; @endphp
                                 <tr class="table-warning">
                                     <td class="text-center fw-bold">{{ $counter }}</td>
                                     <td class="text-center">-</td>
-                                    <td class="fw-bold">Turnover Difference</td>
-                                    <td class="text-end fw-bold">-</td>
-                                    <td class="text-end fw-bold text-warning">Rs {{ number_format(abs($turnoverDifference), 2) }}</td>
+                                    <td class="text-start fw-bold">Difference</td>
+                                    <td class="text-center fw-bold @if($diff < 0) text-warning @endif">
+                                        @if($diff < 0)
+                                            Rs {{ number_format(abs($diff), 2) }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                                    <td class="text-center fw-bold @if($diff > 0) text-warning @endif">
+                                        @if($diff > 0)
+                                            Rs {{ number_format(abs($diff), 2) }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                 </tr>
-                                @endif
                             </tbody>
                         </table>
                     </div>

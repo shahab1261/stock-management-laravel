@@ -16,7 +16,6 @@ class User extends Authenticatable
     protected $guarded = [];
 
     protected $casts = [
-        'user_type' => 'integer',
         'status' => 'integer',
     ];
 
@@ -25,13 +24,13 @@ class User extends Authenticatable
      */
     public function getRoleNameAttribute()
     {
-        $roleMap = [
-            0 => 'SuperAdmin',
-            1 => 'Admin',
-            2 => 'Employee'
-        ];
-
-        return $roleMap[$this->user_type] ?? 'Unknown';
+        // Prefer Spatie role name if assigned
+        $role = $this->roles()->first();
+        if ($role) {
+            return $role->name;
+        }
+        // Fallback to stored string in user_type (post-migration it stores role name)
+        return (string)($this->user_type ?? '');
     }
 
     /**
@@ -39,7 +38,7 @@ class User extends Authenticatable
      */
     public function isSuperAdmin()
     {
-        return $this->user_type === 0;
+        return $this->hasRole('SuperAdmin') || (string)$this->user_type === 'SuperAdmin';
     }
 
     /**
@@ -47,7 +46,7 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return $this->user_type === 1;
+        return $this->hasRole('Admin') || (string)$this->user_type === 'Admin';
     }
 
     /**
@@ -55,7 +54,7 @@ class User extends Authenticatable
      */
     public function isEmployee()
     {
-        return $this->user_type === 2;
+        return $this->hasRole('Employee') || (string)$this->user_type === 'Employee';
     }
 
     /**

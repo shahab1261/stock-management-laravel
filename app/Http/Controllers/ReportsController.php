@@ -866,7 +866,7 @@ class ReportsController extends Controller
                 $obj->vendor_type = "MP";
                 break;
             case '9':
-                $vendor = User::where('user_type', 3)->find($vendorId);
+                $vendor = User::role('Employee')->find($vendorId);
                 $obj->vendor_name = $vendor ? $vendor->name : 'Unknown';
                 $obj->vendor_type = "Employee";
                 break;

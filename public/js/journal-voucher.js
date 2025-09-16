@@ -378,7 +378,7 @@ $(document).ready(function() {
                     // Store voucher_id from first entry for subsequent entries
                     if (index === 0 && response.voucher_id) {
                         currentVoucherId = response.voucher_id;
-                        // Update all remaining entries with the same voucher_id
+ add                        // Update all remaining entries with the same voucher_id
                         for (let i = index + 1; i < entries.length; i++) {
                             entries[i].voucher_id = response.voucher_id;
                         }

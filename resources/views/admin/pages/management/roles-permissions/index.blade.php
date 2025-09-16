@@ -80,13 +80,13 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
+                                                    @if($role->name !== 'SuperAdmin')
                                                     <button type="button" class="btn btn-sm btn-outline-primary edit-role me-1"
                                                         data-id="{{ $role->id }}"
                                                         data-name="{{ $role->name }}"
                                                         data-permissions="{{ $role->permissions->pluck('name') }}">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </button>
-                                                    @if($role->name !== 'SuperAdmin')
                                                     <button type="button" class="btn btn-sm btn-outline-danger delete-role" data-id="{{ $role->id }}">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
@@ -193,15 +193,16 @@
                                 <div class="row">
                                     @php
                                         $permissionGroups = [
-                                            'Dashboard' => ['dashboard.view'],
+                                            // 'Dashboard' removed: dashboard is accessible to all users
                                             'Daybook' => ['daybook.view'],
                                             'Purchase' => ['purchase.view', 'purchase.create', 'purchase.edit', 'purchase.delete'],
-                                            'Sales' => ['sales.view', 'sales.create', 'sales.edit', 'sales.delete', 'sales.nozzle.view', 'sales.nozzle.create', 'sales.lubricant.view', 'sales.lubricant.create'],
+                                            'Sales' => ['sales.view', 'sales.create', 'sales.edit', 'sales.delete', 'sales.nozzle.view', 'sales.nozzle.create', 'sales.nozzle.delete', 'sales.lubricant.view', 'sales.lubricant.create', 'sales.lubricant.delete', 'sales.credit.view', 'sales.credit.create', 'sales.credit.edit', 'sales.credit.delete'],
                                             'Journal' => ['journal.view', 'journal.create', 'journal.edit', 'journal.delete'],
                                             'Trial Balance' => ['trial-balance.view', 'trial-balance.export'],
                                             'Profit' => ['profit.view', 'profit.update-rates'],
                                             'Dips' => ['dips.view', 'dips.create', 'dips.edit', 'dips.delete'],
                                             'Wet Stock' => ['wet-stock.view', 'wet-stock.export'],
+                                            'Billing' => ['billing.view', 'billing.export'],
                                             'Payments' => ['payments.bank-receiving.view', 'payments.bank-receiving.create', 'payments.bank-payments.view', 'payments.bank-payments.create', 'payments.cash-receiving.view', 'payments.cash-receiving.create', 'payments.cash-payments.view', 'payments.cash-payments.create', 'payments.transaction.delete'],
                                             'Ledgers' => ['ledger.product.view', 'ledger.supplier.view', 'ledger.customer.view', 'ledger.bank.view', 'ledger.cash.view', 'ledger.mp.view', 'ledger.expense.view', 'ledger.income.view', 'ledger.employee.view'],
                                             'History' => ['history.purchases.view', 'history.sales.view', 'history.bank-receivings.view', 'history.bank-payments.view', 'history.cash-receipts.view', 'history.cash-payments.view', 'history.journal-vouchers.view'],
@@ -366,7 +367,9 @@
                         <select class="form-select" id="assign_role_id" name="role_id" required>
                             <option value="">Select a role</option>
                             @foreach($roles as $role)
+                                @if($role->name !== 'Employee')
                                 <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                @endif
                             @endforeach
                         </select>
                         <div class="invalid-feedback" id="assign-role-error"></div>

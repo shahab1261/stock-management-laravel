@@ -79,7 +79,7 @@ class Sales extends Model
                 $vendorTypeName = 'MP';
                 break;
             case 9:
-                $vendorDetails = User::where('user_type', 3)->first();
+                $vendorDetails = User::role('Employee')->first();
                 $vendorName = $vendorDetails->name ?? '';
                 $vendorTypeName = 'employee';
                 break;

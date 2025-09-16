@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use App\Models\Dip;
 use App\Models\Logs;
 use App\Models\Sales;
 use App\Models\Ledger;
 use App\Models\Purchase;
-use App\Models\Dip;
-use App\Models\Management\Product;
+use Illuminate\Http\Request;
 use App\Models\Management\Tank;
 use App\Models\Management\Nozzle;
+use App\Models\Management\Product;
+use Illuminate\Support\Facades\DB;
 use App\Models\Management\Settings;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class NozzleSalesController extends Controller
 {
@@ -41,16 +42,23 @@ class NozzleSalesController extends Controller
             ->orderByDesc('id')
             ->get();
 
+        $sales_detail = Sales::selectRaw('MAX(id) as last_row_id, product_id')
+                        ->groupBy('product_id')
+                        ->get();
+
         // Sales summary for cards
         $salesSummary = Sales::join('products', 'sales.product_id', '=', 'products.id')
             ->whereDate('sales.create_date', $dateLock)
-            ->select('sales.product_id', 'products.name as product_name',
+            ->select(
+                'sales.product_id',
+                'products.name as product_name',
                 DB::raw('SUM(sales.quantity) as total_quantity'),
-                DB::raw('SUM(sales.amount) as total_amount'))
+                DB::raw('SUM(sales.amount) as total_amount')
+            )
             ->groupBy('sales.product_id', 'products.name')
             ->get();
 
-        return view('admin.pages.Sales.nozzle', compact('products', 'dateLock', 'sales', 'salesSummary'));
+        return view('admin.pages.Sales.nozzle', compact('products', 'dateLock', 'sales', 'salesSummary', 'sales_detail'));
     }
 
     // Return product current sale and all nozzles for product with opening_reading and tank
@@ -130,6 +138,19 @@ class NozzleSalesController extends Controller
 
             $productPreviousStock = Tank::where('product_id', $request->product_id)->sum('opening_stock');
 
+
+            $salesDate = Settings::first()->date_lock;
+
+            $productRate = Product::where('id', $request->product_id)->first()->current_sale;
+
+            $quant = $request->closing_reading - $request->opening_reading;
+            $amount = $quant * $productRate;
+
+            if ($request->test_sales == 0 && $quant == 0) {
+                return;
+            }
+
+            // Log::info('de');
             $sale = new Sales();
             $sale->entery_by_user = Auth::id();
             $sale->previous_stock = $productPreviousStock;
@@ -141,9 +162,9 @@ class NozzleSalesController extends Controller
             $sale->vendor_type = $request->vendor_type;
             $sale->tank_lari_id = 0;
             $sale->terminal_id = 0;
-            $sale->quantity = $request->quantity;
-            $sale->amount = $request->amount;
-            $sale->rate = $request->rate;
+            $sale->quantity = $request->closing_reading - $request->opening_reading;
+            $sale->amount = $amount;
+            $sale->rate = $productRate;
             $sale->freight = 0;
             $sale->freight_charges = 0;
             $sale->notes = $request->notes;
@@ -151,7 +172,7 @@ class NozzleSalesController extends Controller
             $sale->opening_reading = $request->opening_reading;
             $sale->closing_reading = $request->closing_reading;
             $sale->test_sales = $request->test_sales;
-            $sale->create_date = Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d');
+            $sale->create_date = Carbon::createFromFormat('Y-m-d', $salesDate)->format('Y-m-d');
             $sale->save();
 
             // Calculate profit (FIFO, identical to SalesController)
@@ -167,10 +188,10 @@ class NozzleSalesController extends Controller
                 'vendor_type' => 3, // 3 = products
                 'vendor_id' => $request->product_id,
                 'transaction_type' => 1, // 1 = credit
-                'amount' => $request->amount,
+                'amount' => $amount,
                 'previous_balance' => 0,
                 'tarnsaction_comment' => $request->notes,
-                'transaction_date' => Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d')
+                'transaction_date' => Carbon::createFromFormat('Y-m-d', $salesDate)->format('Y-m-d')
             ]);
 
             // Customer debit entry (cash in this flow)
@@ -183,19 +204,19 @@ class NozzleSalesController extends Controller
                 'tank_id' => $request->selected_tank,
                 'vendor_id' => $request->customer_id,
                 'transaction_type' => 2,
-                'amount' => $request->amount,
+                'amount' => $amount,
                 'previous_balance' => 0,
                 'tarnsaction_comment' => $request->notes,
-                'transaction_date' => Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d')
+                'transaction_date' => Carbon::createFromFormat('Y-m-d', $salesDate)->format('Y-m-d')
             ]);
 
             // Product stock decrement
             $product = Product::find($request->product_id);
-            if ($product) {
-                $product->book_stock -= $request->quantity;
-                $product->product_amount += $request->amount;
-                $product->save();
-            }
+            // if ($product) {
+            //     $product->book_stock -= $request->quantity;
+            //     $product->product_amount += $amount;
+            //     $product->save();
+            // }
 
             // Tank stock decrement
             $tank->opening_stock -= $request->quantity;
@@ -209,7 +230,7 @@ class NozzleSalesController extends Controller
             }
 
             // Update current stock snapshot
-            $this->updateStockStatus($request->product_id, $request->sale_date);
+            $this->updateStockStatus($request->product_id, $salesDate);
 
             // Create logs (consistent with SalesController)
             $tankName = $tank ? $tank->tank_name : 'No Tank';
@@ -217,12 +238,12 @@ class NozzleSalesController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Sale: {$productName} | Qty: {$request->quantity} L | Rate: PKR {$request->rate} | Total: PKR {$request->amount} | Vendor: Cash | Tank: {$tankName}",
+                'action_description' => "Nozzle: {$nozzle->name} | Sale: {$productName} | Qty: {$request->quantity} L | Rate: PKR {$productRate} | Total: PKR {$amount} | Vendor: Cash | Tank: {$tankName}",
             ]);
 
             DB::commit();
 
-            return response()->json(['success' => true, 'message' => 'Nozzle sale added successfully']);
+            return response()->json(['success' => true, 'message' => 'Nozzle sale added successfully111']);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
@@ -301,6 +322,106 @@ class NozzleSalesController extends Controller
             ]);
         }
     }
+
+    public function deleteSale(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $saleId = $request->input('sale_id');
+            $sale = Sales::findOrFail($saleId);
+
+            // only allow deleting if this is the latest sale for the product
+            $lastSale = Sales::where('product_id', $sale->product_id)
+                        ->orderByDesc('id')
+                        ->first();
+
+            if (!$lastSale || $lastSale->id !== $sale->id) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only the last sale for a product can be deleted',
+                ]);
+            }
+
+            // 1. Delete ledger entries (purchase_type = 2 for sales)
+            Ledger::where('transaction_id', $saleId)
+                ->where('purchase_type', 2)
+                ->delete();
+
+            // 2. Reverse stock after sale delete
+            $stockReversed = $this->reverseStockAfterSaleDelete($saleId);
+            if (!$stockReversed) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to reverse stock',
+                ]);
+            }
+
+            // 3. Handle nozzle reading reset if sale had a nozzle
+            if ($sale->nozzle_id != 0) {
+                $nozzle = Nozzle::find($sale->nozzle_id);
+                if ($nozzle) {
+                    $nozzle->opening_reading = $sale->opening_reading;
+                    $nozzle->save();
+                }
+            }
+
+            // 4. Delete the sale itself
+            $sale->delete();
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Sale deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function reverseStockAfterSaleDelete($saleId) {
+        $sale = Sales::find($saleId);
+        if (!$sale) return false;
+
+        $tankId = $sale->tank_id;
+        $productId = $sale->product_id;
+        $stockSold = (float) $sale->quantity;
+
+        // Update tank stock
+        $tank = Tank::find($tankId);
+        if ($tank) {
+            $tank->opening_stock += $stockSold;
+            $tank->save();
+        }
+
+        // Reverse sold stocks in purchases
+        $purchases = Purchase::where('product_id', $productId)
+            ->where('sold_quantity', '>', 0)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        foreach ($purchases as $purchase) {
+            $purchasedStock = $purchase->sold_quantity;
+
+            if ($purchasedStock >= $stockSold) {
+                $purchase->sold_quantity -= $stockSold;
+                $purchase->save();
+                return true;
+            } else {
+                $stockDifference = $stockSold - $purchasedStock;
+                $purchase->sold_quantity = 0;
+                $purchase->save();
+                $stockSold = $stockDifference;
+            }
+        }
+
+        return true;
+    }
 }
-
-

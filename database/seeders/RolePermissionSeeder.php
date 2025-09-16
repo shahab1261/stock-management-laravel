@@ -14,10 +14,10 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create roles
-        $superAdminRole = Role::create(['name' => 'SuperAdmin']);
-        $adminRole = Role::create(['name' => 'Admin']);
-        $employeeRole = Role::create(['name' => 'Employee']);
+        // Create or get existing roles
+        $superAdminRole = Role::firstOrCreate(['name' => 'SuperAdmin']);
+        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
+        $employeeRole = Role::firstOrCreate(['name' => 'Employee']);
 
         // Create permissions for each module
         $permissions = [
@@ -40,8 +40,14 @@ class RolePermissionSeeder extends Seeder
             'sales.delete',
             'sales.nozzle.view',
             'sales.nozzle.create',
+            'sales.nozzle.delete',
             'sales.lubricant.view',
             'sales.lubricant.create',
+            'sales.lubricant.delete',
+            'sales.credit.view',
+            'sales.credit.create',
+            'sales.credit.edit',
+            'sales.credit.delete',
 
             // Journal Vouchers
             'journal.view',
@@ -66,6 +72,10 @@ class RolePermissionSeeder extends Seeder
             // Wet Stock
             'wet-stock.view',
             'wet-stock.export',
+
+            // Billing
+            'billing.view',
+            'billing.export',
 
             // Payments
             'payments.bank-receiving.view',
@@ -197,9 +207,9 @@ class RolePermissionSeeder extends Seeder
             'permissions.assign',
         ];
 
-        // Create all permissions
+        // Create all permissions (skip if they exist)
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
         // Assign all permissions to SuperAdmin
@@ -211,13 +221,15 @@ class RolePermissionSeeder extends Seeder
             'daybook.view',
             'purchase.view', 'purchase.create', 'purchase.edit',
             'sales.view', 'sales.create', 'sales.edit',
-            'sales.nozzle.view', 'sales.nozzle.create',
-            'sales.lubricant.view', 'sales.lubricant.create',
+            'sales.nozzle.view', 'sales.nozzle.create', 'sales.nozzle.delete',
+            'sales.lubricant.view', 'sales.lubricant.create', 'sales.lubricant.delete',
+            'sales.credit.view', 'sales.credit.create', 'sales.credit.edit', 'sales.credit.delete',
             'journal.view', 'journal.create', 'journal.edit',
             'trial-balance.view', 'trial-balance.export',
             'profit.view', 'profit.update-rates',
             'dips.view', 'dips.create', 'dips.edit',
             'wet-stock.view', 'wet-stock.export',
+            'billing.view', 'billing.export',
             'payments.bank-receiving.view', 'payments.bank-receiving.create',
             'payments.bank-payments.view', 'payments.bank-payments.create',
             'payments.cash-receiving.view', 'payments.cash-receiving.create',
@@ -261,8 +273,10 @@ class RolePermissionSeeder extends Seeder
             'sales.view', 'sales.create',
             'sales.nozzle.view', 'sales.nozzle.create',
             'sales.lubricant.view', 'sales.lubricant.create',
+            'sales.credit.view', 'sales.credit.create',
             'dips.view', 'dips.create',
             'wet-stock.view',
+            'billing.view',
             'payments.bank-receiving.view', 'payments.bank-receiving.create',
             'payments.cash-receiving.view', 'payments.cash-receiving.create',
             'ledger.product.view', 'ledger.customer.view',
@@ -272,19 +286,12 @@ class RolePermissionSeeder extends Seeder
 
         $employeeRole->givePermissionTo($employeePermissions);
 
-        // Assign roles to existing users based on their user_type
+        // Ensure users have a role matching user_type string if present
         $users = User::all();
         foreach ($users as $user) {
-            switch ($user->user_type) {
-                case 0:
-                    $user->syncRoles(['SuperAdmin']);
-                    break;
-                case 1:
-                    $user->syncRoles(['Admin']);
-                    break;
-                case 2:
-                    $user->syncRoles(['Employee']);
-                    break;
+            $roleName = (string) $user->user_type;
+            if (in_array($roleName, ['SuperAdmin', 'Admin', 'Employee'])) {
+                $user->syncRoles([$roleName]);
             }
         }
     }

@@ -248,8 +248,8 @@ class LedgerController extends Controller
         $startDate = $request->get('start_date', now()->format('Y-m-d'));
         $endDate = $request->get('end_date', now()->format('Y-m-d'));
 
-        // Get all employees (users with user_type = 3)
-        $employees = User::where('user_type', 3)->orderBy('id', 'desc')->get();
+        // Get all employees (users with Employee role)
+        $employees = User::role('Employee')->orderBy('id', 'desc')->get();
         $ledgers = [];
         $openingBalance = null;
 
@@ -812,7 +812,7 @@ class LedgerController extends Controller
                 $obj->vendor_type = 'MP';
                 break;
             case '9': // Employee
-                $vendor = User::where('user_type', 3)->find($vendorId);
+                $vendor = User::role('Employee')->find($vendorId);
                 $obj->vendor_details = $vendor ? [$vendor->toArray()] : [];
                 $obj->vendor_name = $vendor->name ?? '';
                 $obj->vendor_type = 'Employee';

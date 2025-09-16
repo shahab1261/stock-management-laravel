@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Logs;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -23,7 +24,9 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('roles')->orderBy('created_at', 'desc')->get();
-        return view('admin.pages.management.users.index', compact('users'));
+        // Get all roles except Employee for the dropdown
+        $roles = Role::where('name', '!=', 'Employee')->orderBy('name')->get();
+        return view('admin.pages.management.users.index', compact('users', 'roles'));
     }
 
     public function store(Request $request)
@@ -35,7 +38,7 @@ class UserController extends Controller
             'bank_account_number' => 'nullable|string|max:50',
             'password' => 'required|string|min:8|confirmed',
             'status' => 'required|in:0,1',
-            'user_type' => 'required|in:0,1,2',
+            'role' => 'required|exists:roles,name',
             'address' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
@@ -54,20 +57,12 @@ class UserController extends Controller
             $user->status = (int)$request->status;
             $user->address = $request->address;
             $user->notes = $request->notes;
-            $user->user_type = (int)$request->user_type ?? 2; // default to Employee
+            $user->user_type = $request->role; // store role name string
             $user->entery_by_user = Auth::id();
             $user->save();
 
-            // Assign role based on user_type
-            $roleMap = [
-                0 => 'SuperAdmin',
-                1 => 'Admin',
-                2 => 'Employee'
-            ];
-
-            if (isset($roleMap[(int)$user->user_type])) {
-                $user->assignRole($roleMap[(int)$user->user_type]);
-            }
+            // Assign selected role
+            $user->syncRoles([$request->role]);
 
             Logs::create([
                 'user_id' => Auth::id(),
@@ -98,7 +93,7 @@ class UserController extends Controller
             'phone' => 'required|string|max:20',
             'bank_account_number' => 'nullable|string|max:50',
             'status' => 'required|in:0,1',
-            'user_type' => 'required|in:0,1,2',
+            'role' => 'required|in:SuperAdmin,Admin,Employee',
             'address' => 'nullable|string',
             'notes' => 'nullable|string',
         ];
@@ -128,19 +123,11 @@ class UserController extends Controller
             $user->status = (int)$request->status;
             $user->address = $request->address;
             $user->notes = $request->notes;
-            $user->user_type = (int)$request->user_type;
+            $user->user_type = $request->role;
             $user->save();
 
-            // Update role based on user_type
-            $roleMap = [
-                0 => 'SuperAdmin',
-                1 => 'Admin',
-                2 => 'Employee'
-            ];
-
-            if (isset($roleMap[(int)$user->user_type])) {
-                $user->syncRoles([$roleMap[(int)$user->user_type]]);
-            }
+            // Update role assignment
+            $user->syncRoles([$request->role]);
 
             Logs::create([
                 'user_id' => Auth::id(),

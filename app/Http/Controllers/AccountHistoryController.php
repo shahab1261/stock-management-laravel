@@ -288,7 +288,7 @@ class AccountHistoryController extends Controller
                 $vendorTypeName = 'MP';
                 break;
             case 9:
-                $vendorDetails = User::where('id', $vendorId)->where('user_type', 3)->first();
+                $vendorDetails = User::where('id', $vendorId)->where('user_type', 'Employee')->first();
                 $vendorName = $vendorDetails->name ?? '';
                 $vendorTypeName = 'Employee';
                 break;

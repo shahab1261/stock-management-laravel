@@ -28,6 +28,7 @@ use App\Http\Controllers\TrialBalanceController;
 use App\Http\Controllers\ProfitController;
 use App\Http\Controllers\DipController;
 use App\Http\Controllers\WetStockController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\AccountHistoryController;
 
 // Dashboard at root, protected
@@ -177,10 +178,20 @@ Route::middleware('admin')->group(function () {
     Route::post('/sales/nozzle/precheck', [App\Http\Controllers\NozzleSalesController::class, 'precheck'])->name('sales.nozzle.precheck');
     Route::post('/sales/nozzle/product-nozzles', [App\Http\Controllers\NozzleSalesController::class, 'productNozzles'])->name('sales.nozzle.product_nozzles');
     Route::post('/sales/nozzle/store', [App\Http\Controllers\NozzleSalesController::class, 'store'])->name('sales.nozzle.store');
+    Route::delete('/sales/{id}', [App\Http\Controllers\NozzleSalesController::class, 'deleteSale'])->name('sales.destroy');
 
     // Lubricant (General) Sales
     Route::get('/sales/lubricant', [App\Http\Controllers\LubricantSalesController::class, 'index'])->name('sales.lubricant.index');
     Route::post('/sales/lubricant/store', [App\Http\Controllers\LubricantSalesController::class, 'store'])->name('sales.lubricant.store');
+    Route::delete('/sales/lubricant/{id}', [App\Http\Controllers\LubricantSalesController::class, 'deleteSale'])->name('sales.lubricant.destroy');
+
+    // Credit Sales
+    Route::get('/sales/credit', [App\Http\Controllers\CreditSalesController::class, 'index'])->name('sales.credit.index');
+    Route::post('/sales/credit/store', [App\Http\Controllers\CreditSalesController::class, 'store'])->name('sales.credit.store');
+    Route::post('/sales/credit/tanks', [App\Http\Controllers\CreditSalesController::class, 'getTanksByProduct'])->name('sales.credit.tanks');
+    Route::post('/sales/credit/product-rate', [App\Http\Controllers\CreditSalesController::class, 'getProductRate'])->name('sales.credit.product_rate');
+    Route::post('/sales/credit/customer-vehicles', [App\Http\Controllers\CreditSalesController::class, 'getCustomerVehicles'])->name('sales.credit.customer_vehicles');
+    Route::post('/sales/credit/delete', [App\Http\Controllers\CreditSalesController::class, 'delete'])->name('sales.credit.delete');
 
         /*************************Daybook_Routes***************************/
     Route::get('/daybook', [App\Http\Controllers\DaybookController::class, 'index'])->name('admin.daybook.index');
@@ -239,6 +250,10 @@ Route::middleware('admin')->group(function () {
     /*************************Wet_Stock_Routes***************************/
     Route::get('/wet-stock', [WetStockController::class, 'index'])->name('admin.wet-stock.index');
     Route::get('/wet-stock/export', [WetStockController::class, 'export'])->name('admin.wet-stock.export');
+
+    /*************************Billing_Routes***************************/
+    Route::get('/billing', [BillingController::class, 'index'])->name('admin.billing.index');
+    Route::get('/billing/export', [BillingController::class, 'export'])->name('admin.billing.export');
 
     /*************************Ledger_Routes***************************/
     Route::get('/ledger/product', [LedgerController::class, 'productLedger'])->name('admin.ledger.product');

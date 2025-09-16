@@ -251,7 +251,7 @@ class PaymentController extends Controller
                 'bank_id' => $request->bank_id,
                 'bank_name' => $request->bank_name,
                 'payment_type' => 2, // bank
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             // Create ledger entries
@@ -268,7 +268,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             // Debit bank
@@ -284,7 +284,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             DB::commit();
@@ -292,7 +292,7 @@ class PaymentController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Bank receiving: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Bank {$request->bank_name} (ID {$request->bank_id}) | Amount PKR {$request->transaction_amount} | Date {$request->transaction_date}",
+                'action_description' => "Bank receiving: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Bank {$request->bank_name} (ID {$request->bank_id}) | Amount PKR {$request->transaction_amount} | Date {Settings::first()->date_lock}",
             ]);
 
             return response()->json(['success' => true, 'message' => 'Bank receiving transaction created successfully']);
@@ -334,7 +334,7 @@ class PaymentController extends Controller
                 'bank_id' => $request->bank_id,
                 'bank_name' => $request->bank_name,
                 'payment_type' => 2, // bank
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             // Create ledger entries
@@ -351,7 +351,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             // Credit bank
@@ -367,7 +367,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             DB::commit();
@@ -375,7 +375,7 @@ class PaymentController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Bank payment: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Bank {$request->bank_name} (ID {$request->bank_id}) | Amount PKR {$request->transaction_amount} | Date {$request->transaction_date}",
+                'action_description' => "Bank payment: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Bank {$request->bank_name} (ID {$request->bank_id}) | Amount PKR {$request->transaction_amount} | Date {Settings::first()->date_lock}",
             ]);
 
             return response()->json(['success' => true, 'message' => 'Bank payment transaction created successfully']);
@@ -413,7 +413,7 @@ class PaymentController extends Controller
                 'amount' => $request->transaction_amount,
                 'description' => $request->transaction_description,
                 'payment_type' => 1, // cash
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             // Create ledger entries
@@ -430,7 +430,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             // Debit cash
@@ -446,7 +446,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             DB::commit();
@@ -454,7 +454,7 @@ class PaymentController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Cash receiving: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Amount PKR {$request->transaction_amount} | Date {$request->transaction_date}",
+                'action_description' => "Cash receiving: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Amount PKR {$request->transaction_amount} | Date {Settings::first()->date_lock}",
             ]);
 
             return response()->json(['success' => true, 'message' => 'Cash receiving transaction created successfully']);
@@ -492,7 +492,7 @@ class PaymentController extends Controller
                 'amount' => $request->transaction_amount,
                 'description' => $request->transaction_description,
                 'payment_type' => 1, // cash
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             // Create ledger entries
@@ -509,7 +509,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             // Credit cash
@@ -525,7 +525,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => $request->transaction_date
+                'transaction_date' => Settings::first()->date_lock
             ]);
 
             DB::commit();
@@ -533,7 +533,7 @@ class PaymentController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Cash payment: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Amount PKR {$request->transaction_amount} | Date {$request->transaction_date}",
+                'action_description' => "Cash payment: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Amount PKR {$request->transaction_amount} | Date {Settings::first()->date_lock}",
             ]);
 
             return response()->json(['success' => true, 'message' => 'Cash payment transaction created successfully']);
@@ -628,7 +628,7 @@ class PaymentController extends Controller
                 $vendorTypeName = 'MP';
                 break;
             case 9:
-                $vendorDetails = DB::table('users')->where('id', $vendorId)->where('user_type', 3)->first();
+                $vendorDetails = DB::table('users')->where('id', $vendorId)->where('user_type', 'Employee')->first();
                 $vendorName = $vendorDetails->name ?? '';
                 $vendorTypeName = 'Employee';
                 break;

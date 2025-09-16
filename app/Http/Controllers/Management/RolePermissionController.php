@@ -14,20 +14,17 @@ class RolePermissionController extends Controller
 {
     public function index()
     {
-        // Reconcile users' roles based on user_type to prevent inflated counts
-        $roleMapByType = [
-            0 => 'SuperAdmin',
-            1 => 'Admin',
-            2 => 'Employee',
-        ];
-
-        $allUsers = User::all();
+        // Ensure each user's stored user_type string matches their primary Spatie role
+        $allUsers = User::with('roles')->get();
         foreach ($allUsers as $u) {
-            $expectedRole = $roleMapByType[$u->user_type] ?? 'Employee';
-            $u->syncRoles([$expectedRole]);
+            $roleName = optional($u->roles->first())->name;
+            if ($roleName && $u->user_type !== $roleName) {
+                $u->update(['user_type' => $roleName]);
+            }
         }
 
-        $roles = Role::with('permissions')->withCount('users')->get();
+        // Hide Employee role from Roles Management UI
+        $roles = Role::where('name', '!=', 'Employee')->with('permissions')->withCount('users')->get();
         $permissions = Permission::all();
         $users = User::with('roles')->get();
 
@@ -183,15 +180,9 @@ class RolePermissionController extends Controller
             $user = User::findOrFail($request->user_id);
             $role = Role::findOrFail($request->role_id);
 
-            // Update user_type based on role
-            $roleMap = [
-                'SuperAdmin' => 0,
-                'Admin' => 1,
-                'Employee' => 2
-            ];
-
+            // Assign role and persist role name in user_type column
             $user->syncRoles([$role->name]);
-            $user->update(['user_type' => (int)($roleMap[$role->name] ?? 2)]);
+            $user->update(['user_type' => $role->name]);
 
             Logs::create([
                 'user_id' => Auth::id(),

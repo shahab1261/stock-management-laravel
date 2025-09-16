@@ -106,12 +106,20 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
-                                            @permission('sales.delete')
-                                            <button type="button" class="btn btn-sm btn-danger delete-sales-btn"
-                                                data-id="{{ $sale->id }}">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            @endpermission
+                                            @php
+                                                $isLast = $sales_detail->contains(function ($value) use ($sale) {
+                                                    return $value->product_id == $sale->product_id
+                                                        && $value->last_row_id == $sale->id;
+                                                });
+                                            @endphp
+                                            @if($isLast)
+                                                @permission('sales.delete')
+                                                <button type="button" class="btn btn-sm btn-danger delete-sales-btn"
+                                                    data-id="{{ $sale->id }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                @endpermission
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

@@ -31,10 +31,9 @@ class SalesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:sales.view')->only(['index', 'create']);
-        $this->middleware('permission:sales.create')->only('store');
-        $this->middleware('permission:sales.edit')->only('update');
-        $this->middleware('permission:sales.delete')->only('destroy');
+        $this->middleware('permission:sales.nozzle.view')->only(['index', 'create']);
+        $this->middleware('permission:sales.nozzle.create')->only('store');
+        $this->middleware('permission:sales.nozzle.delete')->only('destroy');
     }
 
     public function index(){
@@ -43,10 +42,14 @@ class SalesController extends Controller
                       ->orderByDesc('id')
                       ->get();
 
+        $sales_detail = Sales::selectRaw('MAX(id) as last_row_id, product_id')
+                        ->groupBy('product_id')
+                        ->get();
+
         // Get sales summary data for cards
         $salesSummary = $this->getProductSales($dateLock, $dateLock);
 
-        return view('admin.pages.Sales.index', compact('sales', 'salesSummary'));
+        return view('admin.pages.Sales.index', compact('sales', 'salesSummary', 'sales_detail'));
     }
 
     public function create(){
@@ -59,7 +62,7 @@ class SalesController extends Controller
         $suppliers = Suppliers::all();
         $drivers = Drivers::all();
         $vehicles = TankLari::where('tank_type', 2)->get();
-        $employees = User::where('user_type', 3)->get();
+        $employees = User::role('Employee')->get();
         $terminals = Terminal::all();
         $settings = Settings::first();
 
@@ -137,6 +140,8 @@ class SalesController extends Controller
             // Get product previous stock
             $productPreviousStock = $this->getProductStockInTanks($request->product_id);
 
+            $LockDate = Settings::first()->date_lock;
+
             // Create sale record
             $sale = new Sales();
             $sale->entery_by_user = Auth::id();
@@ -155,7 +160,7 @@ class SalesController extends Controller
             $sale->freight = $request->freight;
             $sale->freight_charges = $request->freight_charges;
             $sale->notes = $request->notes;
-            $sale->create_date = Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d');
+            $sale->create_date = Carbon::createFromFormat('Y-m-d', $LockDate)->format('Y-m-d');
             $sale->save();
 
             // Calculate profit
@@ -183,7 +188,7 @@ class SalesController extends Controller
                 'amount' => $request->amount,
                 'previous_balance' => 0,
                 'tarnsaction_comment' => $request->notes,
-                'transaction_date' => Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d')
+                'transaction_date' => Carbon::createFromFormat('Y-m-d', $LockDate)->format('Y-m-d')
             ]);
 
             // Customer debit entry
@@ -199,7 +204,7 @@ class SalesController extends Controller
                 'amount' => $request->amount,
                 'previous_balance' => 0,
                 'tarnsaction_comment' => $request->notes,
-                'transaction_date' => Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d')
+                'transaction_date' => Carbon::createFromFormat('Y-m-d', $LockDate)->format('Y-m-d')
             ]);
 
             // Update tank stock
@@ -207,10 +212,10 @@ class SalesController extends Controller
             $tank->save();
 
             // Update current stock
-            $this->updateStockStatus($request->product_id, $request->sale_date);
+            $this->updateStockStatus($request->product_id, $LockDate);
 
             // Handle freight charges if applicable
-            if ($request->freight_charges > 0 && ($request->product_id == 1 || $request->product_id == 2)) {
+            if ($request->freight_charges > 0 && (env('SOFTWARE_TYPE')) == 1 && ($request->product_id == 1 || $request->product_id == 2)) {
                 // Minus freight from profit
                 $this->calculateFreight($sale->id, $request->freight_charges);
 
@@ -229,7 +234,7 @@ class SalesController extends Controller
                     'amount' => $request->freight_charges,
                     'previous_balance' => 0,
                     'tarnsaction_comment' => $freightNotes,
-                    'transaction_date' => Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d')
+                    'transaction_date' => Carbon::createFromFormat('Y-m-d', $LockDate)->format('Y-m-d')
                 ]);
 
                 // Add freight ledger credit entry
@@ -248,7 +253,7 @@ class SalesController extends Controller
                     'amount' => $request->freight_charges,
                     'previous_balance' => 0,
                     'tarnsaction_comment' => $freightNotes,
-                    'transaction_date' => Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d')
+                    'transaction_date' => Carbon::createFromFormat('Y-m-d', $LockDate)->format('Y-m-d')
                 ]);
             }
 
@@ -297,6 +302,19 @@ class SalesController extends Controller
 
             $saleId = $request->input('sales_id');
             $sale = Sales::findOrFail($saleId);
+
+            // only allow deleting if this is the latest sale for the product
+            $lastSale = Sales::where('product_id', $sale->product_id)
+                        ->orderByDesc('id')
+                        ->first();
+
+            if (!$lastSale || $lastSale->id !== $sale->id) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only the last sale for a product can be deleted',
+                ]);
+            }
 
             // Delete ledger entries (purchase type 2 for sales in ledger)
             $ledgerDeleted = Ledger::where('transaction_id', $saleId)
@@ -533,7 +551,7 @@ class SalesController extends Controller
                 $vendorTypeName = 'MP';
                 break;
             case 9:
-                $vendorDetails = User::where('user_type', 3)->first();
+                $vendorDetails = User::role('Employee')->first();
                 $vendorName = $vendorDetails->name ?? '';
                 $vendorTypeName = 'employee';
                 break;

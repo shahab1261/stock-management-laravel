@@ -2,7 +2,6 @@
 @section('title', 'Stock Management | Admin Dashboard')
 @section('description', 'Stock Management Admin Dashboard')
 @section('content')
-@permission('dashboard.view')
     @php
         $settings = App\Models\Management\Settings::first();
         $products = App\Models\Management\Product::with('tank')->get();
@@ -379,7 +378,6 @@
             </div>
         </div>
     </div>
-@endpermission
 
     <style>
         .timeline {

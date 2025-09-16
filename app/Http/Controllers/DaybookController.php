@@ -461,7 +461,7 @@ class DaybookController extends Controller
                 $vendorTypeName = 'MP';
                 break;
             case 9:
-                $vendorDetails = DB::table('users')->where('id', $vendorId)->where('user_type', 3)->first();
+                $vendorDetails = DB::table('users')->where('id', $vendorId)->where('user_type', 'Employee')->first();
                 $vendorName = $vendorDetails->name ?? '';
                 $vendorTypeName = 'Employee';
                 break;

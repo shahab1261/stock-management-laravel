@@ -22,6 +22,7 @@ class LubricantSalesController extends Controller
     {
         $this->middleware('permission:sales.lubricant.view')->only('index');
         $this->middleware('permission:sales.lubricant.create')->only('store');
+        $this->middleware('permission:sales.lubricant.delete')->only('deleteSale');
     }
 
     public function index()
@@ -50,6 +51,10 @@ class LubricantSalesController extends Controller
             ->groupBy('product_id')
             ->pluck('last_id', 'product_id');
 
+        $sales_detail = Sales::selectRaw('MAX(id) as last_row_id, product_id')
+                        ->groupBy('product_id')
+                        ->get();
+
         $salesSummary = Sales::join('products', 'sales.product_id', '=', 'products.id')
             ->whereDate('sales.create_date', $dateLock)
             ->select('sales.product_id', 'products.name as product_name',
@@ -58,7 +63,7 @@ class LubricantSalesController extends Controller
             ->groupBy('sales.product_id', 'products.name')
             ->get();
 
-        return view('admin.pages.Sales.lubricant', compact('products', 'stockByProduct', 'dateLock', 'sales', 'salesSummary', 'lastSaleIds'));
+        return view('admin.pages.Sales.lubricant', compact('products', 'stockByProduct', 'dateLock', 'sales', 'salesSummary', 'lastSaleIds', 'sales_detail'));
     }
 
     public function store(Request $request)
@@ -89,6 +94,13 @@ class LubricantSalesController extends Controller
 
             $productPreviousStock = Tank::where('product_id', $request->product_id)->sum('opening_stock') ?: 0;
 
+
+            $salesDate = Settings::first()->date_lock;
+
+            $productRate = Product::where('id', $request->product_id)->first()->current_sale;
+
+            $amount = $request->quantity * $productRate;
+
             $sale = new Sales();
             $sale->entery_by_user = Auth::id();
             $sale->previous_stock = $productPreviousStock;
@@ -101,14 +113,14 @@ class LubricantSalesController extends Controller
             $sale->tank_lari_id = 0;
             $sale->terminal_id = 0;
             $sale->quantity = $request->quantity;
-            $sale->amount = $request->amount;
-            $sale->rate = $request->rate;
+            $sale->amount = $amount;
+            $sale->rate = $productRate;
             $sale->freight = 0;
             $sale->freight_charges = 0;
             $sale->notes = $request->notes;
             $sale->opening_reading = $request->opening_reading;
             $sale->closing_reading = $request->closing_reading;
-            $sale->create_date = Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d');
+            $sale->create_date = Carbon::createFromFormat('Y-m-d', $salesDate)->format('Y-m-d');
             $sale->save();
 
             // Calculate profit (FIFO)
@@ -124,10 +136,10 @@ class LubricantSalesController extends Controller
                 'vendor_type' => 3,
                 'vendor_id' => $request->product_id,
                 'transaction_type' => 1,
-                'amount' => $request->amount,
+                'amount' => $amount,
                 'previous_balance' => 0,
                 'tarnsaction_comment' => $request->notes,
-                'transaction_date' => Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d')
+                'transaction_date' => Carbon::createFromFormat('Y-m-d', $salesDate)->format('Y-m-d')
             ]);
 
             Ledger::create([
@@ -139,10 +151,10 @@ class LubricantSalesController extends Controller
                 'tank_id' => $request->selected_tank,
                 'vendor_id' => 7,
                 'transaction_type' => 2,
-                'amount' => $request->amount,
+                'amount' => $amount,
                 'previous_balance' => 0,
                 'tarnsaction_comment' => $request->notes,
-                'transaction_date' => Carbon::createFromFormat('Y-m-d', $request->sale_date)->format('Y-m-d')
+                'transaction_date' => Carbon::createFromFormat('Y-m-d', $salesDate)->format('Y-m-d')
             ]);
 
             // Update stocks
@@ -228,6 +240,108 @@ class LubricantSalesController extends Controller
                 'stock_date' => $stockDate,
             ]);
         }
+    }
+
+    public function deleteSale(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $saleId = $request->input('sale_id');
+            $sale = Sales::findOrFail($saleId);
+
+            // only allow deleting if this is the latest sale for the product
+            $lastSale = Sales::where('product_id', $sale->product_id)
+                        ->orderByDesc('id')
+                        ->first();
+
+            if (!$lastSale || $lastSale->id !== $sale->id) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only the last sale for a product can be deleted',
+                ]);
+            }
+
+            // 1. Delete ledger entries (purchase_type = 2 for sales)
+            Ledger::where('transaction_id', $saleId)
+                ->where('purchase_type', 2)
+                ->delete();
+
+            // 2. Reverse stock after sale delete
+            $stockReversed = $this->reverseStockAfterSaleDelete($saleId);
+            if (!$stockReversed) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to reverse stock',
+                ]);
+            }
+
+            // 3. Handle nozzle reading reset if sale had a nozzle
+            if ($sale->nozzle_id != 0) {
+                $nozzle = Nozzle::find($sale->nozzle_id);
+                if ($nozzle) {
+                    $nozzle->opening_reading = $sale->opening_reading;
+                    $nozzle->save();
+                }
+            }
+
+            // 4. Delete the sale itself
+            $sale->delete();
+
+            DB::commit();
+            return response()->json([
+                'success' => true,
+                'message' => 'Sale deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function reverseStockAfterSaleDelete($saleId) {
+        $sale = Sales::find($saleId);
+        if (!$sale) return false;
+
+        $tankId = $sale->tank_id;
+        $productId = $sale->product_id;
+        $stockSold = (float) $sale->quantity;
+
+        // Update tank stock
+        $tank = Tank::find($tankId);
+        if ($tank) {
+            $tank->opening_stock += $stockSold;
+            $tank->save();
+        }
+
+        // Reverse sold stocks in purchases
+        $purchases = Purchase::where('product_id', $productId)
+            ->where('sold_quantity', '>', 0)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        foreach ($purchases as $purchase) {
+            $purchasedStock = $purchase->sold_quantity;
+
+            if ($purchasedStock >= $stockSold) {
+                $purchase->sold_quantity -= $stockSold;
+                $purchase->save();
+                return true;
+            } else {
+                $stockDifference = $stockSold - $purchasedStock;
+                $purchase->sold_quantity = 0;
+                $purchase->save();
+                $stockSold = $stockDifference;
+            }
+        }
+
+        return true;
     }
 }
 

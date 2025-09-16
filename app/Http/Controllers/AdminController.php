@@ -12,7 +12,8 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:dashboard.view')->only('dashboard');
+        // Dashboard should be accessible to all logged-in users
+        // $this->middleware('permission:dashboard.view')->only('dashboard');
     }
 
     public function dashboard()
@@ -38,6 +39,14 @@ class AdminController extends Controller
             }
 
             $remember = $request->filled('remember');
+
+            $candidate = \App\Models\User::where('email', $input['email'])->first();
+            if ($candidate && empty($candidate->password)) {
+                if ($request->expectsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Login not allowed for this account.'], 403);
+                }
+                return redirect()->back()->with('error', 'Login not allowed for this account.')->withInput();
+            }
 
             if (Auth::attempt(['email' => $input['email'], 'password' => $input['password']], $remember)) {
                 if ($request->expectsJson()) {

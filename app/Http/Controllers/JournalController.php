@@ -88,6 +88,8 @@ class JournalController extends Controller
                 $voucherId = JournalEntry::generateVoucherId();
             }
 
+            $transactionDate = Settings::first()->date_lock;
+
             // Create journal entry
             $journalEntry = JournalEntry::create([
                 'entery_by_user' => Auth::id(),
@@ -96,7 +98,7 @@ class JournalController extends Controller
                 'amount' => $request->journal_amount,
                 'debit_credit' => $request->debit_credit,
                 'description' => $request->journal_description,
-                'transaction_date' => $request->journal_date,
+                'transaction_date' => $transactionDate,
                 'voucher_id' => $voucherId
             ]);
 
@@ -108,14 +110,14 @@ class JournalController extends Controller
                 $request->debit_credit,
                 $request->journal_amount,
                 $request->journal_description,
-                $request->journal_date
+                $transactionDate
             );
 
             // Log the journal entry creation
             \App\Models\Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Created journal entry: {$request->journal_description}, amount: {$request->journal_amount}, date: {$request->journal_date}, voucher: {$voucherId}"
+                'action_description' => "Created journal entry: {$request->journal_description}, amount: {$request->journal_amount}, date: {$transactionDate}, voucher: {$voucherId}"
             ]);
 
             DB::commit();

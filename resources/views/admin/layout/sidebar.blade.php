@@ -93,6 +93,18 @@
                     </a>
                 </li>
                 @endpermission
+                @if($softwareType == 2)
+                    @permission('sales.credit.view')
+                    <li class="menu-item mb-2" data-name="credit-sales">
+                        <a href="{{ route('sales.credit.index') }}" class="menu-link d-flex align-items-center rounded p-2">
+                            <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                                <i class="bi bi-credit-card-2-front"></i>
+                            </div>
+                            <span class="menu-text">Credit Sales</span>
+                        </a>
+                    </li>
+                    @endpermission
+                @endif
             @endif
             @endpermission
 
@@ -155,6 +167,20 @@
                 </a>
             </li>
             @endpermission
+
+            <!-- Billing Menu Item -->
+            @if($softwareType == 2)
+                @permission('billing.view')
+                <li class="menu-item mb-2" data-name="billing">
+                    <a href="{{ route('admin.billing.index') }}" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.billing.*') ? 'active' : '') }}">
+                        <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+                        <span class="menu-text">Billing</span>
+                    </a>
+                </li>
+                @endpermission
+            @endif
 
 
             @if(auth()->user()->hasAnyPermission(['payments.bank-receiving.view', 'payments.bank-payments.view', 'payments.cash-receiving.view', 'payments.cash-payments.view']))
@@ -532,7 +558,7 @@
             @endif
 
             <!-- Reports Menu Item -->
-            @if(auth()->user()->hasAnyPermission(['reports.account-history.view', 'reports.all-stocks.view', 'reports.summary.view', 'reports.purchase-transport.view', 'reports.sale-transport.view', 'daybook.view']))
+            @if(auth()->user()->hasAnyPermission(['reports.account-history.view', 'reports.all-stocks.view', 'reports.summary.view', 'reports.purchase-transport.view', 'reports.sale-transport.view']))
             <li class="menu-item mb-2" data-name="reports">
                 <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('reportsSubmenu')">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">

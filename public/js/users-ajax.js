@@ -79,7 +79,7 @@ $(document).ready(function() {
         $('#edit_phone').val(user.data('phone'));
         $('#edit_bank_account_number').val(user.data('bank-account'));
         $('#edit_status').val(user.data('status'));
-        $('#edit_user_type').val(user.data('user-type'));
+        $('#edit_role').val(user.data('role'));
         $('#edit_address').val(user.data('address'));
         $('#edit_notes').val(user.data('notes'));
 

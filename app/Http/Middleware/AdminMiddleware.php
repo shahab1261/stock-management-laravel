@@ -25,8 +25,13 @@ class AdminMiddleware
 
         $user = Auth::user();
 
-        // Allow SuperAdmin, Admin, and Employee to access
-        if (in_array($user->user_type, [0, 1, 2])) {
+        // SuperAdmin can access everything
+        if ($user->isSuperAdmin()) {
+            return $next($request);
+        }
+
+        // Allow any user with a valid role (except Employee which shouldn't login)
+        if ($user->roles()->exists() && !$user->hasRole('Employee')) {
             return $next($request);
         }
 

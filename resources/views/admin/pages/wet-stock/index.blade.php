@@ -99,7 +99,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="mb-3" style="width: 202px;">
+                        <div class="mb-3" style="width: 252px;">
                             <label for="start_date" class="form-label">Start Date</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
@@ -108,7 +108,7 @@
                                 <input type="date" class="form-control border-start-0" name="start_date" id="start_date" value="{{ $startDate }}">
                             </div>
                         </div>
-                        <div class="mb-3" style="width: 202px;">
+                        <div class="mb-3" style="width: 252px;">
                             <label for="end_date" class="form-label">End Date</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">

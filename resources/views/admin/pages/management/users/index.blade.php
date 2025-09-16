@@ -78,7 +78,7 @@
                                             data-phone="{{ $user->phone }}"
                                             data-bank-account="{{ $user->bank_account_number }}"
                                             data-status="{{ (int)$user->status }}"
-                                            data-user-type="{{ $user->user_type }}"
+                                            data-role="{{ $user->role_name }}"
                                             data-address="{{ $user->address }}"
                                             data-notes="{{ $user->notes }}">
                                             <i class="bi bi-pencil-square"></i>
@@ -203,18 +203,19 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label for="user_type" class="form-label fw-medium">User Type <span class="text-danger">*</span></label>
+                        <label for="role" class="form-label fw-medium">Role <span class="text-danger">*</span></label>
                         <div class="input-group mb-0">
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person-badge"></i>
                             </span>
-                            <select class="form-select border-start-0" id="user_type" name="user_type"  >
-                                <option value="2">Employee</option>
-                                <option value="1">Admin</option>
-                                <option value="0">SuperAdmin</option>
+                            <select class="form-select border-start-0" id="role" name="role"  >
+                                <option value="">Select a role</option>
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="invalid-feedback" id="user_type-error"></div>
+                        <div class="invalid-feedback" id="role-error"></div>
                     </div>
 
                     <div class="col-md-6">
@@ -353,18 +354,19 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label for="edit_user_type" class="form-label fw-medium">User Type <span class="text-danger">*</span></label>
+                        <label for="edit_role" class="form-label fw-medium">Role <span class="text-danger">*</span></label>
                         <div class="input-group mb-0">
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person-badge"></i>
                             </span>
-                            <select class="form-select border-start-0" id="edit_user_type" name="user_type"  >
-                                <option value="2">Employee</option>
-                                <option value="1">Admin</option>
-                                <option value="0">SuperAdmin</option>
+                            <select class="form-select border-start-0" id="edit_role" name="role"  >
+                                <option value="">Select a role</option>
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="invalid-feedback" id="edit-user_type-error"></div>
+                        <div class="invalid-feedback" id="edit-role-error"></div>
                     </div>
 
                     <div class="col-md-6">

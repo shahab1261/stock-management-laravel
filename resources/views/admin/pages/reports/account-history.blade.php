@@ -142,7 +142,7 @@
                                 </optgroup>
 
                                 <optgroup label="Employees">
-                                    @foreach(App\Models\User::where('user_type', 3)->orderBy('name')->get() as $employee)
+                                    @foreach(App\Models\User::role('Employee')->orderBy('name')->get() as $employee)
                                         <option value="{{ $employee->id }}"
                                                 data-type="9"
                                                 data-name="{{ $employee->name }}"

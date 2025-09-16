@@ -71,7 +71,7 @@ class DipController extends Controller
             DB::beginTransaction();
 
             $tankId = $request->tank_id;
-            $dipDate = $request->dip_date;
+            $dipDate = Settings::first()->date_lock;
             $dipValue = $request->dip_value;
             $literValue = $request->liter_value;
 

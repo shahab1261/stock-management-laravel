@@ -1,0 +1,210 @@
+/* Billing Page Styles - Matching Wet Stock and Profit Pages */
+.avatar-sm {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+}
+
+.form-label {
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    color: #444;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #4154f1;
+    box-shadow: 0 0 0 0.25rem rgba(65, 84, 241, 0.1);
+}
+
+.modal-content {
+    border-radius: 0.5rem;
+}
+
+.modal-header {
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.input-group-text {
+    color: #6c757d;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover, .btn-danger:focus {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    border-radius: 30px;
+}
+
+.dataTables_wrapper {
+    padding-top: 15px;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+    color: #6c757d;
+    padding: 8px;
+}
+
+.dataTables_wrapper .dataTables_length {
+    padding-left: 15px;
+}
+
+.dataTables_wrapper .dataTables_info {
+    padding-left: 15px;
+}
+
+/* Stats Cards */
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Table Styles */
+.table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(65, 84, 241, 0.05);
+}
+
+.table-primary {
+    background-color: rgba(65, 84, 241, 0.1);
+    border-left: 4px solid #4154f1;
+}
+
+.table-light {
+    background-color: rgba(248, 249, 250, 0.8);
+    border-left: 4px solid #6c757d;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #4154f1;
+    border-color: #4154f1;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #3448e6;
+    border-color: #3448e6;
+}
+
+.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.btn-success:hover, .btn-success:focus {
+    background-color: #157347;
+    border-color: #146c43;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+    background-color: #5c636a;
+    border-color: #565e64;
+}
+
+/* Filter Section */
+.card-header {
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #4154f1;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Print styles */
+@media print {
+    .btn, .card-header, .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        display: none !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    .table {
+        font-size: 12px;
+    }
+}

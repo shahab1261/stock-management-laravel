@@ -60,7 +60,7 @@ class PurchaseController extends Controller
         $suppliers = Suppliers::all();
         $drivers = Drivers::all();
         $vehicles = TankLari::where('tank_type', 2)->get();
-        $employees = User::where('user_type', 3)->get();
+        $employees = User::role('Employee')->get();
         $terminals = Terminal::all();
         $settings = Settings::first();
 
@@ -191,16 +191,22 @@ class PurchaseController extends Controller
                 ]);
             }
 
+
+            $purchaseDate = Settings::first()->date_lock;
+
+            $productRate = Product::where('id', $request->product_id)->first()->current_purchase;
+            $rates = $productRate * $request->stock;
+
             // Create purchase record
             $purchase = new Purchase();
-            $purchase->purchase_date = Carbon::createFromFormat('d/m/Y', $request->purchase_date)->format('Y-m-d');
+            $purchase->purchase_date = $purchaseDate;
             $purchase->supplier_id = $request->vendor_id;
             $purchase->vendor_type = $request->vendor_data_type;
             $purchase->product_id = $request->product_id;
             $purchase->stock = $request->stock;
             $purchase->previous_stock = $previousStock;
-            $purchase->rate = $request->rate;
-            $purchase->total_amount = $request->amount;
+            $purchase->rate = $productRate;
+            $purchase->total_amount = $rates;
             $purchase->vehicle_no = $request->vehicle_id;
             $purchase->driver_no = $request->driver_id;
             $purchase->terminal_id = $request->terminal_id;
@@ -210,6 +216,8 @@ class PurchaseController extends Controller
             $purchase->entery_by_user = Auth::id();
             $purchase->image_path = $imagePath;
             $purchase->save();
+
+            // dd('dsdds');
 
             // Update product quantity
             if ($product) {
@@ -340,6 +348,10 @@ class PurchaseController extends Controller
 
             // Find the purchase record
             $purchase = Purchase::findOrFail($purchaseId);
+            if ($purchase->sold_quantity > 0) {
+                 return response("false");
+            }
+            
             $product = Product::find($purchase->product_id);
 
             // Delete ledger entries (purchase type 1 for purchases in ledger)
@@ -500,7 +512,7 @@ class PurchaseController extends Controller
                 $vendorTypeName = 'MP';
                 break;
             case 9:
-                $vendorDetails = User::where('user_type', 3)->first();
+                $vendorDetails = User::role('Employee')->first();
                 $vendorName = $vendorDetails->name ?? '';
                 $vendorTypeName = 'employee';
                 break;

@@ -85,7 +85,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($banks as $key => $bank)
+                                @foreach($banks as $key => $bank)
                                 <tr>
                                     <td class="text-center">{{ $key + 1 }}</td>
                                     <td>
@@ -119,7 +119,7 @@
                                         @endpermission
                                     </td>
                                 </tr>
-                                @empty
+                                {{-- @empty
                                 <tr>
                                     <td colspan="9" class="text-center py-5">
                                         <div class="d-flex flex-column align-items-center">
@@ -133,8 +133,8 @@
                                             </button>
                                         </div>
                                     </td>
-                                </tr>
-                                @endforelse
+                                </tr> --}}
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
