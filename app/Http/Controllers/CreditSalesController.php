@@ -196,7 +196,7 @@ class CreditSalesController extends Controller
             // Log the activity
             Logs::create([
                 'user_id' => Auth::id(),
-                'action_type' => 'Credit Sale Created',
+                'action_type' => 'Create',
                 'action_description' => "Created credit sale for customer ID: {$request->customer_id}, Amount: {$amount}",
             ]);
 
@@ -243,7 +243,7 @@ class CreditSalesController extends Controller
             // Log the activity
             Logs::create([
                 'user_id' => Auth::id(),
-                'action_type' => 'Credit Sale Deleted',
+                'action_type' => 'Delete',
                 'action_description' => "Deleted credit sale ID: {$creditSaleId}",
             ]);
 
