@@ -58,6 +58,37 @@ input:focus {
     font-weight: 500;
     color: var(--clr-primary);
 }
+.input-group {
+
+    flex-wrap: nowrap !important;
+
+}
+.select2-container .select2-selection--single {
+
+    height: 39px !important;
+}
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-top: 4px !important;
+
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+
+    top: 5px !important;
+
+}
+.select2-container--default .select2-selection--single {
+
+    border: 1px solid #aaaaaa63 !important;
+
+}
+
+.select2-dropdown {
+
+    z-index: 9999999 !important;
+}
+.modal-body .select2-container{
+    width: 100% !important;
+}
 
 .fs-48-secondary {
     /* font-size: clamp(var(--b1-l), 3vw, var(--fs-48)); */

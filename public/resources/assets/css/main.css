@@ -476,6 +476,11 @@ h6 {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
+.input-group {
+
+    flex-wrap: nowrap !important;
+
+}
 
 .header .search-form .input-group:focus-within {
   border-color: var(--accent-color);

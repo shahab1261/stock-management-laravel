@@ -54,10 +54,10 @@
                         <!-- Vendor Selection -->
                         <div class="mb-3" style="width: 254px;">
                             <label for="vendor_dropdown" class="form-label">Select Account</label>
-                            <select name="vendor_dropdown" id="vendor_dropdown" class="form-select" required>
-                                <option value="">Choose Account...</option>
+                            <select name="vendor_dropdown" id="vendor_dropdown" class="form-select searchable-dropdown" required>
+                                <option disabled selected>Choose Account...</option>
 
-                                <optgroup label="Suppliers">
+                                {{-- <optgroup label="Suppliers"> --}}
                                     @foreach(App\Models\Management\Suppliers::orderBy('name')->get() as $supplier)
                                         <option value="{{ $supplier->id }}"
                                                 data-type="1"
@@ -66,9 +66,9 @@
                                             {{ $supplier->name }}
                                         </option>
                                     @endforeach
-                                </optgroup>
+                                {{-- </optgroup> --}}
 
-                                <optgroup label="Customers">
+                                {{-- <optgroup label="Customers"> --}}
                                     @foreach(App\Models\Management\Customers::orderBy('name')->get() as $customer)
                                         <option value="{{ $customer->id }}"
                                                 data-type="2"
@@ -77,9 +77,9 @@
                                             {{ $customer->name }}
                                         </option>
                                     @endforeach
-                                </optgroup>
+                                {{-- </optgroup> --}}
 
-                                <optgroup label="Products">
+                                {{-- <optgroup label="Products"> --}}
                                     @foreach(App\Models\Management\Product::orderBy('name')->get() as $product)
                                         <option value="{{ $product->id }}"
                                                 data-type="3"
@@ -88,9 +88,9 @@
                                             {{ $product->name }}
                                         </option>
                                     @endforeach
-                                </optgroup>
+                                {{-- </optgroup> --}}
 
-                                <optgroup label="Expenses">
+                                {{-- <optgroup label="Expenses"> --}}
                                     @foreach(App\Models\Management\Expenses::orderBy('expense_name')->get() as $expense)
                                         <option value="{{ $expense->eid }}"
                                                 data-type="4"
@@ -99,9 +99,9 @@
                                             {{ $expense->expense_name }}
                                         </option>
                                     @endforeach
-                                </optgroup>
+                                {{-- </optgroup> --}}
 
-                                <optgroup label="Incomes">
+                                {{-- <optgroup label="Incomes"> --}}
                                     @foreach(App\Models\Management\Incomes::orderBy('income_name')->get() as $income)
                                         <option value="{{ $income->id }}"
                                                 data-type="5"
@@ -110,9 +110,9 @@
                                             {{ $income->income_name }}
                                         </option>
                                     @endforeach
-                                </optgroup>
+                                {{-- </optgroup> --}}
 
-                                <optgroup label="Banks">
+                                {{-- <optgroup label="Banks"> --}}
                                     @foreach(App\Models\Management\Banks::orderBy('name')->get() as $bank)
                                         <option value="{{ $bank->id }}"
                                                 data-type="6"
@@ -121,27 +121,27 @@
                                             {{ $bank->name }}
                                         </option>
                                     @endforeach
-                                </optgroup>
+                                {{-- </optgroup> --}}
 
-                                <optgroup label="Cash">
+                                {{-- <optgroup label="Cash"> --}}
                                     <option value="7"
                                             data-type="7"
                                             data-name="Cash"
                                             {{ ($vendorType == '7') ? 'selected' : '' }}>
                                         Cash
                                     </option>
-                                </optgroup>
+                                {{-- </optgroup> --}}
 
-                                <optgroup label="MP">
+                                {{-- <optgroup label="MP"> --}}
                                     <option value="8"
                                             data-type="8"
                                             data-name="MP"
                                             {{ ($vendorType == '8') ? 'selected' : '' }}>
                                         MP
                                     </option>
-                                </optgroup>
+                                {{-- </optgroup> --}}
 
-                                <optgroup label="Employees">
+                                {{-- <optgroup label="Employees"> --}}
                                     @foreach(App\Models\User::role('Employee')->orderBy('name')->get() as $employee)
                                         <option value="{{ $employee->id }}"
                                                 data-type="9"
@@ -150,7 +150,7 @@
                                             {{ $employee->name }}
                                         </option>
                                     @endforeach
-                                </optgroup>
+                                {{-- </optgroup> --}}
                             </select>
                         </div>
 

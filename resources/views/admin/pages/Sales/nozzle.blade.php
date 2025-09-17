@@ -159,14 +159,14 @@
         <!-- Add Nozzle Sales Modal -->
         <div class="modal fade" id="nozzleSalesModal" tabindex="-1" aria-labelledby="nozzleSalesModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content border-0 shadow">
+                <div class="modal-content border-0 shadow" id="modalBody">
                     <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title" id="nozzleSalesModalLabel"><i class="bi bi-fuel-pump me-2"></i>Add Nozzle Sales
                         </h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" id="modalBody">
                         <form id="addSalesForm_pump">
                             <div class="row mb-3 gx-2">
                                 <div class="col-12 col-md-3">
@@ -185,9 +185,9 @@
                                         <span class="input-group-text bg-light border-end-0">
                                             <i class="bi bi-funnel"></i>
                                         </span>
-                                        <select name="product_id" id="product_id" class="form-select border-start-0"
+                                        <select name="product_id" id="product_id" class="form-select border-start-0 searchable-dropdown-modal"
                                             required>
-                                            <option value="" selected disabled>Choose product</option>
+                                            <option selected disabled>Choose product</option>
                                             @foreach ($products as $product)
                                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                             @endforeach

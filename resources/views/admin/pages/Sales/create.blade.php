@@ -46,7 +46,7 @@
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-shop"></i>
                                 </span>
-                                <select class="form-select border-start-0" name="supplier_id" id="supplier_id" required>
+                                <select class="form-select border-start-0 searchable-dropdown" name="supplier_id" id="supplier_id" required>
                                     <option selected disabled>Select Vendor</option>
                                     @foreach ($suppliers as $supplier)
                                         <option value="{{ $supplier->id }}" data-name="{{ $supplier->name }}"
@@ -93,7 +93,7 @@
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-box"></i>
                                 </span>
-                                <select class="form-select border-start-0" name="product_id" id="product_id" required>
+                                <select class="form-select border-start-0 searchable-dropdown" name="product_id" id="product_id" required>
                                     <option selected disabled>Select Product</option>
                                     @foreach ($products as $product)
                                         <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -145,7 +145,7 @@
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-truck"></i>
                                 </span>
-                                <select class="form-select border-start-0" id="freight">
+                                <select class="form-select border-start-0 searchable-dropdown" id="freight">
                                     <option value="0" selected>Without Freight</option>
                                     <option value="1">With Freight</option>
                                 </select>
@@ -169,7 +169,7 @@
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-truck"></i>
                                 </span>
-                                <select class="form-select border-start-0" name="tank_lari_id" id="tank_lari_id"
+                                <select class="form-select border-start-0 searchable-dropdown" name="tank_lari_id" id="tank_lari_id"
                                     required>
                                     <option selected disabled>Select Transport</option>
                                     @foreach ($vehicles as $vehicle)
@@ -187,7 +187,7 @@
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-building"></i>
                                 </span>
-                                <select class="form-select border-start-0" id="sales_type">
+                                <select class="form-select border-start-0 searchable-dropdown" id="sales_type">
                                     <option value="1" selected>Goddam</option>
                                     <option value="2">Direct</option>
                                 </select>

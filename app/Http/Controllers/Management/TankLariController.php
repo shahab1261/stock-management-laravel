@@ -27,7 +27,6 @@ class TankLariController extends Controller
             ->where('tank_type', 3)
             ->orderBy('register_at', 'desc')
             ->get();
-
         $customers = Customers::where('status', 1)->get();
 
         return view('admin.pages.management.tanklari.index', compact('tanklaris', 'customers'));
@@ -72,7 +71,7 @@ class TankLariController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Tank Lari created: {$tanklari->larry_name} (Customer ID {$tanklari->customer_id})",
+                'action_description' => "Tank Lari created: {$tanklari->larry_name} (Customer: {$tanklari->customer->name})",
             ]);
 
             return response()->json(['success' => true, 'message' => 'Tank Lari added successfully']);
@@ -119,7 +118,7 @@ class TankLariController extends Controller
                 Logs::create([
                     'user_id' => Auth::id(),
                     'action_type' => 'Update',
-                    'action_description' => "Tank Lari updated: {$tanklari->larry_name} (Customer ID {$tanklari->customer_id})",
+                    'action_description' => "Tank Lari updated: {$tanklari->larry_name} (Customer: {$tanklari->customer->name})",
                 ]);
 
                 return response()->json(['success' => true, 'message' => 'Tank Lari updated successfully', 'tanklari' => $tanklari]);
@@ -142,7 +141,7 @@ class TankLariController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Delete',
-                'action_description' => "Tank Lari deleted: {$name} (Customer ID {$cust})",
+                'action_description' => "Tank Lari deleted: {$name} (Customer: {$tanklari->customer->name})",
             ]);
 
             return response()->json(['success' => true, 'message' => 'Tank Lari deleted successfully']);

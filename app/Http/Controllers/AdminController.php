@@ -47,6 +47,14 @@ class AdminController extends Controller
                 }
                 return redirect()->back()->with('error', 'Login not allowed for this account.')->withInput();
             }
+            // dd($candidate);
+
+            if ($candidate->status == '0') {
+                if ($request->expectsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Your account is blocked, please contact admin.'], 403);
+                }
+                return redirect()->back()->with('error', 'Your account is blocked, please contact admin.')->withInput();
+            }
 
             if (Auth::attempt(['email' => $input['email'], 'password' => $input['password']], $remember)) {
                 if ($request->expectsJson()) {

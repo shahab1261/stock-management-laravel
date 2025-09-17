@@ -45,7 +45,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-shop"></i>
                             </span>
-                            <select class="form-select border-start-0" name="vendor_id" id="vendor" required>
+                            <select class="form-select border-start-0 searchable-dropdown" name="vendor_id" id="vendor" required>
                                 <option selected disabled>Select Vendor</option>
                                 @foreach ($suppliers as $supplier)
                                     <option value="{{ $supplier->id }}" data-name="{{ $supplier->name }}" data-type="1">{{ str_replace('&amp;', '&', $supplier->name) }} (Supplier)</option>
@@ -80,7 +80,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-box"></i>
                             </span>
-                            <select class="form-select border-start-0" name="product_id" id="product" required>
+                            <select class="form-select border-start-0 searchable-dropdown" name="product_id" id="product" required>
                                 <option selected disabled>Select Product</option>
                                 @foreach($products as $product)
                                     <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -159,7 +159,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-building"></i>
                             </span>
-                            <select class="form-select border-start-0" name="terminal_id">
+                            <select class="form-select border-start-0 searchable-dropdown" name="terminal_id">
                                 <option selected disabled>Select Terminal</option>
                                 @foreach($terminals as $terminal)
                                     <option value="{{ $terminal->id }}" data-name="{{ $terminal->name }}">{{ $terminal->name }}</option>

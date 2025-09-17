@@ -42,8 +42,8 @@
                                             <span class="input-group-text bg-light border-end-0">
                                                 <i class="bi bi-funnel"></i>
                                             </span>
-                                            <select name="product_id" id="product_id" class="form-select border-start-0" required>
-                                                <option value="" selected disabled>Choose product</option>
+                                            <select name="product_id" id="product_id" class="form-select border-start-0 searchable-dropdown" required>
+                                                <option selected disabled>Choose product</option>
                                                 @foreach ($products as $product)
                                                     <option value="{{ $product->id }}">{{ $product->name }}</option>
                                                 @endforeach
@@ -67,8 +67,8 @@
                                             <span class="input-group-text bg-light border-end-0">
                                                 <i class="bi bi-person"></i>
                                             </span>
-                                            <select name="customer_id" id="customer_id" class="form-select border-start-0" required>
-                                                <option value="" selected disabled>Choose customer</option>
+                                            <select name="customer_id" id="customer_id" class="form-select border-start-0 searchable-dropdown" required>
+                                                <option selected disabled>Choose customer</option>
                                                 @foreach ($customers as $customer)
                                                     <option value="{{ $customer->id }}" data-name="{{ $customer->name }}" data-type="2">{{ $customer->name }} (Customer)</option>
                                                 @endforeach

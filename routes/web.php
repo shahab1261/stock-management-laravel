@@ -284,4 +284,5 @@ Route::name('admin.management.')->group(function () {
 Route::middleware(['auth'])->group(function () {
     // Logs Routes
     Route::get('/logs', [LogsController::class, 'index'])->name('admin.logs.index');
+    Route::post('/logs/data', [LogsController::class, 'getData'])->name('admin.logs.data');
 });

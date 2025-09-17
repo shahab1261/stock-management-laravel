@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Logs;
 use App\Models\JournalEntry;
+use Illuminate\Http\Request;
 use App\Models\Management\Banks;
-use App\Models\Management\Customers;
-use App\Models\Management\Expenses;
 use App\Models\Management\Incomes;
 use App\Models\Management\Product;
-use App\Models\Management\Settings;
-use App\Models\Management\Suppliers;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Management\Expenses;
+use App\Models\Management\Settings;
 use Illuminate\Support\Facades\Log;
+use App\Models\Management\Customers;
+use App\Models\Management\Suppliers;
+use Illuminate\Support\Facades\Auth;
 
 class JournalController extends Controller
 {
@@ -46,7 +47,6 @@ class JournalController extends Controller
         $expenses = Expenses::orderBy('expense_name')->get();
         $incomes = Incomes::orderBy('income_name')->get();
 
-        // Calculate totals
         $totalDebit = $journalEntries->where('debit_credit', 2)->sum('amount');
         $totalCredit = $journalEntries->where('debit_credit', 1)->sum('amount');
 
@@ -147,20 +147,30 @@ class JournalController extends Controller
             $voucherId = $journalEntry->voucher_id;
 
             $relatedEntries = JournalEntry::where('voucher_id', $voucherId)->get();
+            $description = null;
+            if ($relatedEntries->count() > 0) {
+                $firstDescription = $relatedEntries->first()->description;
+                if ($relatedEntries->every(function ($entry) use ($firstDescription) {
+                    return $entry->description === $firstDescription;
+                })) {
+                    $description = $firstDescription;
+                } else {
+                    $description = 'Multiple Descriptions';
+                }
+            }
             $entryIds = $relatedEntries->pluck('id')->toArray();
 
             DB::table('ledger')
                 ->whereIn('transaction_id', $entryIds)
-                ->where('purchase_type', 10) // Journal type
+                ->where('purchase_type', 10)
                 ->delete();
 
             JournalEntry::where('voucher_id', $voucherId)->delete();
 
-            // Log the journal entry deletion
-            \App\Models\Logs::create([
+            Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Delete',
-                'action_description' => "Deleted journal voucher: {$voucherId} with {$relatedEntries->count()} entries"
+                'action_description' => "Deleted journal voucher: {$voucherId} with {$relatedEntries->count()} entries, Entries Description: {$description}"
             ]);
 
             DB::commit();

@@ -146,7 +146,7 @@
 <!-- Add Dip Modal -->
 <div class="modal fade" id="dipModal" tabindex="-1" aria-labelledby="dipModalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
+        <div class="modal-content border-0 shadow" id="modalBody">
             <div class="modal-header bg-primary bg-opacity-10 border-0">
                 <h5 class="modal-title">
                     <i class="bi bi-plus-circle me-2"></i>Add New Dip Reading
@@ -163,8 +163,8 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-database"></i>
                             </span>
-                            <select id="tank_list" name="tank_id" class="form-select border-start-0" required>
-                                <option value="">Select Tank</option>
+                            <select id="tank_list" name="tank_id" class="form-select border-start-0 searchable-dropdown-modal" required>
+                                <option selected disabled>Select Tank</option>
                                 @foreach($tanks as $tank)
                                     <option value="{{ $tank->id }}" data-productid="{{ $tank->product_id }}">
                                         {{ $tank->tank_name }}

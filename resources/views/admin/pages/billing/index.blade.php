@@ -81,8 +81,8 @@
                                         <span class="input-group-text bg-light border-end-0">
                                             <i class="bi bi-person"></i>
                                         </span>
-                                        <select name="vendor_id" id="vendor_id" class="form-select border-start-0">
-                                            <option value="">All Vendors</option>
+                                        <select name="vendor_id" id="vendor_id" class="form-select border-start-0 searchable-dropdown">
+                                            <option selected disabled>All Vendors</option>
                                             @foreach ($suppliers as $supplier)
                                                 <option value="{{ $supplier->id }}" data-name="{{ $supplier->name }}"
                                                     data-type="1"
@@ -146,8 +146,8 @@
                                         <span class="input-group-text bg-light border-end-0">
                                             <i class="bi bi-truck"></i>
                                         </span>
-                                        <select name="transport_id" id="transport_id" class="form-select border-start-0">
-                                            <option value="">All Transports</option>
+                                        <select name="transport_id" id="transport_id" class="form-select border-start-0 searchable-dropdown">
+                                            <option selected disabled>All Transports</option>
                                             @foreach ($vehicles as $vehicle)
                                                 <option value="{{ $vehicle->id }}"
                                                     {{ $transportId == $vehicle->id ? 'selected' : '' }}>
@@ -163,8 +163,8 @@
                                         <span class="input-group-text bg-light border-end-0">
                                             <i class="bi bi-box-seam"></i>
                                         </span>
-                                        <select name="product_filter" id="product_filter" class="form-select border-start-0">
-                                            <option value="">All Products</option>
+                                        <select name="product_filter" id="product_filter" class="form-select border-start-0 searchable-dropdown">
+                                            <option selected disabled>All Products</option>
                                             @foreach ($products as $product)
                                                 <option value="{{ $product->id }}"
                                                     {{ $productId == $product->id ? 'selected' : '' }}>

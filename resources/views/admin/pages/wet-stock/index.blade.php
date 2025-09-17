@@ -89,8 +89,8 @@
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-database"></i>
                                 </span>
-                                <select name="tank_id" id="tank_id" class="form-select border-start-0">
-                                    <option value="">All Tanks</option>
+                                <select name="tank_id" id="tank_id" class="form-select border-start-0 searchable-dropdown">
+                                    <option selected disabled>All Tanks</option>
                                     @foreach($tanks as $tank)
                                         <option value="{{ $tank->id }}" {{ $tankId == $tank->id ? 'selected' : '' }}>
                                             {{ $tank->tank_name }}

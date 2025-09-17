@@ -144,7 +144,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body p-4" id="modalBody">
                 <form id="cashReceiptForm" class="row g-3" action="{{ route('admin.payments.cash-receiving.store') }}" method="POST">
                     @csrf
 
@@ -165,7 +165,7 @@
                             <span class="input-group-text bg-light border-end-0">
                                 <i class="bi bi-person"></i>
                             </span>
-                            <select id="journal_vendor" name="vendor_id" class="form-select border-start-0" required>
+                            <select id="journal_vendor" name="vendor_id" class="form-select border-start-0 searchable-dropdown-modal" required>
                                 <option value="">Select Account</option>
                                 @include('admin.pages.payments.partials.all-vendors')
                             </select>

@@ -92,8 +92,8 @@
                         <div class="row align-items-end mb-3">
                             <div class="col-md-4 mb-3">
                                 <label for="vendor_id" class="form-label">Select Vendor</label>
-                                <select name="vendor_id" id="vendor_id" class="form-select">
-                                    <option value="">All Vendors</option>
+                                <select name="vendor_id" id="vendor_id" class="form-select searchable-dropdown">
+                                    <option selected disabled>All Vendors</option>
                                     @foreach(App\Models\Management\Suppliers::orderBy('name')->get() as $supplier)
                                         <option value="{{ $supplier->id }}"
                                                 data-name="{{ $supplier->name }}"
@@ -157,8 +157,8 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="transport_id" class="form-label">Transport</label>
-                                <select class="form-select" id="transport_id" name="transport_id">
-                                    <option value="">All Transports</option>
+                                <select class="form-select searchable-dropdown" id="transport_id" name="transport_id">
+                                    <option selected disabled>All Transports</option>
                                     @foreach($lorries as $lorry)
                                         <option value="{{ $lorry->id }}" {{ $transportId == $lorry->id ? 'selected' : '' }}>
                                             {{ $lorry->larry_name }}
@@ -168,8 +168,8 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="product_filter" class="form-label">Products</label>
-                                <select class="form-select" id="product_filter" name="product_filter">
-                                    <option value="">All Products</option>
+                                <select class="form-select searchable-dropdown" id="product_filter" name="product_filter">
+                                    <option selected disabled>All Products</option>
                                     @foreach($products as $product)
                                         <option value="{{ $product->id }}" {{ $productId == $product->id ? 'selected' : '' }}>
                                             {{ $product->name }}

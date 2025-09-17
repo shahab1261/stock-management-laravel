@@ -29,8 +29,8 @@
                     <form action="{{ route('admin.ledger.income') }}" method="get" class="row align-items-end">
                         <div class="mb-3" style="width: 202px;">
                             <label for="income_id" class="form-label">Income</label>
-                            <select class="form-select" id="income_id" name="income_id">
-                                <option value="">All Incomes</option>
+                            <select class="form-select searchable-dropdown" id="income_id" name="income_id">
+                                <option selected disabled>All Incomes</option>
                                 @foreach($incomes as $income)
                                     <option value="{{ $income->id }}" {{ $incomeId == $income->id ? 'selected' : '' }}>
                                         {{ $income->income_name }}

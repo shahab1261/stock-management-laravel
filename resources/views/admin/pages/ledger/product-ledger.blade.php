@@ -29,8 +29,8 @@
                     <form action="{{ route('admin.ledger.product') }}" method="get" class="row align-items-end">
                         <div class="col-md-3 mb-3">
                             <label for="product_id" class="form-label">Product</label>
-                            <select class="form-select" id="product_id" name="product_id">
-                                <option value="">All Products</option>
+                            <select class="form-select searchable-dropdown" id="product_id" name="product_id">
+                                <option selected disabled>All Products</option>
                                 @foreach($products as $product)
                                     <option value="{{ $product->id }}" {{ $productId == $product->id ? 'selected' : '' }}>
                                         {{ $product->name }}

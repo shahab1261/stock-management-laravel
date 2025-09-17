@@ -93,7 +93,7 @@ class UserController extends Controller
             'phone' => 'required|string|max:20',
             'bank_account_number' => 'nullable|string|max:50',
             'status' => 'required|in:0,1',
-            'role' => 'required|in:SuperAdmin,Admin,Employee',
+            'role' => 'required',
             'address' => 'nullable|string',
             'notes' => 'nullable|string',
         ];

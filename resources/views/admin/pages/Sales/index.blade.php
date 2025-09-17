@@ -1,7 +1,7 @@
 @extends('admin.layout.master')
 
-@section('title', 'Manage Purchase')
-@section('description', 'Manage System Purchase')
+@section('title', 'Manage Sales')
+@section('description', 'Manage System Sales')
 
 @section('content')
 @permission('sales.view')
