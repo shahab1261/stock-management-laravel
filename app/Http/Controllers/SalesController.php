@@ -268,7 +268,7 @@ class SalesController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Sale: {$productName} | Qty: {$request->quantity} L | Rate: PKR {$request->rate} | Total: PKR {$request->amount} | Vendor: {$vendorName} | Tank: {$tankName}",
+                'action_description' => "Sale: {$productName} | Qty: {$request->quantity} L | Rate: PKR {$request->rate} | Total: PKR {$request->amount} | Vendor: {$vendorName} | Tank: {$tankName}  | Date: {$LockDate}",
             ]);
 
             if ($request->ajax()) {
@@ -345,7 +345,7 @@ class SalesController extends Controller
                 Logs::create([
                     'user_id' => Auth::id(),
                     'action_type' => 'Delete',
-                    'action_description' => "Deleted Sale: {$productName} | Qty: {$sale->quantity} L | Rate: PKR {$sale->rate} | Total: PKR {$sale->amount} | Vendor: {$vendorName} | Tank: {$tankName}",
+                    'action_description' => "Deleted Sale: {$productName} | Qty: {$sale->quantity} L | Rate: PKR {$sale->rate} | Total: PKR {$sale->amount} | Vendor: {$vendorName} | Tank: {$tankName} | Date: {$sale->create_date}",
                 ]);
 
                 // Delete the sale record

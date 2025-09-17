@@ -281,7 +281,7 @@ class PurchaseController extends Controller
                 'amount' => $request->amount,
                 'previous_balance' => 0,
                 'tarnsaction_comment' => $request->comments,
-                'transaction_date' => Carbon::createFromFormat('d/m/Y', $request->purchase_date)->format('Y-m-d')
+                'transaction_date' =>  $purchaseDate
             ]);
 
             Ledger::create([
@@ -296,7 +296,7 @@ class PurchaseController extends Controller
                 'amount' => $request->amount,
                 'previous_balance' => 0,
                 'tarnsaction_comment' => $request->comments,
-                'transaction_date' => Carbon::createFromFormat('d/m/Y', $request->purchase_date)->format('Y-m-d')
+                'transaction_date' =>  $purchaseDate
             ]);
 
             DB::commit();
@@ -309,7 +309,7 @@ class PurchaseController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Purchase: {$product->name} | Qty: {$request->stock} L | Rate: PKR {$request->rate} | Total: PKR {$request->amount} | Vendor: {$vendorName} | Tank: {$tankName}",
+                'action_description' => "Purchase: {$product->name} | Qty: {$request->stock} L | Rate: PKR {$request->rate} | Total: PKR {$request->amount} | Vendor: {$vendorName} | Tank: {$tankName} | Date: {$purchaseDate}",
             ]);
 
             if ($request->ajax()) {
@@ -351,7 +351,7 @@ class PurchaseController extends Controller
             if ($purchase->sold_quantity > 0) {
                  return response("false");
             }
-            
+
             $product = Product::find($purchase->product_id);
 
             // Delete ledger entries (purchase type 1 for purchases in ledger)
@@ -402,7 +402,7 @@ class PurchaseController extends Controller
                 Logs::create([
                     'user_id' => Auth::id(),
                     'action_type' => 'Delete',
-                    'action_description' => "Deleted Purchase: {$product->name} | Qty: {$purchase->stock} L | Rate: PKR {$purchase->rate} | Total: PKR {$purchase->total_amount} | Vendor: {$vendorName} | Tank: {$tankName}",
+                    'action_description' => "Deleted Purchase: {$product->name} | Qty: {$purchase->stock} L | Rate: PKR {$purchase->rate} | Total: PKR {$purchase->total_amount} | Vendor: {$vendorName} | Tank: {$tankName} | Date: {$purchase->purchase_date}",
                 ]);
 
                 DB::commit();

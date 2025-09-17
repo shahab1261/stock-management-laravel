@@ -330,6 +330,7 @@
             </div>
         </div>
 
+        @permission('logs.view')
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card border-0 shadow-sm">
@@ -377,6 +378,7 @@
                 </div>
             </div>
         </div>
+        @endpermission
     </div>
 
     <style>

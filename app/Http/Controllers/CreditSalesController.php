@@ -193,11 +193,17 @@ class CreditSalesController extends Controller
                 'transaction_date' => $transactionDate,
             ]);
 
+
+            $vendorInfo = $this->getVendorByType($creditSale->vendor_type, $creditSale->vendor_id);
+            $vendorName = $vendorInfo->vendor_name ?? 'Unknown Vendor';
+            $product = Product::find($creditSale->product_id);
+            $productName = $product ? $product->name : 'Unknown Product';
+
             // Log the activity
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Created credit sale for customer ID: {$request->customer_id}, Amount: {$amount}",
+                'action_description' => "Created credit sale for Vendor: {$vendorName}, Quantity: {$request->quantity}, Product: {$productName}, Amount: {$amount}, Date: {$transactionDate}",
             ]);
 
             DB::commit();
@@ -238,15 +244,20 @@ class CreditSalesController extends Controller
                 throw new Exception('Credit sale not found');
             }
 
-            $creditSale->delete();
+
+            $vendorInfo = $this->getVendorByType($creditSale->vendor_type, $creditSale->vendor_id);
+            $vendorName = $vendorInfo->vendor_name ?? 'Unknown Vendor';
+            $product = Product::find($creditSale->product_id);
+            $productName = $product ? $product->name : 'Unknown Product';
 
             // Log the activity
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Delete',
-                'action_description' => "Deleted credit sale ID: {$creditSaleId}",
+                'action_description' => "Deleted credit sale ID: {$creditSaleId} for Vendor: {$vendorName}, Quantity: {$creditSale->quantity}, Product: {$productName}, Amount: {$creditSale->amount}, Date: {$creditSale->transasction_date}",
             ]);
 
+            $creditSale->delete();
             DB::commit();
 
             return response()->json([
@@ -261,6 +272,68 @@ class CreditSalesController extends Controller
                 'message' => 'Error deleting credit sale: ' . $e->getMessage()
             ], 500);
         }
+    }
+    public function getVendorByType($vendorType, $vendorId)
+    {
+        // dd($vendorType, $vendorId);
+        $vendorDetails = [];
+        $vendorName = '';
+        $vendorTypeName = '';
+
+        switch ($vendorType) {
+            case 1: // supplier
+                $vendor = \App\Models\Management\Suppliers::find($vendorId);
+                $vendorName = $vendor->name ?? 'Not found';
+                $vendorTypeName = 'supplier';
+                break;
+            case 2: // customer
+                $vendor = \App\Models\Management\Customers::find($vendorId);
+                $vendorName = $vendor->name ?? 'Not found';
+                $vendorTypeName = 'customer';
+                break;
+            case 3: // product
+                $vendor = \App\Models\Management\Product::find($vendorId);
+                $vendorName = $vendor->name ?? 'Not found';
+                $vendorTypeName = 'product';
+                break;
+            case 4: // expense
+                $vendor = \App\Models\Management\Expenses::find($vendorId);
+                $vendorName = $vendor->expense_name ?? 'Not found';
+                $vendorTypeName = 'expense';
+                break;
+            case 5: // income
+                $vendor = \App\Models\Management\Incomes::find($vendorId);
+                $vendorName = $vendor->income_name ?? 'Not found';
+                $vendorTypeName = 'income';
+                break;
+            case 6: // bank
+                $vendor = \App\Models\Management\Banks::find($vendorId);
+                $vendorName = $vendor->name ?? 'Not found';
+                $vendorTypeName = 'bank';
+                break;
+            case 7: // cash
+                $vendorName = 'Cash';
+                $vendorTypeName = 'cash';
+                break;
+            case 8: // MP
+                $vendorName = 'MP';
+                $vendorTypeName = 'MP';
+                break;
+            case 9: // employee
+                $vendor = \App\Models\User::find($vendorId);
+                $vendorName = $vendor->name ?? 'Not found';
+                $vendorTypeName = 'employee';
+                break;
+            default:
+                $vendorName = 'Unknown';
+                $vendorTypeName = 'unknown';
+        }
+
+        return (object) [
+            'vendor_details' => $vendorDetails,
+            'vendor_name' => $vendorName,
+            'vendor_type' => $vendorTypeName,
+        ];
     }
 
     /**

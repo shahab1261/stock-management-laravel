@@ -5,16 +5,22 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Dip;
 use App\Models\Logs;
+use App\Models\User;
 use App\Models\Sales;
 use App\Models\Ledger;
 use App\Models\Purchase;
 use Illuminate\Http\Request;
 use App\Models\Management\Tank;
+use App\Models\Management\Banks;
 use App\Models\Management\Nozzle;
+use App\Models\Management\Incomes;
 use App\Models\Management\Product;
 use Illuminate\Support\Facades\DB;
+use App\Models\Management\Expenses;
 use App\Models\Management\Settings;
 use Illuminate\Support\Facades\Log;
+use App\Models\Management\Customers;
+use App\Models\Management\Suppliers;
 use Illuminate\Support\Facades\Auth;
 
 class NozzleSalesController extends Controller
@@ -238,7 +244,7 @@ class NozzleSalesController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Nozzle: {$nozzle->name} | Sale: {$productName} | Qty: {$request->quantity} L | Rate: PKR {$productRate} | Total: PKR {$amount} | Vendor: Cash | Tank: {$tankName}",
+                'action_description' => "Nozzle: {$nozzle->name} | Sale: {$productName} | Qty: {$request->quantity} L | Rate: PKR {$productRate} | Total: PKR {$amount} | Vendor: Cash | Tank: {$tankName} | Date: {$salesDate} | Opening Reading: {$request->opening_reading} | Closing Reading: {$request->closing_reading}",
             ]);
 
             DB::commit();
@@ -368,7 +374,21 @@ class NozzleSalesController extends Controller
                 }
             }
 
-            // 4. Delete the sale itself
+            $vendorInfo = $this->getVendorByType($sale->vendor_type, $sale->customer_id);
+            $vendorName = $vendorInfo->vendor_name ?? 'Unknown Vendor';
+            $product = Product::find($sale->product_id);
+            $productName = $product ? $product->name : 'Unknown Product';
+            $tank = Tank::find($sale->tank_id);
+            $tankName = $tank ? $tank->tank_name : 'No Tank';
+
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Delete',
+                'action_description' => "Deleted Sale: {$productName} | Qty: {$sale->quantity} L | Rate: PKR {$sale->rate} | Vendor: {$vendorName} | Total: PKR {$sale->amount} | Tank: {$tankName} | Opening Reading: {$sale->opening_reading} | Closing Reading | {$sale->closing_reading} | Date: {$sale->create_date} ",
+            ]);
+
+        // 4. Delete the sale itself
             $sale->delete();
 
             DB::commit();
@@ -384,6 +404,65 @@ class NozzleSalesController extends Controller
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+        public function getVendorByType($vendorType, $vendorId)
+    {
+        $vendorDetails = [];
+        $vendorName = '';
+        $vendorTypeName = '';
+
+        switch ($vendorType) {
+            case 1:
+                $vendorDetails = Suppliers::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'Supplier';
+                break;
+            case 2:
+                $vendorDetails = Customers::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'customer';
+                break;
+            case 3:
+                $vendorDetails = Product::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'product';
+                break;
+            case 4:
+                $vendorDetails = Expenses::find($vendorId);
+                $vendorName = $vendorDetails->expense_name ?? '';
+                $vendorTypeName = 'expense';
+                break;
+            case 5:
+                $vendorDetails = Incomes::find($vendorId);
+                $vendorName = $vendorDetails->income_name ?? '';
+                $vendorTypeName = 'income';
+                break;
+            case 6:
+                $vendorDetails = Banks::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'bank';
+                break;
+            case 7:
+                $vendorName = 'cash';
+                $vendorTypeName = 'cash';
+                break;
+            case 8:
+                $vendorName = 'MP';
+                $vendorTypeName = 'MP';
+                break;
+            case 9:
+                $vendorDetails = User::role('Employee')->first();
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'employee';
+                break;
+        }
+
+        return (object)[
+            'vendor_details' => $vendorDetails,
+            'vendor_name' => $vendorName,
+            'vendor_type' => $vendorTypeName
+        ];
     }
 
     private function reverseStockAfterSaleDelete($saleId) {

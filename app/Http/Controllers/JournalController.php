@@ -117,7 +117,7 @@ class JournalController extends Controller
             \App\Models\Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Created journal entry: {$request->journal_description}, amount: {$request->journal_amount}, date: {$transactionDate}, voucher: {$voucherId}"
+                'action_description' => "Created journal entry: {$request->journal_description}, amount: {$request->journal_amount}, voucher: {$voucherId}, Date: {$transactionDate}"
             ]);
 
             DB::commit();
@@ -170,7 +170,7 @@ class JournalController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Delete',
-                'action_description' => "Deleted journal voucher: {$voucherId} with {$relatedEntries->count()} entries, Entries Description: {$description}"
+                'action_description' => "Deleted journal voucher: {$voucherId} with {$relatedEntries->count()} entries, Entries Description: {$description}, Date: {$journalEntry->transaction_date}"
             ]);
 
             DB::commit();

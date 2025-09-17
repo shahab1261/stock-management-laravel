@@ -118,7 +118,7 @@ class DipController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Created dip entry for tank: {$tank->tank_name}, dip value: {$dipValue}, liters: {$literValue}, date: {$dipDate}"
+                'action_description' => "Created dip entry for tank: {$tank->tank_name}, dip value: {$dipValue}, liters: {$literValue}, Date: {$dipDate}"
             ]);
 
             DB::commit();
@@ -187,7 +187,7 @@ class DipController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Delete',
-                'action_description' => "Deleted dip entry for tank: {$tankName}, dip value: {$dipValue}, date: {$dipDate}"
+                'action_description' => "Deleted dip entry for tank: {$tankName}, dip value: {$dipValue}, Date: {$dipDate}"
             ]);
 
             return response()->json([
