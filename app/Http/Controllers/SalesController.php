@@ -62,7 +62,7 @@ class SalesController extends Controller
         $suppliers = Suppliers::all();
         $drivers = Drivers::all();
         $vehicles = TankLari::where('tank_type', 2)->get();
-        $employees = User::role('Employee')->get();
+        $employees = User::where('user_type','Employee')->get();
         $terminals = Terminal::all();
         $settings = Settings::first();
 
@@ -551,7 +551,7 @@ class SalesController extends Controller
                 $vendorTypeName = 'MP';
                 break;
             case 9:
-                $vendorDetails = User::role('Employee')->first();
+                $vendorDetails = User::where('user_type','Employee')->first();
                 $vendorName = $vendorDetails->name ?? '';
                 $vendorTypeName = 'employee';
                 break;

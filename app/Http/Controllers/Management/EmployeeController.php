@@ -22,7 +22,7 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        $employees = User::role('Employee')->orderBy('created_at', 'desc')->get();
+        $employees = User::where('user_type','Employee')->orderBy('created_at', 'desc')->get();
         return view('admin.pages.management.employees.index', compact('employees'));
     }
 
@@ -51,7 +51,7 @@ class EmployeeController extends Controller
             $employee->notes = $request->notes;
             $employee->user_type = 'Employee';
             $employee->status = 1;
-            $employee->password = null; 
+            $employee->password = null;
             $employee->entery_by_user = Auth::id();
             $employee->save();
 

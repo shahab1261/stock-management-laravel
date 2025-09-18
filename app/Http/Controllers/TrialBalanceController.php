@@ -226,7 +226,7 @@ class TrialBalanceController extends Controller
                     'type' => 'Bank'
                 ];
             case 9: // Employee
-                $vendor = User::role('Employee')->find($vendorId);
+                $vendor = User::where('user_type','Employee')->find($vendorId);
                 return [
                     'name' => $vendor->name ?? 'Unknown Employee',
                     'type' => 'Employee'

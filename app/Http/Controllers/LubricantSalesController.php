@@ -373,7 +373,7 @@ class LubricantSalesController extends Controller
                 $vendorTypeName = 'MP';
                 break;
             case 9:
-                $vendorDetails = User::role('Employee')->first();
+                $vendorDetails = User::where('user_type','Employee')->first();
                 $vendorName = $vendorDetails->name ?? '';
                 $vendorTypeName = 'employee';
                 break;

@@ -49,10 +49,14 @@ class SettingsController extends Controller
         // Check if user can set date lock to past/future dates
         if (!$hasSystemLockedPermission) {
             $today = now()->format('Y-m-d');
-            if ($request->date_lock !== $today) {
+            $currentSettings = Settings::first();
+            $currentDateLock = $currentSettings ? $currentSettings->date_lock : $today;
+
+            // Allow only current system locked date or today's date
+            if ($request->date_lock !== $today && $request->date_lock !== $currentDateLock) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'You can only set the date lock to today\'s date. Contact administrator for advanced date locking.'
+                    'message' => 'You can only set the date lock to either today\'s date or the current system locked date.'
                 ]);
             }
         }

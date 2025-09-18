@@ -90,7 +90,7 @@
                                     value="{{ $settings->date_lock ?? '' }}"
                                     max="{{ date('Y-m-d') }}"
                                     @if(!$hasSystemLockedPermission)
-                                        min="{{ date('Y-m-d') }}"
+                                        data-allowed-dates="{{ json_encode([date('Y-m-d'), $settings->date_lock ?? date('Y-m-d')]) }}"
                                     @endif
                                     required>
                             </div>
@@ -99,7 +99,7 @@
                             @else
                                 <div class="form-text text-warning">
                                     <i class="bi bi-exclamation-triangle me-1"></i>
-                                    You can only set the date lock to today's date. Contact administrator for advanced date locking.
+                                    You can only set the date lock to either <strong>today's date</strong> or the <strong>current system locked date</strong>
                                 </div>
                             @endif
                             <div class="invalid-feedback" id="date_lock-error"></div>
@@ -126,6 +126,22 @@
         // Submit form via AJAX
         $('#settingsForm').on('submit', function(e) {
             e.preventDefault();
+
+            // Additional validation for date lock
+            var dateLockInput = $('#date_lock');
+            var allowedDates = dateLockInput.data('allowed-dates');
+            if (allowedDates && allowedDates.length > 0) {
+                var selectedDate = dateLockInput.val();
+                if (selectedDate && !allowedDates.includes(selectedDate)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Date Selection',
+                        html: 'You can only select one of these dates:<br><strong>' + allowedDates.join('</strong> or <strong>') + '</strong>',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+            }
 
             var formData = new FormData(this);
 
@@ -194,6 +210,26 @@
                 reader.readAsDataURL(file);
             }
         });
+
+        // Validate date lock selection for users without system_locked permission
+        $('#date_lock').on('change input', function() {
+            var allowedDates = $(this).data('allowed-dates');
+            if (allowedDates && allowedDates.length > 0) {
+                var selectedDate = $(this).val();
+                if (selectedDate && !allowedDates.includes(selectedDate)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Date Selection',
+                        html: 'You can only select one of these dates:<br><strong>' + allowedDates.join('</strong> or <strong>') + '</strong>',
+                        confirmButtonText: 'OK'
+                    });
+                    // Reset to current value
+                    var currentValue = '{{ $settings->date_lock ?? date("Y-m-d") }}';
+                    $(this).val(currentValue);
+                }
+            }
+        });
+
     });
 </script>
 @endpush

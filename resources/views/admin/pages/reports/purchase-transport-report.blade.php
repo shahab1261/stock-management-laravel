@@ -63,7 +63,7 @@
                                             {{ $bank->name }} (Bank)
                                         </option>
                                     @endforeach
-                                    @foreach(App\Models\User::role('Employee')->orderBy('name')->get() as $employee)
+                                    @foreach(App\Models\User::where('user_type','Employee')->orderBy('name')->get() as $employee)
                                         <option value="{{ $employee->id }}" data-name="{{ $employee->name }}" data-type="9" {{ ($vendorId == $employee->id && $vendorType == '9') ? 'selected' : '' }}>
                                             {{ $employee->name }} (Employee)
                                         </option>
