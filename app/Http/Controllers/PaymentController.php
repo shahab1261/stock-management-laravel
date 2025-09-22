@@ -239,6 +239,8 @@ class PaymentController extends Controller
 
             DB::beginTransaction();
 
+            $dateLock3 = Settings::first()->date_lock;
+
             // Create transaction record
             $transaction = Transaction::create([
                 'entery_by_user' => Auth::id(),
@@ -251,7 +253,7 @@ class PaymentController extends Controller
                 'bank_id' => $request->bank_id,
                 'bank_name' => $request->bank_name,
                 'payment_type' => 2, // bank
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock3
             ]);
 
             // Create ledger entries
@@ -268,7 +270,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock3
             ]);
 
             // Debit bank
@@ -284,7 +286,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock3
             ]);
 
             DB::commit();
@@ -292,7 +294,7 @@ class PaymentController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Bank receiving: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Bank {$request->bank_name} (ID {$request->bank_id}) | Amount PKR {$request->transaction_amount} | Date {Settings::first()->date_lock}",
+                'action_description' => "Bank receiving: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Bank {$request->bank_name} (ID {$request->bank_id}) | Amount PKR {$request->transaction_amount} | Date {$dateLock3}",
             ]);
 
             return response()->json(['success' => true, 'message' => 'Bank receiving transaction created successfully']);
@@ -322,6 +324,8 @@ class PaymentController extends Controller
 
             DB::beginTransaction();
 
+            $dateLock4 = Settings::first()->date_lock;
+
             // Create transaction record
             $transaction = Transaction::create([
                 'entery_by_user' => Auth::id(),
@@ -334,7 +338,7 @@ class PaymentController extends Controller
                 'bank_id' => $request->bank_id,
                 'bank_name' => $request->bank_name,
                 'payment_type' => 2, // bank
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock4
             ]);
 
             // Create ledger entries
@@ -351,7 +355,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock4
             ]);
 
             // Credit bank
@@ -367,7 +371,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock4
             ]);
 
             DB::commit();
@@ -375,7 +379,7 @@ class PaymentController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Bank payment: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Bank {$request->bank_name} (ID {$request->bank_id}) | Amount PKR {$request->transaction_amount} | Date {Settings::first()->date_lock}",
+                'action_description' => "Bank payment: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Bank {$request->bank_name} (ID {$request->bank_id}) | Amount PKR {$request->transaction_amount} | Date {$dateLock4}",
             ]);
 
             return response()->json(['success' => true, 'message' => 'Bank payment transaction created successfully']);
@@ -403,6 +407,8 @@ class PaymentController extends Controller
 
             DB::beginTransaction();
 
+            $dateLock2 = Settings::first()->date_lock;
+
             // Create transaction record
             $transaction = Transaction::create([
                 'entery_by_user' => Auth::id(),
@@ -413,7 +419,7 @@ class PaymentController extends Controller
                 'amount' => $request->transaction_amount,
                 'description' => $request->transaction_description,
                 'payment_type' => 1, // cash
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock2
             ]);
 
             // Create ledger entries
@@ -430,7 +436,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock2
             ]);
 
             // Debit cash
@@ -446,7 +452,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock2
             ]);
 
             DB::commit();
@@ -454,7 +460,7 @@ class PaymentController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Cash receiving: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Amount PKR {$request->transaction_amount} | Date {Settings::first()->date_lock}",
+                'action_description' => "Cash receiving: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Amount PKR {$request->transaction_amount} | Date {$dateLock2}",
             ]);
 
             return response()->json(['success' => true, 'message' => 'Cash receiving transaction created successfully']);
@@ -482,6 +488,8 @@ class PaymentController extends Controller
 
             DB::beginTransaction();
 
+            $dateLock = Settings::first()->date_lock;
+
             // Create transaction record
             $transaction = Transaction::create([
                 'entery_by_user' => Auth::id(),
@@ -492,7 +500,7 @@ class PaymentController extends Controller
                 'amount' => $request->transaction_amount,
                 'description' => $request->transaction_description,
                 'payment_type' => 1, // cash
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock
             ]);
 
             // Create ledger entries
@@ -509,7 +517,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock
             ]);
 
             // Credit cash
@@ -525,7 +533,7 @@ class PaymentController extends Controller
                 'tarnsaction_comment' => $request->transaction_description,
                 'tank_id' => 0,
                 'product_id' => 0,
-                'transaction_date' => Settings::first()->date_lock
+                'transaction_date' => $dateLock
             ]);
 
             DB::commit();
@@ -533,7 +541,7 @@ class PaymentController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Cash payment: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Amount PKR {$request->transaction_amount} | Date {Settings::first()->date_lock}",
+                'action_description' => "Cash payment: Vendor {$request->vendor_name} (ID {$request->vendor_id}) | Amount PKR {$request->transaction_amount} | Date {$dateLock}",
             ]);
 
             return response()->json(['success' => true, 'message' => 'Cash payment transaction created successfully']);
@@ -561,15 +569,27 @@ class PaymentController extends Controller
                 ->delete();
 
             // Delete transaction
-            Transaction::where('tid', $transactionId)->delete();
+            $transaction = Transaction::where('tid', $transactionId)->first();
 
-            DB::commit();
+            /**
+             * Get vendor by type (similar to the old PHP function)
+             */
+            $vendor = $this->getVendorByType($transaction->vendor_type, $transaction->vendor_id);
+
+            $transactionType = $transaction->transaction_type == 1 ? 'Receiving' : 'Payment';
+            $paymentType = $transaction->payment_type == 1 ? 'Cash' : 'Bank Payment';
+
+
 
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Delete',
-                'action_description' => "Payment transaction deleted: TID {$transactionId} (Ledger purchase type {$ledgerPurchaseType})",
+                'action_description' => "Payment transaction deleted: Vendor Name: {$transaction->vendor_name} | Vendor Type: {$vendor->vendor_type} | Payment Type: {$paymentType} | Transaction Type: {$transactionType} | Amount: {$transaction->amount} | Transaction Date: {$transaction->transaction_date}",
             ]);
+
+            $transaction->delete();
+
+            DB::commit();
 
             return response()->json(['success' => true, 'message' => 'Transaction deleted successfully']);
 

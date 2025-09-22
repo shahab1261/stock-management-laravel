@@ -180,6 +180,7 @@ class DipController extends Controller
             $tankName = $dip->tank->tank_name ?? 'Unknown Tank';
             $dipValue = $dip->dip_value;
             $dipDate = $dip->dip_date;
+            $dipLiters = $dip->liters;
 
             $dip->delete();
 
@@ -187,7 +188,7 @@ class DipController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Delete',
-                'action_description' => "Deleted dip entry for tank: {$tankName}, dip value: {$dipValue}, Date: {$dipDate}"
+                'action_description' => "Deleted dip entry for tank: {$tankName}, dip value: {$dipValue}, dip liters: {$dipLiters}, Date: {$dipDate}"
             ]);
 
             return response()->json([

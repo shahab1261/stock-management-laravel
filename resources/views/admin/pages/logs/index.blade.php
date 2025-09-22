@@ -321,7 +321,8 @@ $(document).ready(function() {
                 zeroRecords: "No matching logs found",
                 processing: "Loading logs..."
             },
-            responsive: true,
+            responsive: false,
+            scrollX: true,
             autoWidth: false
         });
     }

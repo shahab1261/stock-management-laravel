@@ -24,8 +24,7 @@ class SettingsController extends Controller
     public function index()
     {
         $settings = Settings::first();
-        $hasSystemLockedPermission = Auth::user()->can('system_locked');
-        return view('admin.pages.management.settings.index', compact('settings', 'hasSystemLockedPermission'));
+        return view('admin.pages.management.settings.index', compact('settings'));
     }
 
     /**
@@ -33,32 +32,14 @@ class SettingsController extends Controller
      */
     public function update(Request $request)
     {
-        $hasSystemLockedPermission = Auth::user()->can('system_locked');
-
         $validator = Validator::make($request->all(), [
             'company_name' => 'required|string|max:255',
             'short_desc' => 'nullable|string|max:255',
-            'date_lock' => 'required|date',
             'logo_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'message' => $validator->errors()->first()]);
-        }
-
-        // Check if user can set date lock to past/future dates
-        if (!$hasSystemLockedPermission) {
-            $today = now()->format('Y-m-d');
-            $currentSettings = Settings::first();
-            $currentDateLock = $currentSettings ? $currentSettings->date_lock : $today;
-
-            // Allow only current system locked date or today's date
-            if ($request->date_lock !== $today && $request->date_lock !== $currentDateLock) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'You can only set the date lock to either today\'s date or the current system locked date.'
-                ]);
-            }
         }
 
         try {
@@ -82,13 +63,12 @@ class SettingsController extends Controller
             // Update other fields
             $settings->company_name = $request->company_name;
             $settings->short_desc = $request->short_desc;
-            $settings->date_lock = $request->date_lock;
             $settings->save();
 
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Update',
-                'action_description' => "Settings updated: {$settings->company_name} (Date lock {$settings->date_lock})",
+                'action_description' => "Settings updated: {$settings->company_name}",
             ]);
 
             DB::commit();

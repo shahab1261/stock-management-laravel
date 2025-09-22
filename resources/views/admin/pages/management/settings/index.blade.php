@@ -79,31 +79,6 @@
                             <div class="invalid-feedback" id="short_desc-error"></div>
                         </div>
 
-                        <!-- Date Lock -->
-                        <div class="col-md-6">
-                            <label for="date_lock" class="form-label fw-medium">Date Lock <span class="text-danger">*</span></label>
-                            <div class="input-group mb-0">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="bi bi-lock"></i>
-                                </span>
-                                <input type="date" class="form-control border-start-0" id="date_lock" name="date_lock"
-                                    value="{{ $settings->date_lock ?? '' }}"
-                                    max="{{ date('Y-m-d') }}"
-                                    @if(!$hasSystemLockedPermission)
-                                        data-allowed-dates="{{ json_encode([date('Y-m-d'), $settings->date_lock ?? date('Y-m-d')]) }}"
-                                    @endif
-                                    required>
-                            </div>
-                            @if($hasSystemLockedPermission)
-                                {{-- <div class="form-text">Entries before this date cannot be modified</div> --}}
-                            @else
-                                <div class="form-text text-warning">
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-                                    You can only set the date lock to either <strong>today's date</strong> or the <strong>current system locked date</strong>
-                                </div>
-                            @endif
-                            <div class="invalid-feedback" id="date_lock-error"></div>
-                        </div>
 
                         <div class="col-12 mt-4 text-end">
                             <button type="submit" class="btn btn-primary px-4" id="updateSettingsBtn">
@@ -126,22 +101,6 @@
         // Submit form via AJAX
         $('#settingsForm').on('submit', function(e) {
             e.preventDefault();
-
-            // Additional validation for date lock
-            var dateLockInput = $('#date_lock');
-            var allowedDates = dateLockInput.data('allowed-dates');
-            if (allowedDates && allowedDates.length > 0) {
-                var selectedDate = dateLockInput.val();
-                if (selectedDate && !allowedDates.includes(selectedDate)) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Invalid Date Selection',
-                        html: 'You can only select one of these dates:<br><strong>' + allowedDates.join('</strong> or <strong>') + '</strong>',
-                        confirmButtonText: 'OK'
-                    });
-                    return false;
-                }
-            }
 
             var formData = new FormData(this);
 
@@ -208,25 +167,6 @@
                     $('.avatar-lg').html('<img src="' + e.target.result + '" alt="Company Logo" class="img-fluid" style="max-height: 100px; max-width: 100%;">');
                 }
                 reader.readAsDataURL(file);
-            }
-        });
-
-        // Validate date lock selection for users without system_locked permission
-        $('#date_lock').on('change input', function() {
-            var allowedDates = $(this).data('allowed-dates');
-            if (allowedDates && allowedDates.length > 0) {
-                var selectedDate = $(this).val();
-                if (selectedDate && !allowedDates.includes(selectedDate)) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Invalid Date Selection',
-                        html: 'You can only select one of these dates:<br><strong>' + allowedDates.join('</strong> or <strong>') + '</strong>',
-                        confirmButtonText: 'OK'
-                    });
-                    // Reset to current value
-                    var currentValue = '{{ $settings->date_lock ?? date("Y-m-d") }}';
-                    $(this).val(currentValue);
-                }
             }
         });
 

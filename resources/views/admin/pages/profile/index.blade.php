@@ -84,11 +84,13 @@
                                 <i class="bi bi-grid-1x2 me-2"></i>Overview
                             </button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link px-4 py-3" id="edit-profile-tab" data-bs-toggle="tab" data-bs-target="#edit-profile" type="button" role="tab">
-                                <i class="bi bi-pencil-square me-2"></i>Edit Profile
-                            </button>
-                        </li>
+                        @if(Auth::check() && Auth::user()->user_type == "SuperAdmin")
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link px-4 py-3" id="edit-profile-tab" data-bs-toggle="tab" data-bs-target="#edit-profile" type="button" role="tab">
+                                    <i class="bi bi-pencil-square me-2"></i>Edit Profile
+                                </button>
+                            </li>
+                        @endif
                         <li class="nav-item" role="presentation">
                             <button class="nav-link px-4 py-3" id="change-password-tab" data-bs-toggle="tab" data-bs-target="#change-password" type="button" role="tab">
                                 <i class="bi bi-shield-lock me-2"></i>Change Password
@@ -126,110 +128,96 @@
                         </div>
 
 
-                        <!-- Edit Profile Tab -->
-                        <div class="tab-pane fade" id="edit-profile" role="tabpanel" aria-labelledby="edit-profile-tab">
-                            <h5 class="card-title mt-3" style="margin-bottom: 40px !important;">Edit Profile Information</h5>
+                        @if(Auth::check() && Auth::user()->user_type == "SuperAdmin")
+                            <!-- Edit Profile Tab -->
+                            <div class="tab-pane fade" id="edit-profile" role="tabpanel" aria-labelledby="edit-profile-tab">
+                                <h5 class="card-title mt-3" style="margin-bottom: 40px !important;">Edit Profile Information</h5>
 
-                            <form id="updateProfileForm" action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
+                                <form id="updateProfileForm" action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
 
-                                {{-- <div class="mb-4 text-center">
-                                    @if($user->profile_image)
-                                        <img src="{{ asset('storage/' . $user->profile_image) }}" id="profile-image-preview" alt="Profile Image" class="avatar-md rounded-circle border shadow-sm mb-3" style="width: 100px; height: 100px; object-fit: cover;">
-                                    @else
-                                        <div id="profile-image-preview" class="avatar-md rounded-circle bg-primary bg-opacity-10 mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
-                                            <span class="text-primary fw-bold fs-2">{{ substr($user->name, 0, 1) }}</span>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="name" class="form-label fw-medium">Full Name <span class="text-danger">*</span></label>
+                                            <div class="input-group mb-0">
+                                                <span class="input-group-text bg-light border-end-0">
+                                                    <i class="bi bi-person"></i>
+                                                </span>
+                                                <input type="text" class="form-control border-start-0" id="name" name="name"
+                                                    placeholder="Enter full name" value="{{ $user->name }}" required>
+                                            </div>
+                                            <div class="invalid-feedback" id="name-error"></div>
                                         </div>
-                                    @endif
-                                    <div class="position-relative d-inline-block">
-                                        <button type="button" class="btn btn-sm btn-outline-primary" id="changePhotoBtn">
-                                            <i class="bi bi-camera me-1"></i> Change Photo
-                                        </button>
-                                        <input type="file" id="profile_image" name="profile_image" class="position-absolute" style="top: 0; left: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;">
-                                    </div>
-                                </div> --}}
 
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label for="name" class="form-label fw-medium">Full Name <span class="text-danger">*</span></label>
-                                        <div class="input-group mb-0">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="bi bi-person"></i>
-                                            </span>
-                                            <input type="text" class="form-control border-start-0" id="name" name="name"
-                                                placeholder="Enter full name" value="{{ $user->name }}" required>
+                                        <div class="col-md-6">
+                                            <label for="email" class="form-label fw-medium">Email <span class="text-danger">*</span></label>
+                                            <div class="input-group mb-0">
+                                                <span class="input-group-text bg-light border-end-0">
+                                                    <i class="bi bi-envelope"></i>
+                                                </span>
+                                                <input type="email" class="form-control border-start-0" id="email" name="email"
+                                                    placeholder="Enter email" value="{{ $user->email }}" required>
+                                            </div>
+                                            <div class="invalid-feedback" id="email-error"></div>
                                         </div>
-                                        <div class="invalid-feedback" id="name-error"></div>
-                                    </div>
 
-                                    <div class="col-md-6">
-                                        <label for="email" class="form-label fw-medium">Email <span class="text-danger">*</span></label>
-                                        <div class="input-group mb-0">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="bi bi-envelope"></i>
-                                            </span>
-                                            <input type="email" class="form-control border-start-0" id="email" name="email"
-                                                placeholder="Enter email" value="{{ $user->email }}" required>
+                                        <div class="col-md-6">
+                                            <label for="phone" class="form-label fw-medium">Phone Number</label>
+                                            <div class="input-group mb-0">
+                                                <span class="input-group-text bg-light border-end-0">
+                                                    <i class="bi bi-telephone"></i>
+                                                </span>
+                                                <input type="text" class="form-control border-start-0" id="phone" name="phone"
+                                                    placeholder="Enter phone number" value="{{ $user->phone }}">
+                                            </div>
+                                            <div class="invalid-feedback" id="phone-error"></div>
                                         </div>
-                                        <div class="invalid-feedback" id="email-error"></div>
-                                    </div>
 
-                                    <div class="col-md-6">
-                                        <label for="phone" class="form-label fw-medium">Phone Number</label>
-                                        <div class="input-group mb-0">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="bi bi-telephone"></i>
-                                            </span>
-                                            <input type="text" class="form-control border-start-0" id="phone" name="phone"
-                                                placeholder="Enter phone number" value="{{ $user->phone }}">
+                                        <div class="col-md-6">
+                                            <label for="bank_account_number" class="form-label fw-medium">Bank Account Number</label>
+                                            <div class="input-group mb-0">
+                                                <span class="input-group-text bg-light border-end-0">
+                                                    <i class="bi bi-bank"></i>
+                                                </span>
+                                                <input type="text" class="form-control border-start-0" id="bank_account_number" name="bank_account_number"
+                                                    placeholder="Enter bank account number" value="{{ $user->bank_account_number }}">
+                                            </div>
+                                            <div class="invalid-feedback" id="bank_account_number-error"></div>
                                         </div>
-                                        <div class="invalid-feedback" id="phone-error"></div>
-                                    </div>
 
-                                    <div class="col-md-6">
-                                        <label for="bank_account_number" class="form-label fw-medium">Bank Account Number</label>
-                                        <div class="input-group mb-0">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="bi bi-bank"></i>
-                                            </span>
-                                            <input type="text" class="form-control border-start-0" id="bank_account_number" name="bank_account_number"
-                                                placeholder="Enter bank account number" value="{{ $user->bank_account_number }}">
+                                        <div class="col-md-12">
+                                            <label for="address" class="form-label fw-medium">Address</label>
+                                            <div class="input-group mb-0">
+                                                <span class="input-group-text bg-light border-end-0">
+                                                    <i class="bi bi-geo-alt"></i>
+                                                </span>
+                                                <input type="text" class="form-control border-start-0" id="address" name="address"
+                                                    placeholder="Enter address" value="{{ $user->address }}">
+                                            </div>
+                                            <div class="invalid-feedback" id="address-error"></div>
                                         </div>
-                                        <div class="invalid-feedback" id="bank_account_number-error"></div>
-                                    </div>
 
-                                    <div class="col-md-12">
-                                        <label for="address" class="form-label fw-medium">Address</label>
-                                        <div class="input-group mb-0">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="bi bi-geo-alt"></i>
-                                            </span>
-                                            <input type="text" class="form-control border-start-0" id="address" name="address"
-                                                placeholder="Enter address" value="{{ $user->address }}">
+                                        <div class="col-md-12">
+                                            <label for="notes" class="form-label fw-medium">Notes</label>
+                                            <div class="input-group mb-0">
+                                                <span class="input-group-text bg-light border-end-0">
+                                                    <i class="bi bi-sticky"></i>
+                                                </span>
+                                                <textarea class="form-control border-start-0" id="notes" name="notes" rows="3"
+                                                    placeholder="Enter notes">{{ $user->notes }}</textarea>
+                                            </div>
+                                            <div class="invalid-feedback" id="notes-error"></div>
                                         </div>
-                                        <div class="invalid-feedback" id="address-error"></div>
-                                    </div>
 
-                                    <div class="col-md-12">
-                                        <label for="notes" class="form-label fw-medium">Notes</label>
-                                        <div class="input-group mb-0">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="bi bi-sticky"></i>
-                                            </span>
-                                            <textarea class="form-control border-start-0" id="notes" name="notes" rows="3"
-                                                placeholder="Enter notes">{{ $user->notes }}</textarea>
+                                        <div class="col-12 text-end mt-4">
+                                            <button type="submit" class="btn btn-primary px-4" id="updateProfileBtn">
+                                                <i class="bi bi-check-circle me-2"></i>Save Changes
+                                            </button>
                                         </div>
-                                        <div class="invalid-feedback" id="notes-error"></div>
                                     </div>
-
-                                    <div class="col-12 text-end mt-4">
-                                        <button type="submit" class="btn btn-primary px-4" id="updateProfileBtn">
-                                            <i class="bi bi-check-circle me-2"></i>Save Changes
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                                </form>
+                            </div>
+                        @endif
 
                         <!-- Change Password Tab -->
                         <div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">

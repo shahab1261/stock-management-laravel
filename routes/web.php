@@ -22,6 +22,7 @@ use App\Http\Controllers\Management\SupplierController;
 use App\Http\Controllers\Management\TankLariController;
 use App\Http\Controllers\Management\TerminalController;
 use App\Http\Controllers\Management\TransportController;
+use App\Http\Controllers\Management\DateLockController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\TrialBalanceController;
@@ -30,6 +31,7 @@ use App\Http\Controllers\DipController;
 use App\Http\Controllers\WetStockController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\AccountHistoryController;
+use Illuminate\Support\Facades\Artisan;
 
 // Dashboard at root, protected
 Route::get('/', [AdminController::class, 'dashboard'])->middleware('admin')->name('admin.dashboard');
@@ -279,10 +281,24 @@ Route::middleware('admin')->group(function () {
 Route::name('admin.management.')->group(function () {
     Route::get('/settings', [App\Http\Controllers\Management\SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings/update', [App\Http\Controllers\Management\SettingsController::class, 'update'])->name('settings.update');
+    Route::get('/date-lock', [DateLockController::class, 'index'])->name('date-lock.index');
+    Route::post('/date-lock/update', [DateLockController::class, 'update'])->name('date-lock.update');
 });
 
 Route::middleware(['auth'])->group(function () {
     // Logs Routes
     Route::get('/logs', [LogsController::class, 'index'])->name('admin.logs.index');
     Route::post('/logs/data', [LogsController::class, 'getData'])->name('admin.logs.data');
+});
+
+
+
+
+Route::get('/run-datelock-seeder', function () {
+    Artisan::call('db:seed', [
+        '--class' => 'DateLockPermissionsSeeder',
+        '--force' => true, // Avoid confirmation prompts in production
+    ]);
+
+    return "DateLockPermissionsSeeder has been run.";
 });

@@ -188,6 +188,8 @@ class RolePermissionSeeder extends Seeder
 
             'management.settings.view',
             'management.settings.edit',
+            'management.date-lock.view',
+            'management.date-lock.edit',
             'system_locked',
 
             // Profile
@@ -259,6 +261,7 @@ class RolePermissionSeeder extends Seeder
             'management.products.view', 'management.products.create', 'management.products.edit',
             'management.tanks.view', 'management.tanks.create', 'management.tanks.edit',
             'management.settings.view', 'management.settings.edit',
+            'management.date-lock.view', 'management.date-lock.edit',
             'profile.view', 'profile.edit', 'profile.change-password',
             'logs.view',
         ];
