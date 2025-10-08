@@ -20,6 +20,9 @@ class NewPermissionsSeeder extends Seeder
             'sales.lubricant.delete',
             'sales.credit.edit',
 
+            // History additions
+            'history.credit-sales.view',
+
             // Billing module
             'billing.view',
             'billing.export',

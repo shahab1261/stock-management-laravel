@@ -353,6 +353,14 @@
                             </a>
                         </li>
                         @endpermission
+                        @permission('history.credit-sales.view')
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.history.credit-sales') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-credit-card-2-front me-2"></i>
+                                <span class="submenu-text">Credit Sales</span>
+                            </a>
+                        </li>
+                        @endpermission
                         @permission('history.bank-receivings.view')
                         <li class="submenu-item mb-2">
                             <a href="{{ route('admin.history.bank-receivings') }}" class="submenu-link d-flex align-items-center rounded p-2">

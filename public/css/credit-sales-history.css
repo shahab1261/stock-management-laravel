@@ -1,0 +1,4 @@
+.history-table th, .history-table td { text-align: center; vertical-align: middle; }
+.history-table td:nth-child(3), .history-table th:nth-child(3) { text-align: left; }
+.history-table td:nth-child(9), .history-table th:nth-child(9) { text-align: left; }
+

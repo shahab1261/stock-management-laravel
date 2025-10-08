@@ -102,6 +102,7 @@ class RolePermissionSeeder extends Seeder
             // History
             'history.purchases.view',
             'history.sales.view',
+            'history.credit-sales.view',
             'history.bank-receivings.view',
             'history.bank-payments.view',
             'history.cash-receipts.view',
@@ -239,7 +240,7 @@ class RolePermissionSeeder extends Seeder
             'ledger.product.view', 'ledger.supplier.view', 'ledger.customer.view',
             'ledger.bank.view', 'ledger.cash.view', 'ledger.mp.view',
             'ledger.expense.view', 'ledger.income.view', 'ledger.employee.view',
-            'history.purchases.view', 'history.sales.view',
+            'history.purchases.view', 'history.sales.view', 'history.credit-sales.view',
             'history.bank-receivings.view', 'history.bank-payments.view',
             'history.cash-receipts.view', 'history.cash-payments.view',
             'history.journal-vouchers.view',
@@ -283,7 +284,7 @@ class RolePermissionSeeder extends Seeder
             'payments.bank-receiving.view', 'payments.bank-receiving.create',
             'payments.cash-receiving.view', 'payments.cash-receiving.create',
             'ledger.product.view', 'ledger.customer.view',
-            'history.purchases.view', 'history.sales.view',
+            'history.purchases.view', 'history.sales.view', 'history.credit-sales.view',
             'profile.view', 'profile.edit', 'profile.change-password',
         ];
 

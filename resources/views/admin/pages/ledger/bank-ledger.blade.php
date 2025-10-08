@@ -68,6 +68,11 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-bank2 me-2"></i>Bank Ledger Details</h5>
+                    <div class="d-flex gap-2">
+                        <button type="button" id="printBtn" class="btn btn-primary d-flex align-items-center">
+                            <i class="bi bi-printer me-2"></i> Print
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

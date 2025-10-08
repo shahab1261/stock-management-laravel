@@ -5,17 +5,18 @@ namespace App\Http\Controllers;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Logs;
+use App\Models\User;
 use App\Models\Ledger;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\Management\Banks;
+use App\Models\Management\Incomes;
 use App\Models\Management\Product;
+use Illuminate\Support\Facades\DB;
+use App\Models\Management\Expenses;
+use App\Models\Management\Settings;
 use App\Models\Management\Customers;
 use App\Models\Management\Suppliers;
-use App\Models\Management\Expenses;
-use App\Models\Management\Incomes;
-use App\Models\Management\Settings;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
@@ -46,11 +47,13 @@ class PaymentController extends Controller
         $dateLock = $siteSettings->date_lock ?? date('Y-m-d');
 
         // Get banks
-        $banks = Banks::where('status', 1)->get();
+        // $banks = Banks::where('status', 1)->get();
 
         // Get all vendors for dropdown
         $suppliers = Suppliers::where('status', 1)->get();
         $customers = Customers::where('status', 1)->get();
+        $employees = User::where('user_type','Employee')->get();
+        $banks = Banks::all();
         $products = Product::all();
         $expenses = Expenses::all();
         $incomes = Incomes::all();
@@ -70,6 +73,7 @@ class PaymentController extends Controller
             'startDate',
             'endDate',
             'banks',
+            'employees',
             'suppliers',
             'customers',
             'products',
@@ -95,11 +99,13 @@ class PaymentController extends Controller
         $dateLock = $siteSettings->date_lock ?? date('Y-m-d');
 
         // Get banks
-        $banks = Banks::where('status', 1)->get();
+        // $banks = Banks::where('status', 1)->get();
 
         // Get all vendors for dropdown
         $suppliers = Suppliers::where('status', 1)->get();
         $customers = Customers::where('status', 1)->get();
+        $employees = User::where('user_type','Employee')->get();
+        $banks = Banks::all();
         $products = Product::all();
         $expenses = Expenses::all();
         $incomes = Incomes::all();
@@ -119,6 +125,7 @@ class PaymentController extends Controller
             'startDate',
             'endDate',
             'banks',
+            'employees',
             'suppliers',
             'customers',
             'products',
@@ -146,6 +153,8 @@ class PaymentController extends Controller
         // Get all vendors for dropdown
         $suppliers = Suppliers::where('status', 1)->get();
         $customers = Customers::where('status', 1)->get();
+        $employees = User::where('user_type','Employee')->get();
+        $banks = Banks::all();
         $products = Product::all();
         $expenses = Expenses::all();
         $incomes = Incomes::all();
@@ -165,6 +174,8 @@ class PaymentController extends Controller
             'startDate',
             'endDate',
             'suppliers',
+            'banks',
+            'employees',
             'customers',
             'products',
             'expenses',
@@ -190,6 +201,8 @@ class PaymentController extends Controller
 
         // Get all vendors for dropdown
         $suppliers = Suppliers::where('status', 1)->get();
+        $employees = User::where('user_type','Employee')->get();
+        $banks = Banks::all();
         $customers = Customers::where('status', 1)->get();
         $products = Product::all();
         $expenses = Expenses::all();
@@ -205,11 +218,15 @@ class PaymentController extends Controller
         // Get current cash balance
         $currentCash = $this->getCurrentCash();
 
+        // dd($expenses->toArray());
+
         return view('admin.pages.payments.cash-payments', compact(
             'vendorId',
             'startDate',
             'endDate',
             'suppliers',
+            'banks',
+            'employees',
             'customers',
             'products',
             'expenses',

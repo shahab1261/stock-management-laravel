@@ -221,6 +221,7 @@ Route::middleware('admin')->group(function () {
     /*************************History_Routes***************************/
     Route::get('/history/purchases', [HistoryController::class, 'purchases'])->name('admin.history.purchases');
     Route::get('/history/sales', [HistoryController::class, 'sales'])->name('admin.history.sales');
+    Route::get('/history/credit-sales', [HistoryController::class, 'creditSales'])->name('admin.history.credit-sales');
     Route::get('/history/bank-receivings', [HistoryController::class, 'bankReceivings'])->name('admin.history.bank-receivings');
     Route::get('/history/bank-payments', [HistoryController::class, 'bankPayments'])->name('admin.history.bank-payments');
     Route::get('/history/cash-receipts', [HistoryController::class, 'cashReceipts'])->name('admin.history.cash-receipts');
@@ -296,8 +297,12 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/run-datelock-seeder', function () {
     Artisan::call('db:seed', [
-        '--class' => 'DateLockPermissionsSeeder',
-        '--force' => true, // Avoid confirmation prompts in production
+        '--class' => 'NewPermissionsSeeder',
+        '--force' => true,
+    ]);
+    Artisan::call('db:seed', [
+        '--class' => 'RolePermissionSeeder',
+        '--force' => true,
     ]);
 
     return "DateLockPermissionsSeeder has been run.";

@@ -17,6 +17,7 @@ use App\Models\Management\TankLari;
 use App\Models\Management\Customers;
 use App\Models\Management\Suppliers;
 use Illuminate\Support\Facades\DB;
+use App\Models\CreditSales;
 
 class HistoryController extends Controller
 {
@@ -24,6 +25,7 @@ class HistoryController extends Controller
     {
         $this->middleware('permission:history.purchases.view')->only('purchases');
         $this->middleware('permission:history.sales.view')->only('sales');
+        $this->middleware('permission:history.credit-sales.view')->only('creditSales');
         $this->middleware('permission:history.bank-receivings.view')->only('bankReceivings');
         $this->middleware('permission:history.bank-payments.view')->only('bankPayments');
         $this->middleware('permission:history.cash-receipts.view')->only('cashReceipts');
@@ -96,6 +98,76 @@ class HistoryController extends Controller
             'processedSales',
             'salesTotals',
             'salesSummaryTotals'
+        ));
+    }
+
+    /**
+     * Display credit sales history
+     */
+    public function creditSales(Request $request)
+    {
+        $startDate = $request->get('start_date', date('Y-m-01'));
+        $endDate = $request->get('end_date', date('Y-m-d'));
+        $productId = $request->get('product_id', '');
+        $customerId = $request->get('customer_id', '');
+
+        $products = Product::all();
+
+        $query = CreditSales::query()->with(['product', 'vehicle']);
+
+        if (!empty($startDate) && !empty($endDate)) {
+            $query->whereBetween(DB::raw('DATE(transasction_date)'), [$startDate, $endDate]);
+        } else {
+            $currentDate = date('Y-m-d');
+            $query->whereBetween(DB::raw('DATE(transasction_date)'), [$currentDate, $currentDate]);
+        }
+
+        if (!empty($productId)) {
+            $query->where('product_id', $productId);
+        }
+
+        if (!empty($customerId)) {
+            $query->where('vendor_type', 2)->where('vendor_id', $customerId);
+        }
+
+        $creditSales = $query->orderByDesc('id')->get();
+
+        // Process for view: enrich with vendor details to mirror old logic
+        $processedCreditSales = [];
+        $totalAmount = 0;
+        $totalQuantity = 0;
+
+        foreach ($creditSales as $sale) {
+            $vendor = (new CreditSales())->getVendorByType($sale->vendor_type, $sale->vendor_id);
+
+            $processedCreditSales[] = (object) [
+                'id' => $sale->id,
+                'transaction_date' => $sale->transasction_date,
+                'vendor' => $vendor,
+                'product' => $sale->product,
+                'tank_lorry' => $sale->vehicle,
+                'quantity' => $sale->quantity,
+                'rate' => $sale->rate,
+                'amount' => $sale->amount,
+                'notes' => $sale->notes,
+            ];
+
+            $totalAmount += (float) $sale->amount;
+            $totalQuantity += (float) $sale->quantity;
+        }
+
+        $totals = (object) [
+            'total_amount' => $totalAmount,
+            'total_quantity' => $totalQuantity,
+        ];
+
+        return view('admin.pages.history.credit-sales', compact(
+            'startDate',
+            'endDate',
+            'productId',
+            'products',
+            'processedCreditSales',
+            'totals'
         ));
     }
 

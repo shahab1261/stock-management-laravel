@@ -58,7 +58,7 @@ $(document).ready(function() {
                 },
                 success: function (data) {
                     if (data.success) {
-                        $("#selected_tank").html('<option value="" selected disabled>Choose tank</option>');
+                        $("#selected_tank").html('');
                         $.each(data.tanks, function (key, value) {
                             $("#selected_tank").append(`<option value="${value.id}">${value.tank_name}</option>`);
                         });

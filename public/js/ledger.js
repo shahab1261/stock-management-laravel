@@ -113,7 +113,71 @@ $(document).ready(function () {
 
     // Update document title based on selected entity
     updatePageTitle();
+
+    // Initialize print button functionality
+    initializePrintButton();
+
+    // Add keyboard shortcuts
+    initializeKeyboardShortcuts();
 });
+
+/**
+ * Initialize print button functionality
+ */
+function initializePrintButton() {
+    // Add print button if it doesn't exist
+    if (!$('#printBtn').length) {
+        const printButton = `
+            <button type="button" id="printBtn" class="btn btn-primary d-flex align-items-center">
+                <i class="bi bi-printer me-2"></i> Print
+            </button>
+        `;
+
+        // Find the card header and add print button
+        const cardHeader = $('.card-header .d-flex');
+        if (cardHeader.length) {
+            cardHeader.append(printButton);
+        } else {
+            // If no existing button container, create one
+            $('.card-header').each(function() {
+                if (!$(this).find('.d-flex').length) {
+                    $(this).html(`
+                        <div class="d-flex justify-content-between align-items-center">
+                            ${$(this).html()}
+                            ${printButton}
+                        </div>
+                    `);
+                }
+            });
+        }
+    }
+
+    // Bind print button click event
+    $('#printBtn').off('click').on('click', function() {
+        printLedger();
+    });
+}
+
+/**
+ * Initialize keyboard shortcuts
+ */
+function initializeKeyboardShortcuts() {
+    $(document).keydown(function(e) {
+        // Ctrl+P for print
+        if (e.ctrlKey && e.which === 80) {
+            e.preventDefault();
+            printLedger();
+        }
+
+        // Ctrl+E for export (if DataTable export is available)
+        if (e.ctrlKey && e.which === 69) {
+            e.preventDefault();
+            if ($.fn.DataTable && $.fn.DataTable.isDataTable('#ledger_table')) {
+                $('#ledger_table').DataTable().button('.buttons-csv').trigger();
+            }
+        }
+    });
+}
 
 /**
  * Update page title based on selected entity
@@ -324,36 +388,202 @@ function confirmDelete(callback) {
 }
 
 /**
- * Print table function
+ * Print ledger function - Enhanced version similar to trial balance
  */
-function printTable(tableSelector) {
-    var printWindow = window.open('', '_blank');
-    var tableHtml = $(tableSelector).prop('outerHTML');
+function printLedger() {
+    const printWindow = window.open('', '_blank');
+    const printContent = generateLedgerPrintContent();
 
-    printWindow.document.write(`
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+/**
+ * Generate comprehensive print content for ledger
+ */
+function generateLedgerPrintContent() {
+    const currentDate = new Date().toLocaleDateString();
+    const startDate = $('#start_date').val() || 'N/A';
+    const endDate = $('#end_date').val() || 'N/A';
+    const ledgerType = getLedgerType();
+    const selectedEntity = getSelectedEntity();
+
+    const tableHTML = $('#ledger_table')[0].outerHTML;
+
+    return `
+        <!DOCTYPE html>
         <html>
         <head>
-            <title>Print</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+            <title>${ledgerType} Report</title>
             <style>
-                body { font-size: 12px; }
-                .table { font-size: 11px; }
-                .badge { color: #000 !important; background: #fff !important; border: 1px solid #000; }
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 20px;
+                    font-size: 12px;
+                }
+                .header {
+                    text-align: center;
+                    margin-bottom: 30px;
+                    border-bottom: 2px solid #333;
+                    padding-bottom: 15px;
+                }
+                .header h1 {
+                    margin: 0;
+                    color: #333;
+                    font-size: 24px;
+                }
+                .header p {
+                    margin: 5px 0;
+                    color: #666;
+                }
+                .entity-info {
+                    margin-bottom: 15px;
+                    text-align: center;
+                    font-weight: bold;
+                    background-color: #f8f9fa;
+                    padding: 10px;
+                    border-radius: 5px;
+                }
+                .date-range {
+                    margin-bottom: 20px;
+                    text-align: center;
+                    font-weight: bold;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f5f5f5;
+                    font-weight: bold;
+                    text-align: center;
+                }
+                .text-end {
+                    text-align: right;
+                }
+                .text-center {
+                    text-align: center;
+                }
+                .fw-bold {
+                    font-weight: bold;
+                }
+                .fw-medium {
+                    font-weight: 500;
+                }
+                .table-light {
+                    background-color: #f8f9fa;
+                }
+                .table-info {
+                    background-color: #d1ecf1;
+                }
+                .transaction-debit {
+                    color: #dc3545;
+                    font-weight: bold;
+                }
+                .transaction-credit {
+                    color: #28a745;
+                    font-weight: bold;
+                }
+                .badge {
+                    font-size: 10px;
+                    padding: 2px 6px;
+                    border-radius: 3px;
+                    font-weight: bold;
+                }
+                .bg-success {
+                    background-color: #28a745 !important;
+                    color: white;
+                }
+                .bg-danger {
+                    background-color: #dc3545 !important;
+                    color: white;
+                }
+                .footer {
+                    margin-top: 30px;
+                    text-align: center;
+                    font-size: 10px;
+                    color: #666;
+                    border-top: 1px solid #ddd;
+                    padding-top: 10px;
+                }
                 @media print {
-                    .table th, .table td { padding: 4px 2px; }
+                    body { margin: 0; }
+                    .no-print { display: none; }
                 }
             </style>
         </head>
-        <body onload="window.print(); window.close();">
-            <div class="container-fluid">
-                <h4 class="text-center mb-4">${getExportTitle()}</h4>
-                ${tableHtml}
+        <body>
+            <div class="header">
+                <h1>${ledgerType}</h1>
+                <p>Generated on: ${currentDate}</p>
+            </div>
+            ${selectedEntity ? `<div class="entity-info">${selectedEntity}</div>` : ''}
+            <div class="date-range">
+                Date Range: ${startDate} to ${endDate}
+            </div>
+            ${tableHTML}
+            <div class="footer">
+                <p>This report was generated automatically by the Stock Management System</p>
             </div>
         </body>
         </html>
-    `);
+    `;
+}
 
-    printWindow.document.close();
+/**
+ * Get ledger type based on current page
+ */
+function getLedgerType() {
+    const pageTitle = document.title;
+    if (pageTitle.includes('Bank')) return 'Bank Ledger Report';
+    if (pageTitle.includes('Cash')) return 'Cash Ledger Report';
+    if (pageTitle.includes('Customer')) return 'Customer Ledger Report';
+    if (pageTitle.includes('Supplier')) return 'Supplier Ledger Report';
+    if (pageTitle.includes('Product')) return 'Product Ledger Report';
+    if (pageTitle.includes('Employee')) return 'Employee Ledger Report';
+    if (pageTitle.includes('Expense')) return 'Expense Ledger Report';
+    if (pageTitle.includes('Income')) return 'Income Ledger Report';
+    if (pageTitle.includes('MP')) return 'MP Ledger Report';
+    return 'Ledger Report';
+}
+
+/**
+ * Get selected entity name
+ */
+function getSelectedEntity() {
+    let selectedText = '';
+
+    if ($('#bank_id').length && $('#bank_id').val()) {
+        selectedText = $('#bank_id option:selected').text();
+    } else if ($('#customer_id').length && $('#customer_id').val()) {
+        selectedText = $('#customer_id option:selected').text();
+    } else if ($('#supplier_id').length && $('#supplier_id').val()) {
+        selectedText = $('#supplier_id option:selected').text();
+    } else if ($('#product_id').length && $('#product_id').val()) {
+        selectedText = $('#product_id option:selected').text();
+    } else if ($('#employee_id').length && $('#employee_id').val()) {
+        selectedText = $('#employee_id option:selected').text();
+    } else if ($('#expense_id').length && $('#expense_id').val()) {
+        selectedText = $('#expense_id option:selected').text();
+    } else if ($('#income_id').length && $('#income_id').val()) {
+        selectedText = $('#income_id option:selected').text();
+    }
+
+    return selectedText && !selectedText.includes('All') ? `Selected: ${selectedText}` : '';
+}
+
+/**
+ * Print table function - Legacy function for backward compatibility
+ */
+function printTable(tableSelector) {
+    printLedger();
 }
 
 /**
@@ -396,3 +626,23 @@ function exportToCSV(tableSelector, filename) {
 $(window).on('load', function() {
     hideLoading();
 });
+
+/**
+ * Global print function for ledger pages
+ * Can be called from anywhere to print current ledger
+ */
+window.LedgerPrint = {
+    print: function() {
+        printLedger();
+    },
+
+    export: function() {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#ledger_table')) {
+            $('#ledger_table').DataTable().button('.buttons-csv').trigger();
+        }
+    },
+
+    refresh: function() {
+        window.location.reload();
+    }
+};

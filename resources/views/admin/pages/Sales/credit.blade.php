@@ -57,7 +57,7 @@
                                                 <i class="bi bi-bucket"></i>
                                             </span>
                                             <select class="form-select border-start-0" id="selected_tank" required>
-                                                <option value="" selected disabled>Choose tank</option>
+                                                {{-- <option value="" selected disabled>Choose tank</option> --}}
                                             </select>
                                         </div>
                                     </div>
@@ -314,5 +314,5 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('js/credit-sales-ajax.js') }}"></script>
+    <script src="{{ asset('js/credit-sales-ajax.js') }}?v=0.2"></script>
 @endpush
