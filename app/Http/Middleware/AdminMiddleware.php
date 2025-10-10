@@ -25,6 +25,18 @@ class AdminMiddleware
 
         $user = Auth::user();
 
+        // Force logout if user is inactive
+        if ((int)($user->status ?? 1) === 0) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Account is inactive.'], 401);
+            }
+            return redirect()->route('admin.login')->withErrors(['inactive' => 'Your account is inactive.']);
+        }
+
         // SuperAdmin can access everything
         if ($user->isSuperAdmin()) {
             return $next($request);

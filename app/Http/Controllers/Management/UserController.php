@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Logs;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -125,6 +126,24 @@ class UserController extends Controller
             $user->notes = $request->notes;
             $user->user_type = $request->role;
             $user->save();
+
+            // If user is set to inactive, purge all their active sessions
+            if ((int)$user->status === 0) {
+                // Sessions table stores payload with serialized user ID; since we use database driver, also store user_id if present
+                // Laravel's default session table doesn't have user_id by default, but we can safely delete by payload search for now
+                try {
+                    DB::table(config('session.table', 'sessions'))
+                        ->where('user_id', $user->id)
+                        ->orWhere('payload', 'like', DB::raw("CONCAT('%:id;i:', ".$user->id.",'%;')"))
+                        ->delete();
+                } catch (\Throwable $e) {
+                    // Fallback: broad delete by payload containing user email if structure differs
+                    DB::table(config('session.table', 'sessions'))
+                        ->where('payload', 'like', '%"id";i:'.$user->id.';%')
+                        ->orWhere('payload', 'like', '%"email";s:%'.addcslashes($user->email, '%_').'%')
+                        ->delete();
+                }
+            }
 
             // Update role assignment
             $user->syncRoles([$request->role]);
