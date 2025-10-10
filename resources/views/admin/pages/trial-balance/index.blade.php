@@ -149,6 +149,9 @@
                                     @endphp
 
                                     @foreach($entries as $entry)
+                                        @if(number_format($entry->debit) == number_format($entry->credit))
+                                            @continue
+                                        @endif
                                         @php
                                             // Calculate type totals using same rule as old system:
                                             // if debit > credit -> add abs(final_balance) to type debit sum, else to credit sum

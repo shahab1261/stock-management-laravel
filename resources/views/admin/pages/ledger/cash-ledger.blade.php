@@ -111,7 +111,7 @@
                                     <td class="text-center">
                                         @if ($openingBalance->debit > $openingBalance->credit)
                                             <span class="transaction-debit">
-                                                <small>Rs</small> {{ number_format(abs($openingBalance->final_balance)) }}
+                                                 {{ number_format(abs($openingBalance->final_balance)) }}
                                             </span>
                                             @php $debitSum += abs($openingBalance->final_balance); @endphp
                                         @else
@@ -121,7 +121,7 @@
                                     <td class="text-center">
                                         @if ($openingBalance->credit > $openingBalance->debit)
                                             <span class="transaction-credit">
-                                                <small>Rs</small> {{ number_format(abs($openingBalance->final_balance)) }}
+                                                 {{ number_format(abs($openingBalance->final_balance)) }}
                                             </span>
                                             @php $creditSum += abs($openingBalance->final_balance); @endphp
                                         @else
@@ -129,7 +129,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center fw-medium">
-                                        <small>Rs</small> {{ number_format($openingBalance->final_balance) }}
+                                            {{ number_format($openingBalance->final_balance) }}
                                     </td>
                                 </tr>
                             @endif --}}
@@ -147,7 +147,7 @@
                                         @endphp
                                         <tr>
                                             <td class="text-center">
-                                                {{ \Carbon\Carbon::parse($ledger->transaction_date)->format('d-m-Y') }}
+                                                {{ \Carbon\Carbon::parse($ledger->transaction_date)->format('Y-m-d') }}
                                             </td>
                                             <td>
                                                 <small>{{ $noteRate }} {{ $ledger->tarnsaction_comment }}</small>
@@ -155,7 +155,7 @@
                                             <td class="text-center">
                                                 @if ($ledger->transaction_type == 2 || $ledger->transaction_type == '2')
                                                     <span class="transaction-debit">
-                                                        <small>Rs</small> {{ number_format($ledger->amount) }}
+                                                         {{ number_format($ledger->amount) }}
                                                     </span>
                                                     @php
                                                         $debitSum += $ledger->amount;
@@ -168,7 +168,7 @@
                                             <td class="text-center">
                                                 @if ($ledger->transaction_type == 1 || $ledger->transaction_type == '1')
                                                     <span class="transaction-credit">
-                                                        <small>Rs</small> {{ number_format($ledger->amount) }}
+                                                         {{ number_format($ledger->amount) }}
                                                     </span>
                                                     @php
                                                         $finalBalance -= $ledger->amount;
@@ -179,7 +179,7 @@
                                                 @endif
                                             </td>
                                             <td class="text-center fw-medium">
-                                                <small>Rs</small> {{ number_format($finalBalance) }}
+                                                 {{ number_format($finalBalance) }}
                                             </td>
                                         </tr>
                                         @php $totalEntries++; @endphp
@@ -190,8 +190,14 @@
                                     <tr>
                                         <th class="text-center">-</th>
                                         <th>Total</th>
-                                        <th class="text-center"><small>Rs</small> {{ number_format($debitSum) }}</th>
-                                        <th class="text-center"><small>Rs</small> {{ number_format($creditSum) }}</th>
+                                        <th class="text-center">
+                                            {{-- <small>Rs</small> --}}
+                                            {{ number_format($debitSum) }}
+                                        </th>
+                                        <th class="text-center">
+                                            {{-- <small>Rs</small> --}}
+                                            {{ number_format($creditSum) }}
+                                        </th>
                                         <th class="text-center">-</th>
                                     </tr>
                                 </tfoot>

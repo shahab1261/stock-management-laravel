@@ -41,7 +41,7 @@ class LedgerController extends Controller
             $ledgers = Ledger::where('vendor_type', 3)
                 ->whereDate('transaction_date', '>=', $startDate)
                 ->whereDate('transaction_date', '<=', $endDate)
-                ->orderBy('transaction_date', 'asc')
+                ->orderBy('transaction_date', 'desc')
                 ->get();
         }
 
@@ -72,7 +72,7 @@ class LedgerController extends Controller
             $ledgers = Ledger::where('vendor_type', 1)
                 ->whereDate('transaction_date', '>=', $startDate)
                 ->whereDate('transaction_date', '<=', $endDate)
-                ->orderBy('transaction_date', 'asc')
+                ->orderBy('transaction_date', 'desc')
                 ->get();
         }
 
@@ -103,7 +103,7 @@ class LedgerController extends Controller
             $ledgers = Ledger::where('vendor_type', 2)
                 ->whereDate('transaction_date', '>=', $startDate)
                 ->whereDate('transaction_date', '<=', $endDate)
-                ->orderBy('transaction_date', 'asc')
+                ->orderBy('transaction_date', 'desc')
                 ->get();
         }
 
@@ -134,7 +134,7 @@ class LedgerController extends Controller
             $ledgers = Ledger::where('vendor_type', 6)
                 ->whereDate('transaction_date', '>=', $startDate)
                 ->whereDate('transaction_date', '<=', $endDate)
-                ->orderBy('transaction_date', 'asc')
+                ->orderBy('transaction_date', 'desc')
                 ->get();
         }
 
@@ -199,7 +199,7 @@ class LedgerController extends Controller
             $ledgers = Ledger::where('vendor_type', 4)
                 ->whereDate('transaction_date', '>=', $startDate)
                 ->whereDate('transaction_date', '<=', $endDate)
-                ->orderBy('transaction_date', 'asc')
+                ->orderBy('transaction_date', 'desc')
                 ->get();
         }
 
@@ -230,7 +230,7 @@ class LedgerController extends Controller
             $ledgers = Ledger::where('vendor_type', 5)
                 ->whereDate('transaction_date', '>=', $startDate)
                 ->whereDate('transaction_date', '<=', $endDate)
-                ->orderBy('transaction_date', 'asc')
+                ->orderBy('transaction_date', 'desc')
                 ->get();
         }
 
@@ -262,7 +262,7 @@ class LedgerController extends Controller
             $ledgers = Ledger::where('vendor_type', 9)
                 ->whereDate('transaction_date', '>=', $startDate)
                 ->whereDate('transaction_date', '<=', $endDate)
-                ->orderBy('transaction_date', 'asc')
+                ->orderBy('transaction_date', 'desc')
                 ->get();
         }
 
@@ -292,7 +292,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'asc')->get();
+        return $query->orderBy('transaction_date', 'desc')->get();
     }
 
     /**
@@ -316,7 +316,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'asc')->get();
+        return $query->orderBy('transaction_date', 'desc')->get();
     }
 
     /**
@@ -340,7 +340,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'asc')->get();
+        return $query->orderBy('transaction_date', 'desc')->get();
     }
 
     /**
@@ -364,7 +364,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'asc')->get();
+        return $query->orderBy('transaction_date', 'desc')->get();
     }
 
     /**
@@ -383,7 +383,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'asc')->get();
+        return $query->orderBy('transaction_date', 'desc')->get();
     }
 
     /**
@@ -402,7 +402,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'asc')->get();
+        return $query->orderBy('transaction_date', 'desc')->get();
     }
 
     /**
@@ -426,7 +426,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'asc')->get();
+        return $query->orderBy('transaction_date', 'desc')->get();
     }
 
     /**
@@ -450,7 +450,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'asc')->get();
+        return $query->orderBy('transaction_date', 'desc')->get();
     }
 
     /**
@@ -835,7 +835,7 @@ class LedgerController extends Controller
             ->where('vendor_id', $empId)
             ->whereDate('transaction_date', '>=', $startDate)
             ->whereDate('transaction_date', '<=', $endDate)
-            ->orderBy('transaction_date', 'asc')
+            ->orderBy('transaction_date', 'desc')
             ->get();
     }
 

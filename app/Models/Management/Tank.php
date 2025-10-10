@@ -33,4 +33,9 @@ class Tank extends Model
     {
         return $this->belongsTo(User::class, 'entery_by_user');
     }
+
+    public function getNameAttribute($value)
+    {
+        return str_replace('&amp;', '&', $value);
+    }
 }

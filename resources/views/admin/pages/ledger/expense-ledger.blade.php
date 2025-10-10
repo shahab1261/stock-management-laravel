@@ -106,7 +106,7 @@
                                             <span class="transaction-debit">
                                                 <small>Rs</small> {{ number_format(abs($openingBalance->final_balance)) }}
                                             </span>
-                                            @php $debitSum += abs($openingBalance->final_balance); @endphp
+                                            {{-- Opening balance excluded from totals --}}
                                         @else
                                             -
                                         @endif
@@ -116,7 +116,7 @@
                                             <span class="transaction-credit">
                                                 <small>Rs</small> {{ number_format(abs($openingBalance->final_balance)) }}
                                             </span>
-                                            @php $creditSum += abs($openingBalance->final_balance); @endphp
+                                            {{-- Opening balance excluded from totals --}}
                                         @else
                                             -
                                         @endif
@@ -138,7 +138,7 @@
                                 @endphp
                                 <tr>
                                     <td class="text-center">
-                                        {{ \Carbon\Carbon::parse($ledger->transaction_date)->format('d-m-Y') }}
+                                        {{ \Carbon\Carbon::parse($ledger->transaction_date)->format('Y-m-d') }}
                                     </td>
                                     <td>
                                         <small>{{ $noteRate }} {{ $ledger->tarnsaction_comment }}</small>

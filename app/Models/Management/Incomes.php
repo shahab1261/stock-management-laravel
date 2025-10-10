@@ -12,4 +12,9 @@ class Incomes extends Model
     protected $table = "incomes";
     protected $primaryKey = "id";
     protected $guarded = [];
+
+    public function getIncomeNameAttribute($value)
+    {
+        return str_replace('&amp;', '&', $value);
+    }
 }

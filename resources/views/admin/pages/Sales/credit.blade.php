@@ -81,7 +81,7 @@
                                             <span class="input-group-text bg-light border-end-0">
                                                 <i class="bi bi-truck"></i>
                                             </span>
-                                            <select name="tank_lari_id" id="tank_lari_id" class="form-select border-start-0" required>
+                                            <select name="tank_lari_id" id="tank_lari_id" class="form-select border-start-0 searchable-dropdown" required>
                                                 <option value="" selected disabled>Choose vehicle</option>
                                             </select>
                                         </div>
@@ -116,13 +116,27 @@
                                             <input class="form-control border-start-0" type="text" readonly id="amount" placeholder="0.00">
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12 col-md-3">
                                         <label for="transaction_description" class="form-label">Description</label>
                                         <textarea class="form-control" rows="1" id="transaction_description"
                                                   placeholder="Enter transaction description" required></textarea>
                                     </div>
-                                    <div class="col-12 col-md-2 d-flex align-items-end">
-                                        <button class="btn btn-primary w-100" type="submit" id="transaction_btn">
+                                    <div class="col-12 col-md-3">
+                                        <label for="invoice_no" class="form-label">Invoice No</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0">
+                                                <i class="bi bi-receipt"></i>
+                                            </span>
+                                            <input type="text" class="form-control border-start-0" name="invoice_no" id="invoice_no"
+                                                   placeholder="Enter invoice number" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button Row -->
+                                <div class="row mb-3">
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button class="btn btn-primary px-4" type="submit" id="transaction_btn">
                                             <i class="bi bi-check-circle me-2"></i>Submit
                                         </button>
                                     </div>
@@ -139,6 +153,11 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                             <h5 class="mb-0"><i class="bi bi-table me-2"></i>Credit Sales Records</h5>
+                            <div class="d-flex gap-2">
+                                <button type="button" id="printCreditSalesTableBtn" class="btn btn-primary d-flex align-items-center">
+                                    <i class="bi bi-printer me-2"></i> Print
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
@@ -147,6 +166,7 @@
                                         <tr>
                                             <th class="ps-3 text-center">#</th>
                                             <th class="ps-3 text-center">Date</th>
+                                            <th class="ps-3 text-center">Invoice No</th>
                                             <th class="ps-3 text-center">Vendor <small style="font-size: 10px">(Debit)</small></th>
                                             <th class="ps-3 text-center">Product</th>
                                             <th class="ps-3 text-center">Tank Lorry</th>
@@ -171,6 +191,13 @@
                                             <tr>
                                                 <td class="ps-3 text-center">{{ $creditSale->id }}</td>
                                                 <td class="ps-3 text-center">{{ date('d-m-Y', strtotime($creditSale->transasction_date)) }}</td>
+                                                <td class="ps-3 text-center">
+                                                    @if($creditSale->invoice_no)
+                                                        <span class="badge bg-primary">{{ $creditSale->invoice_no }}</span>
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
                                                 <td class="ps-3 text-center">
                                                     {{ $vendor->vendor_name }}
                                                     <span class="badge bg-secondary">{{ $vendor->vendor_type }}</span>

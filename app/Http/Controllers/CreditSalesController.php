@@ -130,6 +130,7 @@ class CreditSalesController extends Controller
                 'rate' => 'required|numeric|min:0.01',
                 'transaction_amount' => 'required|numeric|min:0.01',
                 'transaction_description' => 'required|string',
+                'invoice_no' => 'required|string|max:255',
                 'transaction_date' => 'required|date',
             ]);
 
@@ -154,6 +155,7 @@ class CreditSalesController extends Controller
                 'rate' => $productRate,
                 'amount' => $amount,
                 'notes' => $request->transaction_description,
+                'invoice_no' => $request->invoice_no,
                 'transasction_date' => $transactionDate,
             ]);
 
@@ -203,7 +205,7 @@ class CreditSalesController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Created credit sale for Vendor: {$vendorName}, Quantity: {$request->quantity}, Product: {$productName}, Amount: {$amount}, Date: {$transactionDate}",
+                'action_description' => "Created credit sale for Vendor: {$vendorName}, Invoice: {$request->invoice_no}, Quantity: {$request->quantity}, Product: {$productName}, Amount: {$amount}, Date: {$transactionDate}",
             ]);
 
             DB::commit();
@@ -254,7 +256,7 @@ class CreditSalesController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Delete',
-                'action_description' => "Deleted credit sale ID: {$creditSaleId} for Vendor: {$vendorName}, Quantity: {$creditSale->quantity}, Product: {$productName}, Amount: {$creditSale->amount}, Date: {$creditSale->transasction_date}",
+                'action_description' => "Deleted credit sale ID: {$creditSaleId} for Vendor: {$vendorName}, Invoice: {$creditSale->invoice_no}, Quantity: {$creditSale->quantity}, Product: {$productName}, Amount: {$creditSale->amount}, Date: {$creditSale->transasction_date}",
             ]);
 
             $creditSale->delete();

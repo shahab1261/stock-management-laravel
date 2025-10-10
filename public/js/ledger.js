@@ -15,12 +15,14 @@ $(document).ready(function () {
                 ],
                 pageLength: 25,
                 // Order by first column (Date) ascending for ledgers
-                order: [[0, "asc"]],
+                // order: [[0, "asc"]],
                 buttons: [
                     {
-                        extend: 'csvHtml5',
                         text: '<i class="bi bi-file-earmark-spreadsheet"></i> Export to CSV',
-                        className: 'btn btn-primary btn-sm mb-2 ms-2'
+                        className: 'btn btn-primary btn-sm mb-2 ms-2',
+                        action: function (e, dt, button, config) {
+                            exportLedgerToCSV();
+                        }
                     }
                 ],
                 drawCallback: function () {
@@ -169,12 +171,10 @@ function initializeKeyboardShortcuts() {
             printLedger();
         }
 
-        // Ctrl+E for export (if DataTable export is available)
+        // Ctrl+E for export
         if (e.ctrlKey && e.which === 69) {
             e.preventDefault();
-            if ($.fn.DataTable && $.fn.DataTable.isDataTable('#ledger_table')) {
-                $('#ledger_table').DataTable().button('.buttons-csv').trigger();
-            }
+            exportLedgerToCSV();
         }
     });
 }
@@ -400,6 +400,63 @@ function printLedger() {
 }
 
 /**
+ * Create complete ledger table HTML with footer
+ */
+function createCompleteLedgerTableHTML() {
+    const table = $('#ledger_table')[0];
+    const thead = table.querySelector('thead').outerHTML;
+    const tbody = table.querySelector('tbody').outerHTML;
+
+    // Calculate totals from the visible data
+    let debitSum = 0;
+    let creditSum = 0;
+
+    $('#ledger_table tbody tr').each(function() {
+        // Skip the opening balance row
+        const isOpening = $(this).find('td:nth-child(2)').text().trim().toLowerCase() === 'opening balance'
+            || $(this).find('td:nth-child(3)').text().trim().toLowerCase() === 'opening balance';
+        if (isOpening) {
+            return; // continue
+        }
+
+        const debitCell = $(this).find('td:nth-child(3)').text().trim();
+        const creditCell = $(this).find('td:nth-child(4)').text().trim();
+
+        // Extract numeric values, handling commas and dashes
+        if (debitCell && debitCell !== '-' && !isNaN(debitCell.replace(/,/g, ''))) {
+            const debitValue = parseFloat(debitCell.replace(/,/g, '')) || 0;
+            debitSum += debitValue;
+        }
+
+        if (creditCell && creditCell !== '-' && !isNaN(creditCell.replace(/,/g, ''))) {
+            const creditValue = parseFloat(creditCell.replace(/,/g, '')) || 0;
+            creditSum += creditValue;
+        }
+    });
+
+    // Create footer HTML
+    const tfoot = `
+        <tfoot class="table-light">
+            <tr>
+                <th class="text-center">-</th>
+                <th>Total</th>
+                <th class="text-center">${debitSum.toLocaleString()}</th>
+                <th class="text-center">${creditSum.toLocaleString()}</th>
+                <th class="text-center">-</th>
+            </tr>
+        </tfoot>
+    `;
+
+    return `
+        <table class="table table-hover table-bordered history-table" style="width:100%">
+            ${thead}
+            ${tbody}
+            ${tfoot}
+        </table>
+    `;
+}
+
+/**
  * Generate comprehensive print content for ledger
  */
 function generateLedgerPrintContent() {
@@ -409,7 +466,8 @@ function generateLedgerPrintContent() {
     const ledgerType = getLedgerType();
     const selectedEntity = getSelectedEntity();
 
-    const tableHTML = $('#ledger_table')[0].outerHTML;
+    // Create a complete table HTML with footer included
+    const tableHTML = createCompleteLedgerTableHTML();
 
     return `
         <!DOCTYPE html>
@@ -482,6 +540,13 @@ function generateLedgerPrintContent() {
                 }
                 .table-info {
                     background-color: #d1ecf1;
+                }
+                tfoot {
+                    display: table-footer-group;
+                }
+                tfoot tr {
+                    background-color: #f8f9fa !important;
+                    font-weight: bold;
                 }
                 .transaction-debit {
                     color: #dc3545;
@@ -587,7 +652,64 @@ function printTable(tableSelector) {
 }
 
 /**
- * Export table to CSV
+ * Export ledger table to CSV with footer
+ */
+function exportLedgerToCSV() {
+    var csv = [];
+    var table = $('#ledger_table')[0];
+
+    // Get table headers
+    var headers = [];
+    $(table.querySelectorAll('thead th')).each(function() {
+        var headerText = $(this).text().trim();
+        headerText = headerText.replace(/"/g, '""');
+        headers.push('"' + headerText + '"');
+    });
+    csv.push(headers.join(','));
+
+    // Get table body rows
+    $(table.querySelectorAll('tbody tr')).each(function() {
+        var row = [];
+        $(this).find('td, th').each(function() {
+            var cellText = $(this).text().trim();
+            cellText = cellText.replace(/"/g, '""');
+            row.push('"' + cellText + '"');
+        });
+        csv.push(row.join(','));
+    });
+
+    // Get footer row (total row)
+    $(table.querySelectorAll('tfoot tr')).each(function() {
+        var row = [];
+        $(this).find('td, th').each(function() {
+            var cellText = $(this).text().trim();
+            cellText = cellText.replace(/"/g, '""');
+            row.push('"' + cellText + '"');
+        });
+        csv.push(row.join(','));
+    });
+
+    // Download CSV
+    var csvContent = csv.join("\n");
+    var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    var link = document.createElement("a");
+
+    var ledgerType = getLedgerType();
+    var filename = ledgerType.replace(/\s+/g, '_') + '_' + new Date().toISOString().split('T')[0] + '.csv';
+
+    if (link.download !== undefined) {
+        var url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
+
+/**
+ * Export table to CSV (legacy function)
  */
 function exportToCSV(tableSelector, filename) {
     var csv = [];
@@ -637,9 +759,7 @@ window.LedgerPrint = {
     },
 
     export: function() {
-        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#ledger_table')) {
-            $('#ledger_table').DataTable().button('.buttons-csv').trigger();
-        }
+        exportLedgerToCSV();
     },
 
     refresh: function() {

@@ -19,7 +19,6 @@ class Product extends Model
         return $this->hasMany(Nozzle::class, 'product_id');
     }
 
-
     public function purchases()
     {
         return $this->hasMany(Purchase::class);
@@ -28,5 +27,10 @@ class Product extends Model
     public function tank()
     {
         return $this->belongsTo(Tank::class);
+    }
+
+    public function getNameAttribute($value)
+    {
+        return str_replace('&amp;', '&', $value);
     }
 }
