@@ -41,3 +41,57 @@ $(document).ready(function () {
     }
 });
 
+// Delete credit sale from history table (same route/handler as main tab)
+$(document).on('click', '.delete-credit-sale-btn', function() {
+    var tid = $(this).data("id");
+    var ledgerpurchasetype = $(this).data("ledgerpurchasetype");
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to delete this credit sale?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/sales/credit/delete',
+                type: "POST",
+                data: {
+                    tid: tid,
+                    ledgerpurchasetype: ledgerpurchasetype,
+                    "_token": $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'Credit sale has been deleted successfully.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'Please try again!'
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to delete credit sale!'
+                    });
+                }
+            });
+        }
+    });
+});
+

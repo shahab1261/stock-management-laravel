@@ -168,7 +168,7 @@ class NozzleSalesController extends Controller
             $sale->vendor_type = $request->vendor_type;
             $sale->tank_lari_id = 0;
             $sale->terminal_id = 0;
-            $sale->quantity = $request->closing_reading - $request->opening_reading;
+            $sale->quantity = $request->closing_reading - $request->opening_reading -  $request->test_sales;
             $sale->amount = $amount;
             $sale->rate = $productRate;
             $sale->freight = 0;

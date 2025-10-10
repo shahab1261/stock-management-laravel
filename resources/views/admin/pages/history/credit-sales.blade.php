@@ -70,6 +70,7 @@
                                     <th class="text-center">Rate</th>
                                     <th class="text-center">Amount</th>
                                     <th class="text-center">Description</th>
+                                    <th class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -87,6 +88,13 @@
                                         <td>Rs {{ number_format($row->rate, 2) }}</td>
                                         <td>Rs {{ number_format($row->amount, 0, '', ',') }}</td>
                                         <td>{{ $row->notes }}</td>
+                                        <td class="text-center">
+                                            @permission('sales.credit.delete')
+                                                <button class="btn btn-sm btn-danger delete-credit-sale-btn" data-ledgerpurchasetype="12" data-id="{{ $row->id }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            @endpermission
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -96,6 +104,7 @@
                                     <th class="text-center">{{ number_format($totals->total_quantity, 0, '', ',') }} <small>ltr</small></th>
                                     <th class="text-center">-</th>
                                     <th class="text-center"><small>Rs</small> {{ number_format($totals->total_amount, 0, '', ',') }}</th>
+                                    <th class="text-center">-</th>
                                     <th class="text-center">-</th>
                                 </tr>
                             </tfoot>
