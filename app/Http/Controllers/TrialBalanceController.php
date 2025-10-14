@@ -115,6 +115,8 @@ class TrialBalanceController extends Controller
         }
 
         $vendorDetails = $this->getVendorDetails($vendorType, $vendorId);
+        $vendorDetailsStock = 10;
+        $vendorDetailsStock = $this->getVendorDetailsStock($endDate, $vendorId);
 
         return (object) [
             'vendor_id' => $vendorId,
@@ -123,7 +125,7 @@ class TrialBalanceController extends Controller
             'debit' => $debit,
             'credit' => $credit,
             'final_balance' => $finalBalance,
-            'product_stock' => $vendorDetails['stock'] ?? null
+            'product_stock' => $vendorDetailsStock ?? null
         ];
     }
 
@@ -182,6 +184,27 @@ class TrialBalanceController extends Controller
             default:
                 return $currentBalance;
         }
+    }
+
+    private function getVendorDetailsStock($endDate, $productId)
+    {
+        // Get product stock from tanks table
+        // $stock = DB::table('current_stock')
+        //     ->where('product_id', $productId)
+        //     ->where('stock_date', $endDate)
+        //     ->sum('stock');
+
+        $stock = DB::table('current_stock')
+                ->where('product_id', $productId)
+                ->where('stock_date', '<=', $endDate)
+                ->orderByDesc('stock_date')
+                ->value('stock');
+            // if($productId == 3){
+
+            //     dd($endDate, $productId);
+            // }
+
+        return $stock ?? 0;
     }
 
     private function getVendorDetails($vendorType, $vendorId)

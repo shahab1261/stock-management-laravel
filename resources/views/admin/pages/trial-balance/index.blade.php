@@ -167,9 +167,9 @@
                                             <td class="text-center">{{ $entry->type }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                    {{-- <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center">
                                                         <span class="text-primary">{{ substr($entry->account_name, 0, 1) }}</span>
-                                                    </div>
+                                                    </div> --}}
                                                     <div>
                                                         <span class="fw-medium">{{ $entry->account_name }}</span>
                                                         @if($entry->type == 'Product' && $entry->product_stock)

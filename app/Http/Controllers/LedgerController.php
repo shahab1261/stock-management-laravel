@@ -292,7 +292,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'desc')->get();
+        return $query->orderBy('transaction_date', 'asc')->get();
     }
 
     /**
@@ -316,7 +316,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'desc')->get();
+        return $query->orderBy('transaction_date', 'asc')->get();
     }
 
     /**
@@ -340,7 +340,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'desc')->get();
+        return $query->orderBy('transaction_date', 'asc')->get();
     }
 
     /**
@@ -364,7 +364,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'desc')->get();
+        return $query->orderBy('transaction_date', 'asc')->get();
     }
 
     /**
@@ -383,7 +383,9 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'desc')->get();
+        // dd($query->orderBy('transaction_date', 'desc')->get());
+
+        return $query->orderBy('transaction_date', 'asc')->get();
     }
 
     /**
@@ -402,7 +404,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'desc')->get();
+        return $query->orderBy('transaction_date', 'asc')->get();
     }
 
     /**
@@ -426,7 +428,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'desc')->get();
+        return $query->orderBy('transaction_date', 'asc')->get();
     }
 
     /**
@@ -450,7 +452,7 @@ class LedgerController extends Controller
             $query->whereDate('transaction_date', $currentDate);
         }
 
-        return $query->orderBy('transaction_date', 'desc')->get();
+        return $query->orderBy('transaction_date', 'asc')->get();
     }
 
     /**

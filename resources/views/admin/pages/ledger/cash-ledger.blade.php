@@ -101,7 +101,7 @@
                                         $totalEntries = 1;
                                     @endphp
 
-                                    {{-- @if ($openingBalance && $openingBalance->debit != $openingBalance->credit)
+                                    @if ($openingBalance && $openingBalance->debit != $openingBalance->credit)
                                 @php
                                     $finalBalance = $openingBalance->final_balance;
                                 @endphp
@@ -132,7 +132,7 @@
                                             {{ number_format($openingBalance->final_balance) }}
                                     </td>
                                 </tr>
-                            @endif --}}
+                            @endif
 
                                     @foreach ($ledgers as $ledger)
                                         @php
