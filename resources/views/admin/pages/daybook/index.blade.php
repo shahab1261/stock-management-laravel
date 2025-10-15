@@ -119,6 +119,11 @@
                                 <i class="bi bi-droplet me-2"></i>Wet Stock
                             </button>
                         </li>
+                        <li class="nav-item" style="padding: 6px;" role="presentation">
+                            <button class="nav-link" id="general-view-tab" data-bs-toggle="tab" data-bs-target="#general-view" type="button" role="tab">
+                                <i class="bi bi-grid-3x3-gap me-2"></i>General View
+                            </button>
+                        </li>
                     </ul>
                 </div>
                 <div class="card-body p-0">
@@ -229,6 +234,13 @@
                                         @include('admin.pages.daybook.partials.wet-stock')
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- General View Tab -->
+                        <div class="tab-pane fade" id="general-view" role="tabpanel">
+                            <div class="p-4">
+                                @include('admin.pages.daybook.partials.general-view')
                             </div>
                         </div>
                     </div>
