@@ -292,7 +292,22 @@ $(document).ready(function() {
                         `;
                     }
                 },
-                { data: 'action_description', name: 'action_description', className: 'text-gray-600' },
+                {
+                    data: 'action_description',
+                    name: 'action_description',
+                    className: 'text-gray-600',
+                    render: function(data, type, row) {
+                        if (type !== 'display') return data;
+                        const raw = data || '';
+                        const full = $('<textarea/>').html(raw).text();
+                        const truncated = full.length > 250 ? (full.substring(0, 250) + '...') : full;
+                        // Encode full text for safe attribute storage; decode in modal
+                        const encodedFull = encodeURIComponent(full);
+                        // Escape only '&' and '<' for safe HTML display; keep '>' so arrows render correctly
+                        const safeTrunc = truncated.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+                        return `<span class="log-desc text-primary" role="button" data-bs-toggle="modal" data-bs-target="#logDescModal" data-full="${encodedFull}">${safeTrunc}</span>`;
+                    }
+                },
                 {
                     data: 'formatted_date',
                     name: 'created_at',
@@ -435,6 +450,31 @@ $(document).ready(function() {
 
     // Initialize applied filters on page load
     updateAppliedFilters();
+});
+</script>
+<!-- Full Description Modal -->
+<div class="modal fade" id="logDescModal" tabindex="-1" aria-labelledby="logDescModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logDescModalLabel">Log Description</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <pre class="mb-0" style="white-space: pre-wrap; word-wrap: break-word; font-family: inherit;">Loading...</pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+// Delegate to handle injecting full description into modal
+$(document).on('show.bs.modal', '#logDescModal', function (event) {
+    const trigger = $(event.relatedTarget);
+    const full = decodeURIComponent(trigger.data('full') || '');
+    $(this).find('.modal-body pre').text(full);
 });
 </script>
 @endpush

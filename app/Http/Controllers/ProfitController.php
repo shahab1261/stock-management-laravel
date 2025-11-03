@@ -9,6 +9,8 @@ use App\Models\Purchase;
 use App\Models\Transaction;
 use App\Models\Management\Product;
 use App\Models\Management\Tank;
+use App\Models\Logs;
+use Illuminate\Support\Facades\Auth;
 
 class ProfitController extends Controller
 {
@@ -75,20 +77,48 @@ class ProfitController extends Controller
     public function updateRates(Request $request)
     {
         try {
-            $products = Product::orderBy('id')->get(['id', 'current_purchase']);
+            DB::beginTransaction();
+
+            $products = Product::orderBy('id')->get(['id', 'name', 'current_purchase']);
+            $details = [];
+            $totalProductsAffected = 0;
+            $totalRowsUpdated = 0;
 
             foreach ($products as $product) {
                 $currentPurchaseRate = $product->current_purchase;
 
-                if (!is_null($currentPurchaseRate) && $currentPurchaseRate !== '') {
-                    Purchase::where('product_id', $product->id)
+                if ($currentPurchaseRate !== null && $currentPurchaseRate !== '') {
+                    $affected = Purchase::where('product_id', $product->id)
                         ->whereRaw('CAST(sold_quantity AS UNSIGNED) < CAST(stock AS UNSIGNED)')
                         ->update(['rate_adjustment' => $currentPurchaseRate]);
+
+                    if ($affected > 0) {
+                        $totalProductsAffected++;
+                        $totalRowsUpdated += $affected;
+                        $details[] = "Product: {$product->name} (ID: {$product->id}) | Current Purchase: {$currentPurchaseRate} | Rows Updated: {$affected}";
+                    }
                 }
             }
 
+            // Create a single detailed log entry (consistent with other logs)
+            $description = 'Rate Settlement: Updated purchase rate adjustments for open purchases.';
+            if (!empty($details)) {
+                $description .= ' ' . "Products Affected: {$totalProductsAffected} | Rows Updated: {$totalRowsUpdated}. Details: " . implode(' ; ', $details);
+            } else {
+                $description .= ' No rows required updating.';
+            }
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => $description,
+            ]);
+
+            DB::commit();
+
             return response()->json(['success' => true]);
         } catch (\Throwable $e) {
+            DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Update failed'], 500);
         }
     }

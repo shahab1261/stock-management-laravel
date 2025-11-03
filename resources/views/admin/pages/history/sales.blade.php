@@ -90,6 +90,7 @@
                                     <th class="text-center">Sales Type</th>
                                     <th class="text-center">Profit/Loss</th>
                                     <th class="text-center">Notes</th>
+                                    <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -142,6 +143,24 @@
                                             @endif
                                         </td>
                                         <td>{{ $sale->notes }}</td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-1">
+                                                @php
+                                                    $isLast = $sales_detail->contains(function ($value) use ($sale) {
+                                                        return $value->product_id == ($sale->product->id ?? null)
+                                                            && $value->last_row_id == $sale->id;
+                                                    });
+                                                @endphp
+                                                @if($isLast)
+                                                    @permission('sales.delete')
+                                                    <button type="button" class="btn btn-sm btn-danger delete-sales-btn"
+                                                        data-id="{{ $sale->id }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                    @endpermission
+                                                @endif
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -209,4 +228,46 @@
 
 @push('scripts')
 <script src="{{ asset('js/history-ajax.js') }}"></script>
+<script>
+(function(){
+    if (!window.historyDeleteBound) {
+        window.historyDeleteBound = true;
+        $(document).on('click', '.delete-sales-btn', function(e){
+            e.preventDefault();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            var salesId = $(this).data('id');
+            if (!salesId) return;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/sales/delete',
+                        type: 'POST',
+                        data: { _token: csrfToken, sales_id: salesId },
+                        headers: { 'X-CSRF-TOKEN': csrfToken },
+                        success: function(resp) {
+                            if (resp && resp.success) {
+                                Swal.fire({ icon: 'success', title: 'Success', text: resp.message || 'Sales deleted successfully!' })
+                                    .then(() => { location.reload(); });
+                            } else {
+                                Swal.fire({ icon: 'error', title: 'Error', text: (resp && resp.message) ? resp.message : 'Failed to delete sales, please try again!' });
+                            }
+                        },
+                        error: function(){
+                            Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to delete sales, please try again!' });
+                        }
+                    });
+                }
+            });
+        });
+    }
+})();
+</script>
 @endpush

@@ -52,13 +52,15 @@
             <!-- Purchase Menu Item -->
             @permission('purchase.view')
             <li class="menu-item mb-2" data-name="purchases">
-                <a href="{{ route('purchase.index') }}" class="menu-link d-flex align-items-center rounded p-2">
+                <a href="{{ route('purchase.index') }}"
+                   class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('purchase.index') ? 'active' : '') }}">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
                         <i class="bi bi-cart"></i>
                     </div>
                     <span class="menu-text">Purchase</span>
                 </a>
             </li>
+
             @endpermission
 
             <!-- Sales Menu Item -->

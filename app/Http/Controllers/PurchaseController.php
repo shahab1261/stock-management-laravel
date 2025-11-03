@@ -70,6 +70,142 @@ class PurchaseController extends Controller
     }
 
     /**
+     * Show edit vendor form for a purchase (only vendor fields)
+     */
+    public function editVendor($id)
+    {
+        $purchase = Purchase::findOrFail($id);
+
+        $incomes = Incomes::all();
+        $expenses = Expenses::all();
+        $banks = Banks::all();
+        $products = Product::all();
+        $customers = Customers::all();
+        $suppliers = Suppliers::all();
+        $employees = User::where('user_type','Employee')->get();
+
+        return view('admin.pages.purchase.edit-vendor', compact(
+            'purchase', 'incomes', 'expenses', 'banks', 'products', 'customers', 'suppliers', 'employees'
+        ));
+    }
+
+    /**
+     * Update the vendor fields on purchase and cascade to related tables
+     */
+    public function updateVendor(Request $request, $id)
+    {
+        $request->validate([
+            'vendor_id' => 'required',
+            'vendor_data_type' => 'required|integer|in:1,2,3,4,5,6,7,8,9'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $purchase = Purchase::findOrFail($id);
+
+            $oldVendorId = $purchase->supplier_id;
+            $oldVendorType = $purchase->vendor_type;
+
+            // Server-side validation to ensure vendor_id exists for the given vendor_data_type
+            // dd($request->vendor_data_type);
+            $vendorType = (int) $request->vendor_data_type;
+            $vendorId = $request->vendor_id;
+            $isValid = false;
+            switch ($vendorType) {
+                case 1: // Supplier
+                    $isValid = Suppliers::where('id', $vendorId)->exists();
+                    break;
+                case 2: // Customer
+                    $isValid = Customers::where('id', $vendorId)->exists();
+                    break;
+                case 3: // Product
+                    $isValid = Product::where('id', $vendorId)->exists();
+                    break;
+                case 4: // Expense
+                    $isValid = Expenses::where('id', $vendorId)->exists();
+                    break;
+                case 5: // Income
+                    $isValid = Incomes::where('id', $vendorId)->exists();
+                    break;
+                case 6: // Bank
+                    $isValid = Banks::where('id', $vendorId)->exists();
+                    break;
+                case 7: // Cash
+                    $isValid = ((string)$vendorId === '7');
+                    break;
+                case 8: // MP
+                    $isValid = ((string)$vendorId === '8');
+                    break;
+                case 9: // Employee
+                    $isValid = User::where('user_type', 'Employee')->where('id', $vendorId)->exists();
+                    break;
+            }
+
+            if (!$isValid) {
+                DB::rollBack();
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid vendor selection for the chosen type.'
+                    ], 422);
+                }
+                return back()->with('error', 'Invalid vendor selection for the chosen type.');
+            }
+
+            // dd($vendorId, $vendorType);
+            $purchase->supplier_id = $vendorId;
+            $purchase->vendor_type = $vendorType;
+            $purchase->save();
+
+            // Update vendor on related ledger entries for this purchase
+            // There are two ledger rows for a purchase (purchase_type = 1)
+            //  - product (vendor_type = 3) DEBIT
+            //  - vendor (original vendor_type) CREDIT -> needs updating
+            Ledger::where('purchase_type', 1)
+                ->where('transaction_id', $purchase->id)
+                ->where('transaction_type', 1) // vendor credit side
+                ->update([
+                    'vendor_type' => $vendorType,
+                    'vendor_id' => $vendorId,
+                ]);
+
+            // Log the change
+            $oldVendor = $this->getVendorByType($oldVendorType, $oldVendorId);
+            $newVendor = $this->getVendorByType($vendorType, $vendorId);
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => 'Updated purchase vendor: Purchase ID ' . $purchase->id .
+                    ' | From ' . ($oldVendor->vendor_name ?? 'N/A') . ' (' . ($oldVendor->vendor_type ?? '-') . ')' .
+                    ' To ' . ($newVendor->vendor_name ?? 'N/A') . ' (' . ($newVendor->vendor_type ?? '-') . ')',
+            ]);
+
+            DB::commit();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Vendor updated successfully',
+                    'redirect' => route('purchase.index')
+                ], 200);
+            }
+
+            return redirect()->route('purchase.index')->with('success', 'Vendor updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ], 500);
+            }
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
      * Get tanks by product ID for AJAX request
      */
     public function productTankUpdate(Request $request) {

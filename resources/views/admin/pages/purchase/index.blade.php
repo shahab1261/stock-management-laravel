@@ -122,6 +122,11 @@
                                                             data-id="{{ $purchase->id }}" data-name>
                                                             <i class="bi bi-eye"></i>
                                                         </button>
+                                                        @permission('purchase.edit')
+                                                        <a href="{{ route('purchase.edit-vendor', $purchase->id) }}" class="btn btn-sm btn-warning">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </a>
+                                                        @endpermission
                                                         @if ($purchase->sold_quantity < 1)
                                                             @permission('purchase.delete')
                                                                 <button type="button"

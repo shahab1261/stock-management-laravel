@@ -83,6 +83,11 @@ class HistoryController extends Controller
         $sales = $this->searchSales($productId, '', $startDate, $endDate);
         $salesSummary = $this->getProductsSales($startDate, $endDate);
 
+        // Determine last sale per product to control delete visibility in UI
+        $sales_detail = Sales::selectRaw('MAX(id) as last_row_id, product_id')
+                        ->groupBy('product_id')
+                        ->get();
+
         // Process sales data with vendor/product details
         $processedSales = $this->processSalesData($sales);
         $salesTotals = $this->calculateSalesTotals($sales);
@@ -97,7 +102,8 @@ class HistoryController extends Controller
             'salesSummary',
             'processedSales',
             'salesTotals',
-            'salesSummaryTotals'
+            'salesSummaryTotals',
+            'sales_detail'
         ));
     }
 

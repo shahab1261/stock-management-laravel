@@ -21,32 +21,32 @@
         $productNames = [];
         $productClosingStocks = [];
 
-        foreach($dippableProducts as $product) {
+        foreach ($dippableProducts as $product) {
             $openingStock = App\Models\CurrentStock::where('product_id', $product->id)
-                                            ->where('stock_date', '<', $settings->date_lock)
-                                            ->orderByDesc('id')
-                                            ->value('stock');
+                ->where('stock_date', '<', $settings->date_lock)
+                ->orderByDesc('id')
+                ->value('stock');
 
             $purchasedStock = App\Models\Purchase::where('product_id', $product->id)
-                                                ->whereDate('purchase_date', $settings->date_lock)->sum('stock');
+                ->whereDate('purchase_date', $settings->date_lock)
+                ->sum('stock');
 
             $soldStock = App\Models\Sales::where('product_id', $product->id)
-                                        ->whereDate('create_date', $settings->date_lock)
-                                        ->sum('quantity');
+                ->whereDate('create_date', $settings->date_lock)
+                ->sum('quantity');
 
             $closedStock = App\Models\CurrentStock::where('product_id', $product->id)
-                                ->where('stock_date', $settings->date_lock)
-                                ->value('stock');
-
+                ->where('stock_date', $settings->date_lock)
+                ->value('stock');
 
             $dateTime = new DateTime($settings->date_lock);
             $dateTime->setDate($dateTime->format('Y'), $dateTime->format('m'), 1);
             $firstDateOfMonth = $dateTime->format('Y-m-d');
 
             $totalAvgSalePer = App\Models\Sales::where('product_id', $product->id)
-                                            ->where('create_date', '>=', $firstDateOfMonth)
-                                            ->where('create_date', '<=', $settings->date_lock)
-                                            ->sum('quantity');
+                ->where('create_date', '>=', $firstDateOfMonth)
+                ->where('create_date', '<=', $settings->date_lock)
+                ->sum('quantity');
 
             $tankStock = App\Models\Management\Tank::where('product_id', $product->id)->sum('opening_stock');
 
@@ -75,13 +75,14 @@
         $monthlySales = [];
         for ($m = 1; $m <= 12; $m++) {
             $monthlySales[] = (float) \App\Models\Sales::whereYear('create_date', $year)
-                                ->whereMonth('create_date', $m)
-                                ->sum('quantity');
+                ->whereMonth('create_date', $m)
+                ->sum('quantity');
         }
 
         // Product stock data for charts
         // $productNames = $dippableProducts->pluck('name')->toArray();
         // $productStock = $dippableProducts->pluck('book_stock')->toArray();
+
     @endphp
 
     <div class="container-fluid py-4">
@@ -93,7 +94,8 @@
                         <div class="d-flex align-items-center mb-4">
                             <div>
                                 <h2 class="fs-3 fw-bold mb-0">Dashboard</h2>
-                                <p class="text-muted mb-0">Welcome to {{ $settings->company_name ?? 'Stock Management' }} Admin Panel</p>
+                                <p class="text-muted mb-0">Welcome to {{ $settings->company_name ?? 'Stock Management' }}
+                                    Admin Panel</p>
                             </div>
                             <div class="ms-auto d-flex align-items-center">
                                 <span class="text-muted me-2">System Locked At:</span>
@@ -111,12 +113,15 @@
                                 <div class="card border-0 shadow-sm h-100">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
-                                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center" style="width: 60px; height: 60px;">
-                                                <i class="bi bi-box-arrow-in-right text-primary" style="font-size: 1.5rem;"></i>
+                                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center"
+                                                style="width: 60px; height: 60px;">
+                                                <i class="bi bi-box-arrow-in-right text-primary"
+                                                    style="font-size: 1.5rem;"></i>
                                             </div>
                                             <div>
                                                 <h6 class="text-muted mb-1">Opening Stock</h6>
-                                                <h3 class="mb-0" style="font-size: 1.7rem;">{{ number_format($totalOpeningStock, 2) }}</h3>
+                                                <h3 class="mb-0" style="font-size: 1.7rem;">
+                                                    {{ number_format($totalOpeningStock, 2) }}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -128,12 +133,14 @@
                                 <div class="card border-0 shadow-sm h-100">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
-                                            <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center" style="width: 60px; height: 60px;">
+                                            <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center"
+                                                style="width: 60px; height: 60px;">
                                                 <i class="bi bi-cart-plus text-success" style="font-size: 1.5rem;"></i>
                                             </div>
                                             <div>
                                                 <h6 class="text-muted mb-1">Purchased Stock</h6>
-                                                <h3 class="mb-0" style="font-size: 1.7rem;">{{ number_format($totalPurchasedStock, 2) }}</h3>
+                                                <h3 class="mb-0" style="font-size: 1.7rem;">
+                                                    {{ number_format($totalPurchasedStock, 2) }}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -145,12 +152,14 @@
                                 <div class="card border-0 shadow-sm h-100">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
-                                            <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center" style="width: 60px; height: 60px;">
+                                            <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center"
+                                                style="width: 60px; height: 60px;">
                                                 <i class="bi bi-cart-dash text-danger" style="font-size: 1.5rem;"></i>
                                             </div>
                                             <div>
                                                 <h6 class="text-muted mb-1">Sold Stock</h6>
-                                                <h3 class="mb-0" style="font-size: 1.7rem;">{{ number_format($totalSoldStock, 2) }}</h3>
+                                                <h3 class="mb-0" style="font-size: 1.7rem;">
+                                                    {{ number_format($totalSoldStock, 2) }}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -165,12 +174,14 @@
                                 <div class="card border-0 shadow-sm h-100">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
-                                            <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center" style="width: 60px; height: 60px;">
+                                            <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center"
+                                                style="width: 60px; height: 60px;">
                                                 <i class="bi bi-box-arrow-right text-info" style="font-size: 1.5rem;"></i>
                                             </div>
                                             <div>
                                                 <h6 class="text-muted mb-1">Closing Stock</h6>
-                                                <h3 class="mb-0" style="font-size: 1.7rem;">{{ number_format($totalClosingStock, 2) }}</h3>
+                                                <h3 class="mb-0" style="font-size: 1.7rem;">
+                                                    {{ number_format($totalClosingStock, 2) }}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -182,12 +193,14 @@
                                 <div class="card border-0 shadow-sm h-100">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
-                                            <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center" style="width: 60px; height: 60px;">
+                                            <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center"
+                                                style="width: 60px; height: 60px;">
                                                 <i class="bi bi-percent text-warning" style="font-size: 1.5rem;"></i>
                                             </div>
                                             <div>
                                                 <h6 class="text-muted mb-1">Avg Sale %</h6>
-                                                <h3 class="mb-0" style="font-size: 1.7rem;">{{ number_format($totalAvgSalePercent, 2) }}</h3>
+                                                <h3 class="mb-0" style="font-size: 1.7rem;">
+                                                    {{ number_format($totalAvgSalePercent, 2) }}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -199,12 +212,14 @@
                                 <div class="card border-0 shadow-sm h-100">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
-                                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center" style="width: 60px; height: 60px;">
+                                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3 d-flex justify-content-center align-items-center"
+                                                style="width: 60px; height: 60px;">
                                                 <i class="bi bi-box-seam text-primary" style="font-size: 1.5rem;"></i>
                                             </div>
                                             <div>
                                                 <h6 class="text-muted mb-1">Current Stock</h6>
-                                                <h3 class="mb-0" style="font-size: 1.7rem;">{{ number_format($totalCurrentStock, 2) }}</h3>
+                                                <h3 class="mb-0" style="font-size: 1.7rem;">
+                                                    {{ number_format($totalCurrentStock, 2) }}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -225,7 +240,8 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="dippableProductsTable" class="table table-hover table-bordered align-middle mb-0 w-100">
+                            <table id="dippableProductsTable"
+                                class="table table-hover table-bordered align-middle mb-0 w-100">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="text-center">#</th>
@@ -239,61 +255,145 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($dippableProducts as $index => $product)
-                                    @php
-                                        $openingStock = App\Models\CurrentStock::where('product_id', $product->id)
-                                                                        ->where('stock_date', '<', $settings->date_lock)
-                                                                        ->orderByDesc('id')
-                                                                        ->value('stock');
+                                    @foreach ($dippableProducts as $index => $product)
+                                        @php
+                                            // $openingStock = App\Models\CurrentStock::where('product_id', $product->id)
+                                            //     ->where('stock_date', '<', $settings->date_lock)
+                                            //     ->orderByDesc('id')
+                                            //     ->value('stock');
 
-                                        $purchasedStock = App\Models\Purchase::where('product_id', $product->id)
-                                                                            ->whereDate('purchase_date', $settings->date_lock)->sum('stock');
+                                            $openingStock = 0;
 
-                                        $soldStock = App\Models\Sales::where('product_id', $product->id)
-                                                                    ->whereDate('create_date', $settings->date_lock)
-                                                                    ->sum('quantity');
+                                            $latestSales = App\Models\Sales::where('product_id', $product->id)
+                                                ->whereDate('create_date', '<', $settings->date_lock)
+                                                ->orderByDesc('id')
+                                                ->first();
 
-                                        $closedStock = App\Models\CurrentStock::where('product_id', $product->id)
-                                                            ->where('stock_date', $settings->date_lock)
-                                                            ->value('stock');
+                                            $latestPurchase = App\Models\Purchase::where('product_id', $product->id)
+                                                ->whereDate('purchase_date','<', $settings->date_lock)
+                                                ->orderByDesc('id')
+                                                ->first();
+
+                                            if ($latestSales && $latestPurchase) {
+                                                if ($latestSales->created_at > $latestPurchase->created_at) {
+                                                    $openingStock = $latestSales->previous_stock - $latestSales->quantity;
+                                                } else {
+                                                    $openingStock = $latestPurchase->previous_stock + $latestPurchase->stock;
+                                                }
+                                            } elseif ($latestSales) {
+                                                $openingStock = $latestSales->previous_stock - $latestSales->quantity;
+                                            } elseif ($latestPurchase) {
+                                                $openingStock = $latestPurchase->previous_stock + $latestPurchase->stock;
+                                            } else {
+                                                $openingStock = 0;
+                                            }
 
 
-                                        $dateTime = new DateTime($settings->date_lock);
-                                        $dateTime->setDate($dateTime->format('Y'), $dateTime->format('m'), 1);
-                                        $firstDateOfMonth = $dateTime->format('Y-m-d');
+                                            $purchasedStock = App\Models\Purchase::where('product_id', $product->id)
+                                                ->whereDate('purchase_date', $settings->date_lock)
+                                                ->sum('stock');
 
-                                        $totalAvgSalePer = App\Models\Sales::where('product_id', $product->id)
-                                                                        ->where('create_date', '>=', $firstDateOfMonth)
-                                                                        ->where('create_date', '<=', $settings->date_lock)
-                                                                        ->sum('quantity');
+                                            $soldStock = App\Models\Sales::where('product_id', $product->id)
+                                                ->whereDate('create_date', $settings->date_lock)
+                                                ->sum('quantity');
 
-                                        $totalSold = $totalAvgSalePer;
-                                        $startDate = new DateTime($settings->date_lock);
-                                        $endDate = new DateTime($firstDateOfMonth);
+                                            // $closedStock = App\Models\CurrentStock::where('product_id', $product->id)
+                                            //                     ->where('stock_date', $settings->date_lock)
+                                            //                     ->value('stock');
 
-                                        $interval = $startDate->diff($endDate);
-                                        $daysInBetween = $interval->days + 1;
-                                        $avg = $totalSold / $daysInBetween;
+                                            $closedStock = 0;
 
-                                        $tankStock = App\Models\Management\Tank::where('product_id', $product->id)->sum('opening_stock');
-                                    @endphp
-                                    <tr>
-                                        <td class="text-center">{{ $index + 1 }}</td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center">
-                                                    <span class="text-primary">{{ substr($product->name, 0, 1) }}</span>
+                                            $dateLock = new DateTime($settings->date_lock);
+
+                                            $latestSales = App\Models\Sales::where('product_id', $product->id)
+                                                ->whereDate('create_date', $settings->date_lock)
+                                                ->orderByDesc('id')
+                                                ->first();
+
+                                            $latestPurchase = App\Models\Purchase::where('product_id', $product->id)
+                                                ->whereDate('purchase_date', $settings->date_lock)
+                                                ->orderByDesc('id')
+                                                ->first();
+
+                                            if ($latestSales && $latestPurchase) {
+                                                if ($latestSales->created_at > $latestPurchase->created_at) {
+                                                    $closedStock = $latestSales->previous_stock - $latestSales->quantity;
+                                                } else {
+                                                    $closedStock = $latestPurchase->previous_stock + $latestPurchase->stock;
+                                                }
+                                            } elseif ($latestSales) {
+                                                $closedStock = $latestSales->previous_stock - $latestSales->quantity;
+                                            } elseif ($latestPurchase) {
+                                                $closedStock = $latestPurchase->previous_stock + $latestPurchase->stock;
+                                            } else {
+                                                $lastSales = App\Models\Sales::where('product_id', $product->id)
+                                                    ->whereDate('create_date', '<', $settings->date_lock)
+                                                    ->orderByDesc('create_date')
+                                                    ->orderByDesc('id')
+                                                    ->first();
+
+                                                $lastPurchase = App\Models\Purchase::where('product_id', $product->id)
+                                                    ->whereDate('purchase_date', '<', $settings->date_lock)
+                                                    ->orderByDesc('purchase_date')
+                                                    ->orderByDesc('id')
+                                                    ->first();
+
+                                                if ($lastSales && $lastPurchase) {
+                                                    if ($lastSales->created_at > $lastPurchase->created_at) {
+                                                        $closedStock = $lastSales->previous_stock - $lastSales->quantity;
+                                                    } else {
+                                                        $closedStock = $lastPurchase->previous_stock + $lastPurchase->stock;
+                                                    }
+                                                } elseif ($lastSales) {
+                                                    $closedStock = $lastSales->previous_stock - $lastSales->quantity;
+                                                } elseif ($lastPurchase) {
+                                                    $closedStock = $lastPurchase->previous_stock + $lastPurchase->stock;
+                                                } else {
+                                                    $closedStock = 0;
+                                                }
+                                            }
+
+                                            $dateTime = new DateTime($settings->date_lock);
+                                            $dateTime->setDate($dateTime->format('Y'), $dateTime->format('m'), 1);
+                                            $firstDateOfMonth = $dateTime->format('Y-m-d');
+
+                                            $totalAvgSalePer = App\Models\Sales::where('product_id', $product->id)
+                                                ->where('create_date', '>=', $firstDateOfMonth)
+                                                ->where('create_date', '<=', $settings->date_lock)
+                                                ->sum('quantity');
+
+                                            $totalSold = $totalAvgSalePer;
+                                            $startDate = new DateTime($settings->date_lock);
+                                            $endDate = new DateTime($firstDateOfMonth);
+
+                                            $interval = $startDate->diff($endDate);
+                                            $daysInBetween = $interval->days + 1;
+                                            $avg = $totalSold / $daysInBetween;
+
+                                            $tankStock = App\Models\Management\Tank::where(
+                                                'product_id',
+                                                $product->id,
+                                            )->sum('opening_stock');
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">{{ $index + 1 }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div
+                                                        class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                        <span
+                                                            class="text-primary">{{ substr($product->name, 0, 1) }}</span>
+                                                    </div>
+                                                    <span class="fw-medium">{{ $product->name }}</span>
                                                 </div>
-                                                <span class="fw-medium">{{ $product->name }}</span>
-                                            </div>
-                                        </td>
-                                        <td>{{ number_format($openingStock, 2) }} ltr</td>
-                                        <td>{{ number_format($purchasedStock, 2) }} ltr</td>
-                                        <td>{{ number_format($soldStock, 2) }} ltr</td>
-                                        <td>{{ number_format($closedStock, 2) }} ltr</td>
-                                        <td>{{ number_format($avg, 2) }}%</td>
-                                        <td>{{ number_format($tankStock, 2) }} ltr</td>
-                                    </tr>
+                                            </td>
+                                            <td>{{ number_format($openingStock, 2) }} ltr</td>
+                                            <td>{{ number_format($purchasedStock, 2) }} ltr</td>
+                                            <td>{{ number_format($soldStock, 2) }} ltr</td>
+                                            <td>{{ number_format($closedStock, 2) }} ltr</td>
+                                            <td>{{ number_format($avg, 2) }}%</td>
+                                            <td>{{ number_format($tankStock, 2) }} ltr</td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -331,53 +431,58 @@
         </div>
 
         @permission('logs.view')
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                        <h5 class="mb-0"><i class="bi bi-activity text-primary me-2"></i>Recent Activity</h5>
-                        <a href="{{ route('admin.logs.index') }}" class="btn btn-sm btn-primary d-flex align-items-center">
-                            <i class="bi bi-list-ul me-1"></i>
-                            View All Logs
-                        </a>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="timeline p-4">
-                            @foreach($recentLogs as $log)
-                            <div class="timeline-item d-flex mb-3">
-                                <div class="timeline-marker flex-shrink-0 me-3">
-                                    <div class="avatar-sm bg-{{ $log->action_type === 'Create' ? 'success' : ($log->action_type === 'Update' ? 'primary' : ($log->action_type === 'Delete' ? 'danger' : 'info')) }} bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                        <i class="bi bi-{{ $log->action_type === 'Create' ? 'plus' : ($log->action_type === 'Update' ? 'pencil' : ($log->action_type === 'Delete' ? 'trash' : 'info-circle')) }} text-{{ $log->action_type === 'Create' ? 'success' : ($log->action_type === 'Update' ? 'primary' : ($log->action_type === 'Delete' ? 'danger' : 'info')) }}"></i>
-                                    </div>
-                                </div>
-                                <div class="timeline-content flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">
-                                                <span class="text-primary fw-medium" style="font-size: 0.875rem;">{{ substr($log->user->name, 0, 1) }}</span>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                            <h5 class="mb-0"><i class="bi bi-activity text-primary me-2"></i>Recent Activity</h5>
+                            <a href="{{ route('admin.logs.index') }}"
+                                class="btn btn-sm btn-primary d-flex align-items-center">
+                                <i class="bi bi-list-ul me-1"></i>
+                                View All Logs
+                            </a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="timeline p-4">
+                                @foreach ($recentLogs as $log)
+                                    <div class="timeline-item d-flex mb-3">
+                                        <div class="timeline-marker flex-shrink-0 me-3">
+                                            <div class="avatar-sm bg-{{ $log->action_type === 'Create' ? 'success' : ($log->action_type === 'Update' ? 'primary' : ($log->action_type === 'Delete' ? 'danger' : 'info')) }} bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 40px; height: 40px;">
+                                                <i
+                                                    class="bi bi-{{ $log->action_type === 'Create' ? 'plus' : ($log->action_type === 'Update' ? 'pencil' : ($log->action_type === 'Delete' ? 'trash' : 'info-circle')) }} text-{{ $log->action_type === 'Create' ? 'success' : ($log->action_type === 'Update' ? 'primary' : ($log->action_type === 'Delete' ? 'danger' : 'info')) }}"></i>
                                             </div>
-                                            <span class="fw-medium">{{ $log->user->name }}</span>
                                         </div>
-                                        <small class="text-muted ms-2">{{ $log->created_at->diffForHumans() }}</small>
+                                        <div class="timeline-content flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle me-2 d-flex align-items-center justify-content-center"
+                                                        style="width: 28px; height: 28px;">
+                                                        <span class="text-primary fw-medium"
+                                                            style="font-size: 0.875rem;">{{ substr($log->user->name, 0, 1) }}</span>
+                                                    </div>
+                                                    <span class="fw-medium">{{ $log->user->name }}</span>
+                                                </div>
+                                                <small class="text-muted ms-2">{{ $log->created_at->diffForHumans() }}</small>
+                                            </div>
+                                            <p class="mb-0 text-gray-700">{{ $log->action_description }}</p>
+                                        </div>
                                     </div>
-                                    <p class="mb-0 text-gray-700">{{ $log->action_description }}</p>
-                                </div>
-                            </div>
-                            @endforeach
+                                @endforeach
 
-                            @if($recentLogs->isEmpty())
-                            <div class="text-center py-4">
-                                <div class="empty-state">
-                                    <i class="bi bi-activity text-muted opacity-50" style="font-size: 2.5rem;"></i>
-                                    <p class="text-muted mt-2 mb-0">No recent activity found</p>
-                                </div>
+                                @if ($recentLogs->isEmpty())
+                                    <div class="text-center py-4">
+                                        <div class="empty-state">
+                                            <i class="bi bi-activity text-muted opacity-50" style="font-size: 2.5rem;"></i>
+                                            <p class="text-muted mt-2 mb-0">No recent activity found</p>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
-                            @endif
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endpermission
     </div>
 
@@ -385,10 +490,12 @@
         .timeline {
             position: relative;
         }
+
         .timeline-item {
             position: relative;
             padding-left: 2rem;
         }
+
         .timeline-marker {
             position: absolute;
             left: 0;
@@ -401,19 +508,23 @@
             justify-content: center;
             z-index: 1;
         }
+
         .timeline-content {
             margin-left: 3rem;
         }
+
         .avatar-sm {
             width: 28px;
             height: 28px;
             font-size: 0.75rem;
         }
+
         .border-light {
-            border-color: #f8f9fa!important;
+            border-color: #f8f9fa !important;
         }
+
         .badge-light {
-            background-color: rgba(0,0,0,0.05);
+            background-color: rgba(0, 0, 0, 0.05);
         }
 
         /* Fixed styling issues */
@@ -424,10 +535,9 @@
         }
 
         /* .container-fluid {
-            max-width: 100%;
-            overflow-x: hidden;
-        } */
-
+                max-width: 100%;
+                overflow-x: hidden;
+            } */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -451,7 +561,8 @@
             color: #444;
         }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: #4154f1;
             box-shadow: 0 0 0 0.25rem rgba(65, 84, 241, 0.1);
         }
@@ -473,7 +584,8 @@
             border-color: #4154f1;
         }
 
-        .btn-primary:hover, .btn-primary:focus {
+        .btn-primary:hover,
+        .btn-primary:focus {
             background-color: #ffffff;
             border-color: #3a4cd8;
         }
@@ -520,7 +632,7 @@
         .timeline-item {
             position: relative;
             margin-bottom: 15px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             padding-bottom: 15px;
         }
 
@@ -538,7 +650,7 @@
         .empty-state {
             padding: 20px;
             border-radius: 8px;
-            background-color: rgba(0,0,0,0.01);
+            background-color: rgba(0, 0, 0, 0.01);
         }
 
         .text-gray-700 {
@@ -548,97 +660,100 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#dippableProductsTable').DataTable({
-            responsive: false,
-            scrollX: true,
-            searching: true,
-            ordering: true,
-            paging: true,
-            info: true,
-            dom: '<"row mb-3"<"col-md-6"l><"col-md-6 text-end"f>>t<"row mt-3"<"col-md-6"i><"col-md-6 text-end"p>>',
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        });
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#dippableProductsTable').DataTable({
+                responsive: false,
+                scrollX: true,
+                searching: true,
+                ordering: true,
+                paging: true,
+                info: true,
+                dom: '<"row mb-3"<"col-md-6"l><"col-md-6 text-end"f>>t<"row mt-3"<"col-md-6"i><"col-md-6 text-end"p>>',
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+            });
 
 
-        // Stock Distribution Chart
-        const stockCtx = document.getElementById('stockDistributionChart').getContext('2d');
-        new Chart(stockCtx, {
-            type: 'doughnut',
-            data: {
-                labels: {!! json_encode($productNames) !!},
-                datasets: [{
-                    data: {!! json_encode($productClosingStocks) !!},
-                    backgroundColor: ['#ffbb55', '#4154f1', '#ff771d', '#2eca6a'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            boxWidth: 20
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.formattedValue;
-                                return `${label}: ${value}`;
+            // Stock Distribution Chart
+            const stockCtx = document.getElementById('stockDistributionChart').getContext('2d');
+            new Chart(stockCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: {!! json_encode($productNames) !!},
+                    datasets: [{
+                        data: {!! json_encode($productClosingStocks) !!},
+                        backgroundColor: ['#ffbb55', '#4154f1', '#ff771d', '#2eca6a'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                boxWidth: 20
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.formattedValue;
+                                    return `${label}: ${value}`;
+                                }
                             }
                         }
-                    }
-                },
-                cutout: '60%'
-            }
-        });
+                    },
+                    cutout: '60%'
+                }
+            });
 
-                // Monthly Sales Chart
-        const monthlyCtx = document.getElementById('monthlySalesChart').getContext('2d');
-        new Chart(monthlyCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [
-                    {
+            // Monthly Sales Chart
+            const monthlyCtx = document.getElementById('monthlySalesChart').getContext('2d');
+            new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+                        'Dec'
+                    ],
+                    datasets: [{
                         label: 'Sales',
                         data: {!! json_encode($monthlySales) !!},
                         borderColor: '#4154f1',
                         backgroundColor: 'rgba(65, 84, 241, 0.2)',
                         tension: 0.3,
                         fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                    }
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            precision: 0
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
                         }
                     }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 @endpush

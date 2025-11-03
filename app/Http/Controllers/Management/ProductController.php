@@ -127,16 +127,48 @@ class ProductController extends Controller
 
         try {
             $product = Product::findOrFail($request->id);
+
+            // Capture previous values for detailed logging
+            $old = [
+                'name' => $product->name,
+                'unit' => $product->unit,
+                'current_purchase' => $product->current_purchase,
+                'current_sale' => $product->current_sale,
+            ];
+
+            // Apply updates
             $product->name = $request->name;
             $product->unit = $request->unit;
             $product->current_purchase = $request->current_purchase;
             $product->current_sale = $request->current_sale;
             $product->save();
 
+            // Build detailed change summary (only include changed fields)
+            $changes = [];
+            if ($old['name'] !== $product->name) {
+                $changes[] = "Name: '{$old['name']}' -> '{$product->name}'";
+            }
+            if ($old['unit'] !== $product->unit) {
+                $changes[] = "Unit: '{$old['unit']}' -> '{$product->unit}'";
+            }
+            $oldPurchase = is_null($old['current_purchase']) ? null : (float)$old['current_purchase'];
+            $newPurchase = is_null($product->current_purchase) ? null : (float)$product->current_purchase;
+            $oldSale = is_null($old['current_sale']) ? null : (float)$old['current_sale'];
+            $newSale = is_null($product->current_sale) ? null : (float)$product->current_sale;
+
+            if ($oldPurchase !== $newPurchase) {
+                $changes[] = "Purchase Rate: " . number_format((float)$oldPurchase, 2) . " -> " . number_format((float)$newPurchase, 2);
+            }
+            if ($oldSale !== $newSale) {
+                $changes[] = "Sale Rate: " . number_format((float)$oldSale, 2) . " -> " . number_format((float)$newSale, 2);
+            }
+
+            $changeText = count($changes) ? (implode(' | ', $changes)) : 'No field changes detected';
+
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Update',
-                'action_description' => "Product updated: {$product->name} (Unit {$product->unit})",
+                'action_description' => "Product updated: {$product->name} (ID {$product->id}) | " . $changeText,
             ]);
 
             return response()->json(['success' => true, 'message' => 'Product updated successfully']);

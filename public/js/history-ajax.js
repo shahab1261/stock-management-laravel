@@ -35,6 +35,37 @@ $(document).ready(function () {
         }
     });
 
+    // Handle delete sales button (history page)
+    $(document).on('click', '.delete-sales-btn', function(e) {
+        e.preventDefault();
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        var salesId = $(this).data('id');
+        if (!salesId) {
+            showError('Sales ID not found');
+            return;
+        }
+
+        confirmDelete(function() {
+            $.ajax({
+                url: '/sales/delete',
+                type: 'POST',
+                data: { _token: csrfToken, sales_id: salesId },
+                headers: { 'X-CSRF-TOKEN': csrfToken },
+                success: function(resp) {
+                    if (resp && resp.success) {
+                        showSuccess(resp.message || 'Sales deleted successfully');
+                        setTimeout(function(){ location.reload(); }, 800);
+                    } else {
+                        showError((resp && resp.message) ? resp.message : 'Failed to delete sales, please try again');
+                    }
+                },
+                error: function() {
+                    showError('Failed to delete sales, please try again');
+                }
+            });
+        });
+    });
+
     // Date filter functionality
     $("#start_date, #end_date").on("change", function () {
         var startDate = $("#start_date").val();

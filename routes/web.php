@@ -162,6 +162,8 @@ Route::middleware('admin')->group(function () {
     Route::get('/purchase', [PurchaseController::class, 'index'])->name('purchase.index');
     Route::post('/purchase/store', [PurchaseController::class, 'store'])->name('purchase.store');
     Route::get('/purchase/create', [PurchaseController::class, 'create'])->name('purchase.create');
+    Route::get('/purchase/{id}/edit-vendor', [PurchaseController::class, 'editVendor'])->name('purchase.edit-vendor');
+    Route::post('/purchase/{id}/update-vendor', [PurchaseController::class, 'updateVendor'])->name('purchase.update-vendor');
     Route::post('product/tank/update', [PurchaseController::class, 'productTankUpdate'])->name('product.tank.update');
     Route::post('product/rate/update', [PurchaseController::class, 'productRateUpdate'])->name('product.rate.update');
     Route::post('tank/chamber/data', [PurchaseController::class, 'tankChamberData'])->name('tank.chamber.data');

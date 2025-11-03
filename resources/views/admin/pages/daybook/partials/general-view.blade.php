@@ -1,5 +1,5 @@
 <!-- General View Header -->
-{{-- <div class="general-view-header mb-4">
+<div class="general-view-header mb-4">
     <div class="row align-items-center">
         <div class="col-md-8">
             <h4 class="mb-0 text-primary">
@@ -9,16 +9,13 @@
         </div>
         <div class="col-md-4 text-end">
             <div class="btn-group" role="group">
-                <button class="btn btn-outline-primary btn-sm" onclick="printGeneralView()">
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="printGeneralView(event)">
                     <i class="bi bi-printer me-1"></i>Print All
-                </button>
-                <button class="btn btn-outline-success btn-sm" onclick="exportGeneralView()">
-                    <i class="bi bi-file-excel me-1"></i>Export
                 </button>
             </div>
         </div>
     </div>
-</div> --}}
+</div>
 
 <!-- General View Grid Layout -->
 <div class="general-view-container">
@@ -747,13 +744,160 @@
 
 </div>
 
+<!-- Print-only container (hidden normally) -->
+<div id="daybook-general-print" style="display:none;"></div>
+
+<style>
+@media print {
+    body.daybook-printing * { visibility: hidden !important; }
+    #daybook-general-print, #daybook-general-print * { visibility: visible !important; }
+    #daybook-general-print { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
+    .dataTables_length, .dataTables_info, .dataTables_paginate, .dataTables_filter, .dt-buttons, .dt-left-margin, .dt-right-margin { display: none !important; }
+    .col-lg-6 { width: 100% !important; }
+    .general-view-card { page-break-inside: avoid; break-inside: avoid; }
+    .table-responsive { overflow: visible !important; }
+}
+</style>
+
 <script>
-function printGeneralView() {
-    window.print();
+function printGeneralView(e) {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    try {
+        const container = document.querySelector('.general-view-container');
+        if (!container) {
+            console.error('General view container not found');
+            return;
+        }
+
+        // Expand all DataTables to show all rows before cloning
+        var datatableStates = [];
+        if (window.$ && $.fn && $.fn.DataTable) {
+            $('.daybook-table').each(function () {
+                try {
+                    if ($.fn.DataTable.isDataTable(this)) {
+                        var api = $(this).DataTable();
+                        var prevLength = api.page.len();
+                        var prevPage = api.page();
+                        datatableStates.push({ api: api, length: prevLength, page: prevPage });
+                        api.page.len(-1).draw(false);
+                    }
+                } catch (ex) { /* per-table ignore */ }
+            });
+        }
+
+        const startDateInput = document.getElementById('start_date');
+        const endDateInput = document.getElementById('end_date');
+        const startDate = startDateInput && startDateInput.value ? startDateInput.value : 'N/A';
+        const endDate = endDateInput && endDateInput.value ? endDateInput.value : 'N/A';
+        const currentDate = new Date().toLocaleDateString();
+
+        // Create a clone of the section and strip DataTables scroll wrappers to real tables
+        var sectionClone = container.cloneNode(true);
+        try {
+            var wrappers = sectionClone.querySelectorAll('.dataTables_wrapper');
+            wrappers.forEach(function(wrapper){
+                var headTable = wrapper.querySelector('.dataTables_scrollHeadInner table') || wrapper.querySelector('.dataTables_scrollHead table');
+                var headThead = headTable ? headTable.querySelector('thead') : null;
+                var bodyTable = wrapper.querySelector('.dataTables_scrollBody table');
+                var footTable = wrapper.querySelector('.dataTables_scrollFootInner table') || wrapper.querySelector('.dataTables_scrollFoot table');
+                var footTFoot = footTable ? footTable.querySelector('tfoot') : null;
+                if (bodyTable) {
+                    // Build a clean table using thead + tbody (+ tfoot if available)
+                    var newTable = document.createElement('table');
+                    newTable.setAttribute('style','width:100%;');
+                    newTable.className = (bodyTable.className || '') + ' table table-bordered';
+
+                    if (headThead) newTable.appendChild(headThead.cloneNode(true));
+                    var tbody = bodyTable.querySelector('tbody');
+                    if (tbody) newTable.appendChild(tbody.cloneNode(true));
+                    var tfoot = bodyTable.querySelector('tfoot') || footTFoot;
+                    if (tfoot) newTable.appendChild(tfoot.cloneNode(true));
+
+                    wrapper.parentNode.replaceChild(newTable, wrapper);
+                }
+            });
+        } catch(ex) { /* non-fatal */ }
+
+        const contentHTML = sectionClone.outerHTML;
+
+        // Build a full HTML document for the new tab
+        var printDoc = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Daybook - General Overview</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; font-size: 12px; color: #212529; }
+        .header { text-align: center; margin-bottom: 24px; border-bottom: 2px solid #333; padding-bottom: 12px; }
+        .header h1 { margin: 0; color: #333; font-size: 22px; }
+        .header p { margin: 6px 0; color: #666; }
+        .date-range { text-align: center; font-weight: bold; margin-bottom: 16px; }
+        .general-view-card { margin-bottom: 16px; page-break-inside: avoid; break-inside: avoid; }
+        .card { border: 1px solid #dee2e6; border-radius: 6px; }
+        .card-body { padding: 12px 12px; }
+        .badge { display: inline-block; padding: .35em .65em; font-size: .75em; border-radius: .25rem; }
+        .bg-primary{ background-color:#0d6efd; color:#fff; }
+        .bg-success{ background-color:#198754; color:#fff; }
+        .bg-info{ background-color:#0dcaf0; color:#fff; }
+        .bg-warning{ background-color:#ffc107; color:#000; }
+        .bg-danger{ background-color:#dc3545; color:#fff; }
+        .bg-secondary{ background-color:#6c757d; color:#fff; }
+        .bg-dark{ background-color:#212529; color:#fff; }
+        .bg-purple{ background-color:#6f42c1; color:#fff; }
+        .text-primary{ color:#0d6efd; }
+        .text-success{ color:#198754; }
+        .text-danger{ color:#dc3545; }
+        .text-muted{ color:#6c757d; }
+        .fw-bold{ font-weight:700; }
+        .fw-medium{ font-weight:600; }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 12px; table-layout: auto; }
+        thead { display: table-header-group; }
+        th, td { border: 1px solid #ddd; padding: 6px; }
+        th { background-color: #f8f9fa; text-align: center; font-weight: 700; }
+        tfoot th, tfoot td { background-color: #f8f9fa; font-weight: 700; }
+        .text-center { text-align: center; }
+        .text-end { text-align: right; }
+        .row { display: block; }
+        .col-12, .col-lg-6 { width: 100%; }
+        .table-responsive { overflow: visible !important; }
+        /* Hide DataTables UI if present */
+        .dataTables_length, .dataTables_info, .dataTables_paginate, .dataTables_filter, .dt-buttons, .dt-left-margin, .dt-right-margin { display: none !important; }
+        @media print { body { margin: 0; } a[href]:after { content: "" !important; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Daybook - General Overview</h1>
+        <p>Generated on: ${currentDate}</p>
+    </div>
+    <div class="date-range">Date Range: ${startDate} to ${endDate}</div>
+    ${contentHTML}
+    <div style="margin-top:16px; text-align:center; font-size:10px; color:#666; border-top:1px solid #ddd; padding-top:8px;">Printed via System</div>
+    <script>window.onload = function(){ try{ window.print(); }catch(e){} };<\/script>
+</body>
+</html>`;
+
+        var blob = new Blob([printDoc], { type: 'text/html' });
+        var url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+
+        // restore tables back to original state
+        if (datatableStates && datatableStates.length) {
+            datatableStates.forEach(function (st) {
+                try {
+                    st.api.page.len(st.length).draw(false);
+                    if (typeof st.page === 'number') {
+                        st.api.page(st.page).draw(false);
+                    }
+                } catch (ex) { /* ignore */ }
+            });
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Unable to prepare the print view.');
+    }
 }
 
-function exportGeneralView() {
-    // This would typically integrate with your existing export functionality
-    alert('Export functionality would be implemented here');
-}
 </script>

@@ -85,7 +85,12 @@
                 <div class="card-header bg-white p-0">
                     <ul class="nav nav-tabs border-bottom-0" id="daybookTabs" role="tablist">
                         <li class="nav-item" style="padding: 6px;" role="presentation">
-                            <button class="nav-link active" id="purchase-tab" data-bs-toggle="tab" data-bs-target="#purchase" type="button" role="tab">
+                            <button class="nav-link active" id="general-view-tab" data-bs-toggle="tab" data-bs-target="#general-view" type="button" role="tab">
+                                <i class="bi bi-grid-3x3-gap me-2"></i>General View
+                            </button>
+                        </li>
+                        <li class="nav-item" style="padding: 6px;" role="presentation">
+                            <button class="nav-link" id="purchase-tab" data-bs-toggle="tab" data-bs-target="#purchase" type="button" role="tab">
                                 <i class="bi bi-cart-plus me-2"></i>Purchase Details
                             </button>
                         </li>
@@ -119,17 +124,19 @@
                                 <i class="bi bi-droplet me-2"></i>Wet Stock
                             </button>
                         </li>
-                        <li class="nav-item" style="padding: 6px;" role="presentation">
-                            <button class="nav-link" id="general-view-tab" data-bs-toggle="tab" data-bs-target="#general-view" type="button" role="tab">
-                                <i class="bi bi-grid-3x3-gap me-2"></i>General View
-                            </button>
-                        </li>
                     </ul>
                 </div>
                 <div class="card-body p-0">
                     <div class="tab-content" id="daybookTabsContent">
+                        <!-- General View Tab -->
+                        <div class="tab-pane fade show active" id="general-view" role="tabpanel">
+                            <div class="p-4">
+                                @include('admin.pages.daybook.partials.general-view')
+                            </div>
+                        </div>
+
                         <!-- Purchase Tab -->
-                        <div class="tab-pane fade show active" id="purchase" role="tabpanel">
+                        <div class="tab-pane fade" id="purchase" role="tabpanel">
                             <div class="p-4">
                                 <!-- Purchase Details Card -->
                                 <div class="card border-0 shadow-sm mb-4">
@@ -237,12 +244,6 @@
                             </div>
                         </div>
 
-                        <!-- General View Tab -->
-                        <div class="tab-pane fade" id="general-view" role="tabpanel">
-                            <div class="p-4">
-                                @include('admin.pages.daybook.partials.general-view')
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
