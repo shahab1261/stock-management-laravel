@@ -135,9 +135,9 @@
                                         </td>
                                         <td>
                                             @if($sale->profit > 0)
-                                                <span class="text-success">+Rs {{ number_format($sale->profit, 0, '', ',') }}</span>
+                                                <span class="text-success">+Rs {{ number_format($sale->profit, 2, '.', ',') }}</span>
                                             @elseif($sale->profit < 0)
-                                                <span class="text-danger">Rs {{ number_format($sale->profit, 0, '', ',') }}</span>
+                                                <span class="text-danger">Rs {{ number_format($sale->profit, 2, '.', ',') }}</span>
                                             @else
                                                 <span class="text-muted">Rs 0</span>
                                             @endif

@@ -73,7 +73,7 @@
                                                 <td class="ps-3 text-center">{{ $sale->closing_reading }}</td>
                                                 <td class="ps-3 text-center">{{ $sale->test_sales }}</td>
                                                 <td class="ps-3 text-center">{{ $tank?->tank_name ?? 'Not found' }}</td>
-                                                <td class="ps-3 text-center">Rs {{ number_format($sale->profit) }}</td>
+                                                <td class="ps-3 text-center">Rs {{ number_format($sale->profit, 2, '.', ',') }}</td>
                                                 <td class="ps-3 text-center">{{ $sale->notes }}</td>
                                                 <td class="text-center">
                                                     <div class="d-flex justify-content-center gap-1">
