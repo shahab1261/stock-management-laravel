@@ -332,7 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 product_id: $("#product_id").val(),
                 sales_date: $("#sale_date").val(),
             },
-            success: function (pre) {
+            success: async function (pre) {
                 if (!(pre && pre.success)) {
                     Swal.fire({
                         icon: "error",
@@ -344,121 +344,148 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                // Step 2: Loop through nozzles and prepare requests
-                var requests = [];
-                async function sendRequestsSequentially() {
-                    for (let i = 0; i < $(".closing_reading").length; i++) {
-                        let elem = $(".closing_reading").eq(i);
-                        let nozzle_id = elem.attr("id").split("_").pop();
+                // Step 2: Collect all nozzles that need requests
+                var nozzlesToProcess = [];
+                $(".closing_reading").each(function () {
+                    var nozzle_id = $(this).attr("id").split("_").pop();
+                    var quantity = parseFloat($("#quantity_" + nozzle_id).val() || 0);
+                    var testSales = parseFloat($("#testbox_" + nozzle_id).val() || 0);
 
-                        if (
-                            $("#quantity_" + nozzle_id).val() == "0" &&
-                            $("#testbox_" + nozzle_id).val() == "0"
-                        ) {
-                            continue; // skip this nozzle
-                        }
-
-                        let payload = {
-                            _token: $('meta[name="csrf-token"]').attr("content"),
-                            product_id: $("#product_id").val(),
-                            customer_id: vendor_id,
-                            vendor_type: vendor_type,
-                            vendor_name: vendor_name,
-                            amount: $("#total_amount_" + nozzle_id).val(),
-                            quantity: $("#quantity_" + nozzle_id).val(),
-                            rate: $("#sale_rate").val(),
-                            notes: $("#notes").val(),
-                            sale_date: $("#sale_date").val(),
-                            selected_tank: $("#selected_tank_" + nozzle_id).val(),
-                            nozzle_id: $("#nozzle_id_" + nozzle_id).val(),
-                            opening_reading: $("#opening_reading_" + nozzle_id).val(),
-                            closing_reading: $("#closing_reading_" + nozzle_id).val(),
-                            test_sales: $("#testbox_" + nozzle_id).val(),
-                        };
-
-                        try {
-                            await $.ajax({
-                                url: window.nozzleStoreUrl || "/sales/nozzle/store",
-                                type: "POST",
-                                data: payload,
-                            });
-                            console.log("✅ Request sent for nozzle: " + nozzle_id);
-                        } catch (err) {
-                            console.error("❌ Error on nozzle: " + nozzle_id, err);
-                        }
+                    if (quantity != 0 || testSales != 0) {
+                        nozzlesToProcess.push({
+                            nozzle_id: nozzle_id,
+                            payload: {
+                                _token: $('meta[name="csrf-token"]').attr("content"),
+                                product_id: $("#product_id").val(),
+                                customer_id: vendor_id,
+                                vendor_type: vendor_type,
+                                vendor_name: vendor_name,
+                                amount: $("#total_amount_" + nozzle_id).val(),
+                                quantity: $("#quantity_" + nozzle_id).val(),
+                                rate: $("#sale_rate").val(),
+                                notes: $("#notes").val(),
+                                sale_date: $("#sale_date").val(),
+                                selected_tank: $("#selected_tank_" + nozzle_id).val(),
+                                nozzle_id: $("#nozzle_id_" + nozzle_id).val(),
+                                opening_reading: $("#opening_reading_" + nozzle_id).val(),
+                                closing_reading: $("#closing_reading_" + nozzle_id).val(),
+                                test_sales: $("#testbox_" + nozzle_id).val(),
+                            }
+                        });
                     }
+                });
 
-                    console.log("🎉 All requests completed one by one");
+                // If no nozzles to process, return early
+                if (nozzlesToProcess.length === 0) {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Info",
+                        text: "No nozzles to process",
+                        confirmButtonColor: "#4154f1",
+                    });
+                    $("#add_sales_btn").attr("disabled", false).text("Submit");
+                    return;
                 }
 
-                sendRequestsSequentially();
+                // Step 3: Show loader and send all requests
+                Swal.fire({
+                    title: "Processing...",
+                    html: "Please wait while we process your requests.<br><small>Processing " + nozzlesToProcess.length + " nozzle(s)...</small>",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
-
-                // Step 3: Run all requests
-                $.when
-                    .apply($, requests)
-                    .done(function () {
-                        var responses = arguments;
-
-                        // If only one request, arguments is a single array
-                        if (requests.length === 1) {
-                            responses = [arguments];
-                        }
-
-                        var allSuccess = true;
-                        var errorMsg = "";
-
-                        // $.each(responses, function (i, res) {
-                        //     var data = res[0]; // AJAX returns [data, statusText, jqXHR]
-                        //     if (!(data && data.success)) {
-                        //         allSuccess = false;
-                        //         errorMsg =
-                        //             data.message ||
-                        //             "Failed to add some sales, please try again";
-                        //     }
-                        // });
-
-                        if (allSuccess) {
-                            Swal.fire({
-                                icon: "success",
-                                title: "Success",
-                                text: "Sales added successfully",
-                                confirmButtonColor: "#4154f1",
-                            }).then(() => {
-                                location.reload();
+                try {
+                    // Convert all AJAX requests to Promises and execute them
+                    var requestPromises = nozzlesToProcess.map(function (nozzle) {
+                        return new Promise(function (resolve, reject) {
+                            $.ajax({
+                                url: window.nozzleStoreUrl || "/sales/nozzle/store",
+                                type: "POST",
+                                data: nozzle.payload,
+                                success: function (response) {
+                                    resolve({
+                                        success: true,
+                                        response: response,
+                                        nozzle_id: nozzle.nozzle_id
+                                    });
+                                },
+                                error: function (xhr) {
+                                    var errorMsg = "Failed to add sales for nozzle " + nozzle.nozzle_id;
+                                    if (xhr && xhr.responseJSON) {
+                                        if (xhr.responseJSON.error === "tank-limit-exceed") {
+                                            errorMsg = "Tank stock is less than the stock you're selling";
+                                        } else if (xhr.responseJSON.message) {
+                                            errorMsg = xhr.responseJSON.message;
+                                        }
+                                    }
+                                    resolve({
+                                        success: false,
+                                        error: errorMsg,
+                                        nozzle_id: nozzle.nozzle_id
+                                    });
+                                }
                             });
-                        } else {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error",
-                                text: errorMsg,
-                                confirmButtonColor: "#4154f1",
-                            });
-                            $("#add_sales_btn")
-                                .attr("disabled", false)
-                                .text("Submit");
+                        });
+                    });
+
+                    // Wait for all requests to complete
+                    var results = await Promise.all(requestPromises);
+
+                    // Close the loader
+                    Swal.close();
+
+                    // Check if all requests were successful
+                    var allSuccess = true;
+                    var errorMessages = [];
+
+                    results.forEach(function (result) {
+                        if (!result.success || (result.response && !result.response.success)) {
+                            allSuccess = false;
+                            if (result.error) {
+                                errorMessages.push(result.error);
+                            } else if (result.response && result.response.message) {
+                                errorMessages.push(result.response.message);
+                            } else {
+                                errorMessages.push("Failed to add sales for nozzle " + result.nozzle_id);
+                            }
                         }
-                    })
-                    .fail(function (xhr) {
-                        var msg = "Failed to add sales, please try again";
-                        if (
-                            xhr &&
-                            xhr.responseJSON &&
-                            xhr.responseJSON.error === "tank-limit-exceed"
-                        ) {
-                            msg =
-                                "Tank stock is less than the stock you're selling";
-                        }
+                    });
+
+                    // Show appropriate message
+                    if (allSuccess) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Success",
+                            text: "All sales added successfully",
+                            confirmButtonColor: "#4154f1",
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
                         Swal.fire({
                             icon: "error",
                             title: "Error",
-                            text: msg,
+                            html: "Some sales failed to add:<br><small>" + errorMessages.join("<br>") + "</small>",
                             confirmButtonColor: "#4154f1",
                         });
-                        $("#add_sales_btn")
-                            .attr("disabled", false)
-                            .text("Submit");
+                        $("#add_sales_btn").attr("disabled", false).text("Submit");
+                    }
+                } catch (error) {
+                    // Close the loader
+                    Swal.close();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "An unexpected error occurred: " + (error.message || "Please try again"),
+                        confirmButtonColor: "#4154f1",
                     });
+                    $("#add_sales_btn").attr("disabled", false).text("Submit");
+                }
             },
             error: function () {
                 Swal.fire({

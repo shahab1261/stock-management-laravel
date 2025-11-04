@@ -126,12 +126,12 @@ $(document).ready(function () {
 
             if (startDate && endDate) {
                 if (new Date(startDate) > new Date(endDate)) {
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Invalid Date Range",
-                        text: "Start date cannot be greater than end date.",
-                    });
-                    return false;
+                    // Swal.fire({
+                    //     icon: "warning",
+                    //     title: "Invalid Date Range",
+                    //     text: "Start date cannot be greater than end date.",
+                    // });
+                    // return false;
                 }
             }
         });

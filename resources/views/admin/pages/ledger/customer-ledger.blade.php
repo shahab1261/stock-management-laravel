@@ -213,5 +213,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/ledger.js') }}"></script>
+<script src="{{ asset('js/ledger.js') }}?v=1.1"></script>
 @endpush

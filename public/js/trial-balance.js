@@ -22,12 +22,13 @@ $(document).ready(function() {
         });
 
         // Date range validation
-        $('#start_date, #end_date').change(function() {
-            validateDateRange();
-        });
+        // $('#start_date, #end_date').change(function() {
+        //     validateDateRange();
+        // });
 
         // Add loading states
         $('form').submit(function() {
+            validateDateRange();
             const submitBtn = $(this).find('button[type="submit"]');
             addLoadingState(submitBtn);
         });

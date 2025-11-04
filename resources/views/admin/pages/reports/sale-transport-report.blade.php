@@ -337,7 +337,7 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('assets/js/reports.js') }}"></script>
+<script src="{{ asset('assets/js/reports.js') }}?v=1.1"></script>
 <script>
     $(document).ready(function() {
         // Initialize DataTable

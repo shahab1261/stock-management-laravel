@@ -103,7 +103,7 @@ class ProfitController extends Controller
             // Create a single detailed log entry (consistent with other logs)
             $description = 'Rate Settlement: Updated purchase rate adjustments for open purchases.';
             if (!empty($details)) {
-                $description .= ' ' . "Products Affected: {$totalProductsAffected} | Rows Updated: {$totalRowsUpdated}. Details: " . implode(' ; ', $details);
+                $description .= ' ' . "Products Affected: {$totalProductsAffected} | Rows Updated: {$totalRowsUpdated}.";
             } else {
                 $description .= ' No rows required updating.';
             }

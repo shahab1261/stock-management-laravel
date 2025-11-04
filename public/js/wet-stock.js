@@ -358,13 +358,13 @@ $(document).ready(function() {
      */
     function initializeDateValidation() {
         $('#start_date, #end_date').change(function() {
-            const startDate = new Date($('#start_date').val());
-            const endDate = new Date($('#end_date').val());
+            // const startDate = new Date($('#start_date').val());
+            // const endDate = new Date($('#end_date').val());
 
-            if (startDate && endDate && startDate > endDate) {
-                showAlert('warning', 'Start date cannot be later than end date');
-                $('#end_date').val('');
-            }
+            // if (startDate && endDate && startDate > endDate) {
+            //     showAlert('warning', 'Start date cannot be later than end date');
+            //     $('#end_date').val('');
+            // }
         });
     }
 

@@ -325,13 +325,13 @@ $(document).ready(function() {
      * Validate date range
      */
     function validateDateRange() {
-        const startDate = new Date($('#start_date').val());
-        const endDate = new Date($('#end_date').val());
+        // const startDate = new Date($('#start_date').val());
+        // const endDate = new Date($('#end_date').val());
 
-        if (startDate && endDate && startDate > endDate) {
-            showAlert('error', 'Start date cannot be later than end date');
-            $('#end_date').val('');
-        }
+        // if (startDate && endDate && startDate > endDate) {
+        //     showAlert('error', 'Start date cannot be later than end date');
+        //     $('#end_date').val('');
+        // }
     }
 
     /**

@@ -252,5 +252,5 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('js/nozzle-sales-ajax.js') }}"></script>
+    <script src="{{ asset('js/nozzle-sales-ajax.js') }}?v=1.1"></script>
 @endpush

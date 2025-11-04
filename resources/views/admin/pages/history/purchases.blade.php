@@ -194,5 +194,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/history-ajax.js') }}"></script>
+<script src="{{ asset('js/history-ajax.js') }}?v=1.1"></script>
 @endpush
