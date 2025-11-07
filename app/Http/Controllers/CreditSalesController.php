@@ -134,6 +134,30 @@ class CreditSalesController extends Controller
                 'transaction_date' => 'required|date',
             ]);
 
+            // Check tank stock availability
+            $tank = Tank::find($request->tank_id);
+            if (!$tank) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'tank-not-found',
+                        'message' => 'Selected tank not found'
+                    ]);
+                }
+                return back()->with('error', 'Selected tank not found');
+            }
+
+            if ($request->quantity > $tank->opening_stock) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'tank-limit-exceed',
+                        'message' => 'Tank stock is less than the stock you\'re selling'
+                    ]);
+                }
+                return back()->with('error', 'Tank stock is less than the stock you\'re selling');
+            }
+
             $settings = Settings::first();
             $transactionDate = $settings->date_lock;
 

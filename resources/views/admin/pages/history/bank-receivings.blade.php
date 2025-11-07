@@ -57,6 +57,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-bank2 me-2"></i>Bank Receivings</h5>
+                    <div class="dt-buttons-container"></div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

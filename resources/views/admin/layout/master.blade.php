@@ -94,13 +94,16 @@
         <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('assets/js/dataTables.buttons.min.js') }}"></script>
-        <script src="{{ asset('assets/js/buttons.html5.min.js') }}"></script>
+        <script src="{{ asset('assets/js/pdfmake.min.js') }}"></script>
         <script src="{{ asset('assets/js/vfs_fonts.js') }}"></script>
         <script src="{{ asset('assets/js/dataTables.bootstrap5.min.js') }}"></script>
         <script src="{{ asset('assets/js/dataTables.responsive.min.js') }}"></script>
         <script src="{{ asset('assets/js/responsive.bootstrap5.min.js') }}"></script>
         <script src="{{ asset('assets/js/dataTables.select.min.js') }}"></script>
         <script src="{{ asset('assets/js/dataTables.fixedColumns.min.js') }}"></script>
+
+        <script src="{{ asset('assets/js/jszip.min.js') }}"></script>
+        <script src="{{ asset('assets/js/buttons.html5.min.js') }}"></script>
 
 
 
@@ -147,30 +150,6 @@
                     allowClear: false,
                 });
             });
-
-
-            // function setupDependentDropdowns() {
-            //     $('.dependent-dropdown').each(function() {
-            //         const $child = $(this);
-            //         const parentId = $child.data('parent');
-
-            //         $('#' + parentId).on('change', function() {
-            //             updateDependentDropdown($child, this.value);
-            //         });
-            //     });
-            // }
-
-            // function updateDependentDropdown($dropdown, parentValue) {
-            //     if ($dropdown.hasClass('select2-hidden-accessible')) {
-            //         $dropdown.select2('destroy');
-            //     }
-
-            //     updateDropdownOptions($dropdown, parentValue);
-
-            //     if ($dropdown.hasClass('searchable-after-load')) {
-            //         $dropdown.select2();
-            //     }
-            // }
         </script>
         @stack('scripts')
     </body>

@@ -454,7 +454,7 @@
                         <li class="submenu-item mb-2">
                             <a href="{{ route('admin.tanklari.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-fuel-pump me-2"></i>
-                                <span class="submenu-text">Customers Tank Lari</span>
+                                <span class="submenu-text">Tank Lorry</span>
                             </a>
                         </li>
                         @endpermission
@@ -640,6 +640,15 @@
             </li>
             @endif
 
+             <!-- General Search -->
+             <li class="menu-item mb-2" data-name="general-search">
+                <a href="{{ route('admin.general-search.index') }}" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.general-search.index') ? 'active' : '') }}">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <span class="menu-text">General Search</span>
+                </a>
+            </li>
 
             <!-- Logout Menu Item -->
             <li class="menu-item mb-2" data-name="logout">
@@ -653,6 +662,8 @@
                     @csrf
                 </form>
             </li>
+
+
 
         </ul>
     </div>

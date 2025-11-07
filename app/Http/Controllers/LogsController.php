@@ -18,8 +18,11 @@ class LogsController extends Controller
 
     public function index()
     {
-        // Get all users for the filter dropdown
-        $users = User::select('id', 'name')->orderBy('name')->get();
+        // Get all users for the filter dropdown (exclude Employees)
+        $users = User::select('id', 'name')
+            ->where('user_type', '!=', 'Employee')
+            ->orderBy('name')
+            ->get();
 
         return view('admin.pages.logs.index', compact('users'));
     }

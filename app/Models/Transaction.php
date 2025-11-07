@@ -6,6 +6,7 @@ use App\Models\Management\Banks;
 use Illuminate\Support\Facades\DB;
 use App\Models\Management\Customers;
 use App\Models\Management\Suppliers;
+use App\Models\Management\Expenses;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
@@ -24,6 +25,8 @@ class Transaction extends Model
                 return Suppliers::find($this->vendor_id);
             case 2:
                 return Customers::find($this->vendor_id);
+            case 4:
+                return Expenses::find($this->vendor_id);
             case 6:
                 return Banks::find($this->vendor_id);
             default:

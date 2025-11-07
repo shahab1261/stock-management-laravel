@@ -31,6 +31,7 @@ use App\Http\Controllers\DipController;
 use App\Http\Controllers\WetStockController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\AccountHistoryController;
+use App\Http\Controllers\GeneralSearchController;
 use Illuminate\Support\Facades\Artisan;
 
 // Dashboard at root, protected
@@ -279,6 +280,9 @@ Route::middleware('admin')->group(function () {
     Route::get('/reports/purchase-transport', [App\Http\Controllers\ReportsController::class, 'purchaseTransportReport'])->name('admin.reports.purchase-transport');
     Route::match(['get', 'post'], '/reports/sale-transport', [App\Http\Controllers\ReportsController::class, 'saleTransportReport'])->name('admin.reports.sale-transport');
     Route::post('/reports/chamber-data', [App\Http\Controllers\ReportsController::class, 'getChamberData'])->name('admin.reports.chamber-data');
+
+    /*************************General_Search_Routes***************************/
+    Route::get('/general-search', [GeneralSearchController::class, 'index'])->name('admin.general-search.index');
 });
 
 Route::name('admin.management.')->group(function () {
