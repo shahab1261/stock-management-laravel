@@ -6,9 +6,9 @@ $(document).ready(function () {
                 processing: true,
                 responsive: false,
                 scrollX: true,
-                searching: false, // Disable search box for ledger tables
-                // Custom DOM: show entries left with margin, export buttons right
-                dom: '<"row align-items-center"<"col-md-6 dt-left-margin"l><"col-md-6 d-flex justify-content-end"Bf>>t<"row align-items-center"<"col-md-6"i><"col-md-6 text-end"p>>',
+                searching: true,
+                // Custom DOM: show entries left, export button centered, search right
+                dom: '<"row align-items-center"<"col-md-4 dt-left-margin"l><"col-md-4 d-flex justify-content-center"B><"col-md-4 d-flex justify-content-end"f>>t<"row align-items-center"<"col-md-6"i><"col-md-6 text-end"p>>',
                 lengthMenu: [
                     [10, 25, 50, 100, -1],
                     [10, 25, 50, 100, "All"],
@@ -18,11 +18,29 @@ $(document).ready(function () {
                 // order: [[0, "asc"]],
                 buttons: [
                     {
-                        text: '<i class="bi bi-file-earmark-spreadsheet"></i> Export to CSV',
+                        text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV',
                         className: 'btn btn-primary btn-sm mb-2 ms-2',
                         action: function (e, dt, button, config) {
                             exportLedgerToCSV();
                         }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        text: '<i class="bi bi-file-earmark-excel"></i> Excel',
+                        className: 'btn btn-success btn-sm mb-2 ms-2',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="bi bi-file-earmark-pdf"></i> PDF',
+                        className: 'btn btn-danger btn-sm mb-2 ms-2',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        orientation: 'landscape',
+                        pageSize: 'A4'
                     }
                 ],
                 drawCallback: function () {
