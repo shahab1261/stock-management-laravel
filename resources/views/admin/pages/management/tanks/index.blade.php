@@ -37,7 +37,7 @@
                                     <th width="10%" class="ps-3">Cost Price</th>
                                     <th width="10%" class="ps-3">Sales Price</th>
                                     <th width="10%" class="ps-3">Product</th>
-                                    <th width="10%" class="ps-3">Date</th>
+                                    {{-- <th width="10%" class="ps-3">Date</th> --}}
                                     <th width="10%" class="ps-3">Notes</th>
                                     <th width="15%" class="text-center">Actions</th>
                                 </tr>
@@ -59,15 +59,23 @@
                                     <td class="ps-3">{{ $tank->cost_price }}</td>
                                     <td class="ps-3">{{ $tank->sales_price }}</td>
                                     <td class="ps-3">{{ $tank->product ? $tank->product->name : 'N/A' }}</td>
-                                    <td class="ps-3">{{ date('d M Y', strtotime($tank->ob_date)) }}</td>
+                                    {{-- <td class="ps-3">{{ date('d M Y', strtotime($tank->ob_date)) }}</td> --}}
                                     <td class="ps-3">{{ Str::limit($tank->notes, 20) }}</td>
                                     <td class="text-center">
                                         @permission('management.tanks.view')
+                                        @if(isset($tank->dip_charts_count) && $tank->dip_charts_count > 0)
                                         <button type="button" class="btn btn-sm btn-outline-primary view-dip-charts me-1"
                                             data-id="{{ $tank->id }}"
                                             data-name="{{ $tank->tank_name }}">
                                             <i class="bi bi-eye"></i>
                                         </button>
+                                        @else
+                                        <button type="button" class="btn btn-sm btn-outline-success add-dip-charts me-1"
+                                            data-id="{{ $tank->id }}"
+                                            data-name="{{ $tank->tank_name }}">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </button>
+                                        @endif
                                         @endpermission
                                         @permission('management.tanks.edit')
                                         <button type="button" class="btn btn-sm btn-outline-primary edit-tank me-1"
@@ -375,6 +383,75 @@
                 <button type="button" id="confirmDelete" class="btn btn-danger px-4">
                     <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
                     <i class="bi bi-trash me-1"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Dip Charts CSV Modal -->
+<div class="modal fade" id="uploadDipChartsModal" tabindex="-1" aria-labelledby="uploadDipChartsModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success bg-opacity-10 border-0">
+                <h5 class="modal-title" id="uploadDipChartsModalLabel">
+                    <i class="bi bi-file-earmark-spreadsheet me-2"></i>Upload Dip Charts CSV
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <p class="text-muted mb-2">
+                        <strong>Tank:</strong> <span id="uploadTankName" class="fw-medium"></span>
+                    </p>
+                    <p class="text-muted small mb-3">
+                        Upload a CSV file with dip chart data. The CSV should have two columns: <strong>Depth (mm)</strong> and <strong>Volume (liters)</strong>.
+                    </p>
+                </div>
+                <form id="uploadDipChartsForm" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" id="upload_tank_id" name="tank_id">
+                    <div class="mb-3">
+                        <label for="csv_file" class="form-label fw-medium">CSV File <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="csv_file" name="csv_file" accept=".csv" required>
+                            <label class="input-group-text" for="csv_file">
+                                <i class="bi bi-upload"></i>
+                            </label>
+                        </div>
+                        <div class="form-text">
+                            <i class="bi bi-info-circle me-1"></i>
+                            CSV format: First row should be headers (mm, liters). Supported file types: .csv
+                        </div>
+                        <div class="invalid-feedback" id="csv_file-error"></div>
+                    </div>
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading mb-2"><i class="bi bi-lightbulb me-2"></i>CSV File Format:</h6>
+                        <div class="small">
+                            <p class="mb-2"><strong>Supported header formats:</strong></p>
+                            <ul class="mb-2 ps-3">
+                                <li><code>mm, liters</code> or <code>Dip (mm), Tank Qty (L)</code></li>
+                                <li><code>Depth (mm), Volume (liters)</code></li>
+                                <li><code>dip mm, tank qty l</code> (case-insensitive)</li>
+                                <li>Any variation containing "mm" for depth and "liters/l/qty" for volume</li>
+                            </ul>
+                            <p class="mb-1"><strong>Example:</strong></p>
+                            <pre class="bg-light p-2 rounded mt-2 mb-0" style="font-size: 0.85rem;">Dip (mm),Tank Qty (L)
+2,37
+3,41
+4,44
+5,48
+100,500</pre>
+                            <p class="mt-2 mb-0 text-muted"><small><i class="bi bi-info-circle me-1"></i>The system will automatically detect the correct columns.</small></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="uploadDipChartsBtn" class="btn btn-success">
+                    <span class="spinner-border spinner-border-sm d-none me-1" role="status" aria-hidden="true"></span>
+                    <i class="bi bi-upload me-1 submit-icon"></i>Upload CSV
                 </button>
             </div>
         </div>

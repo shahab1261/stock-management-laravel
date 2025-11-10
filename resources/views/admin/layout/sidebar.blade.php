@@ -27,6 +27,18 @@
 
         <!-- Menu Items -->
         <ul class="sidebar-nav-list list-unstyled" id="sidebar-menu">
+
+            @permission('management.date-lock.view')
+            <li class="menu-item mb-2" data-name="date-lock">
+                <a href="{{ route('admin.management.date-lock.index') }}" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.management.date-lock.index') ? 'active' : '') }}">
+                    <div class="menu-icon d-flex align-items-center justify-content-center me-3">
+                        <i class="bi bi-lock"></i>
+                    </div>
+                    <span class="menu-text">Date Lock</span>
+                </a>
+            </li>
+            @endpermission
+
             <!-- Overview Menu Item -->
             <li class="menu-item mb-2" data-name="overview">
                 <a href="{{ route('admin.dashboard') }}" class="menu-link d-flex align-items-center rounded p-2 {{ (request()->routeIs('admin.dashboard') ? 'active' : '') }}">
@@ -554,7 +566,7 @@
                             </a>
                         </li>
                         @endpermission
-                        @permission('management.date-lock.view')
+                        {{-- @permission('management.date-lock.view')
                         <li class="submenu-item mb-2">
                             <a href="{{ route('admin.management.date-lock.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
                                 <i class="bi bi-lock me-1"></i>
@@ -562,7 +574,7 @@
                                 <span class="submenu-text">Date Lock</span>
                             </a>
                         </li>
-                        @endpermission
+                        @endpermission --}}
                         @superadmin
                         <li class="submenu-item mb-2">
                             <a href="{{ route('admin.roles-permissions.index') }}" class="submenu-link d-flex align-items-center rounded p-2">

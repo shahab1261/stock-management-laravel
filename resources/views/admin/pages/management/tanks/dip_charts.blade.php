@@ -32,46 +32,42 @@
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Dip Chart Measurements</h5>
                     <div class="d-flex gap-2">
-                        <button id="printBtn" class="btn btn-outline-primary">
+                        <button id="printBtn" class="btn btn-outline-primary d-none">
                             <i class="bi bi-printer me-1"></i> Print
                         </button>
                         <button id="exportBtn" class="btn btn-outline-success">
-                            <i class="bi bi-file-earmark-excel me-1"></i> Export to Excel
+                            <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export to CSV
                         </button>
+                        @if($dipCharts->count() > 0)
+                        <button id="deleteDipChartsBtn" class="btn btn-outline-danger" data-tank-id="{{ $tank->id }}" data-tank-name="{{ $tank->tank_name }}">
+                            <i class="bi bi-trash me-1"></i> Delete Dip Chart
+                        </button>
+                        @endif
                     </div>
                 </div>
-                <div class="card-body p-0">
+                <div class="card-body" id="dipChartsCardBody">
                     @if($dipCharts->count() > 0)
                         <div class="table-responsive">
                             <table id="dipChartsTable" class="table table-hover table-bordered align-middle mb-0" style="width:100%">
                                 <thead class="table-light">
                                     <tr>
-                                        <th width="15%" class="ps-3">#</th>
-                                        <th width="35%" class="ps-3">Depth (mm)</th>
-                                        <th width="35%" class="ps-3">Volume (liters)</th>
-                                        <th width="15%" class="ps-3">Date Created</th>
+                                        <th width="15%" class="text-center">#</th>
+                                        <th width="35%" class="text-center">Depth (mm)</th>
+                                        <th width="35%" class="text-center">Volume (liters)</th>
+                                        <th width="15%" class="text-center">Date Created</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($dipCharts as $index => $chart)
+                                    @foreach($dipCharts as $chart)
                                     <tr>
-                                        <td class="ps-3">{{ $dipCharts->firstItem() + $index }}</td>
-                                        <td class="ps-3">{{ $chart->mm }}</td>
-                                        <td class="ps-3">{{ $chart->liters }}</td>
-                                        <td class="ps-3">{{ date('d M Y', strtotime($chart->created_at)) }}</td>
+                                        <td class="text-center"></td>
+                                        <td class="text-center">{{ $chart->mm }}</td>
+                                        <td class="text-center">{{ $chart->liters }}</td>
+                                        <td class="text-center">{{ date('d M Y', strtotime($chart->created_at)) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center px-3 py-3">
-                            <div>
-                                Showing {{ $dipCharts->firstItem() }} to {{ $dipCharts->lastItem() }} of {{ $dipCharts->total() }} entries
-                            </div>
-                            <div>
-                                {{ $dipCharts->links('pagination::bootstrap-4') }}
-                            </div>
                         </div>
                     @else
                         <div class="text-center p-5">
@@ -160,22 +156,117 @@
         border-color: #e0e7ff;
         color: #3c50e0;
     }
+
+    /* Table and DataTables padding */
+    #dipChartsTable_wrapper {
+        padding-top: 0.5rem;
+    }
+
+    #dipChartsTable_wrapper .dataTables_length,
+    #dipChartsTable_wrapper .dataTables_filter {
+        padding: 0.5rem 0;
+        margin-bottom: 0.5rem;
+    }
+
+    #dipChartsTable_wrapper .dataTables_length {
+        padding-left: 0;
+    }
+
+    #dipChartsTable_wrapper .dataTables_filter {
+        padding-right: 0;
+    }
+
+    #dipChartsTable_wrapper .dataTables_info,
+    #dipChartsTable_wrapper .dataTables_paginate {
+        padding: 0.5rem 0;
+        margin-top: 0.5rem;
+    }
+
+    #dipChartsTable_wrapper .dataTables_info {
+        padding-left: 0;
+    }
+
+    #dipChartsTable_wrapper .dataTables_paginate {
+        padding-right: 0;
+    }
+
+    /* Table cell padding */
+    #dipChartsTable thead th {
+        padding: 0.5rem 0.75rem;
+        font-weight: 600;
+        vertical-align: middle;
+    }
+
+    #dipChartsTable tbody td {
+        padding: 0.75rem 0.5rem;
+        vertical-align: middle;
+    }
+
+    /* Table responsive container */
+    .table-responsive {
+        border-radius: 0.375rem;
+    }
+
+    /* Card body padding for table card */
+    #dipChartsCardBody {
+        padding: 1rem;
+    }
 </style>
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
     $(document).ready(function() {
+        // Initialize DataTables first
+        var dipChartsTable;
+        if ($('#dipChartsTable').length) {
+            dipChartsTable = $('#dipChartsTable').DataTable({
+                processing: true,
+                responsive: false,
+                scrollX: true,
+                dom: '<"row align-items-center"<"col-md-6 dt-left-margin"l><"col-md-6 text-end"f>>t<"row align-items-center"<"col-md-6"i><"col-md-6 text-end"p>>',
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, "All"],
+                ],
+                pageLength: 25,
+                order: [[1, "asc"]], // Order by Depth (mm) ascending
+                columnDefs: [
+                    {
+                        targets: 0,
+                        orderable: false,
+                        searchable: false,
+                        className: "text-center"
+                    },
+                    {
+                        targets: "_all",
+                        className: "text-center"
+                    }
+                ],
+                drawCallback: function() {
+                    // Update row numbers after each draw
+                    var api = this.api();
+                    api.column(0, {search: 'applied', order: 'applied'}).nodes().each(function(cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                }
+            });
+
+            // Add left margin to the show entries dropdown
+            setTimeout(function() {
+                $('.dt-left-margin').css('padding-left', '0');
+            }, 100);
+        }
+
         @if($dipCharts->count() > 0)
         // Chart data
         const labels = [];
         const volumes = [];
 
         @foreach($dipCharts as $chart)
-            labels.push('{{ $chart->depth }} mm');
-            volumes.push({{ $chart->volume }});
+            labels.push('{{ $chart->mm }} mm');
+            volumes.push({{ $chart->liters }});
         @endforeach
 
         // Create chart
@@ -221,39 +312,130 @@
         });
         @endif
 
-        // Print functionality
+        // Print functionality (hidden for now)
         $('#printBtn').on('click', function() {
             window.print();
         });
 
-        // Export to Excel functionality
+        // Export to CSV functionality
         $('#exportBtn').on('click', function() {
-            const data = [
-                ['#', 'Depth (mm)', 'Volume (liters)', 'Date Created'],
-                @foreach($dipCharts as $index => $chart)
-                [{{ $dipCharts->firstItem() + $index }}, {{ $chart->depth }}, {{ $chart->volume }}, '{{ date('d/m/Y', strtotime($chart->created_at)) }}'],
-                @endforeach
-            ];
+            if (dipChartsTable) {
+                // Get all data from DataTable (including filtered/sorted data)
+                const data = dipChartsTable.rows({search: 'applied'}).data().toArray();
 
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.aoa_to_sheet(data);
+                // Prepare CSV content
+                let csvContent = '#,Depth (mm),Volume (liters),Date Created\n';
 
-            // Style the header row
-            const header = {
-                font: { bold: true },
-                fill: { fgColor: { rgb: "EFEFEF" } }
-            };
+                data.forEach(function(row, index) {
+                    // Escape commas and quotes in data
+                    const escapeCSV = function(field) {
+                        if (field === null || field === undefined) {
+                            return '';
+                        }
+                        const stringField = String(field);
+                        // If field contains comma, quote, or newline, wrap in quotes and escape quotes
+                        if (stringField.includes(',') || stringField.includes('"') || stringField.includes('\n')) {
+                            return '"' + stringField.replace(/"/g, '""') + '"';
+                        }
+                        return stringField;
+                    };
 
-            // Apply styles to header row
-            const range = XLSX.utils.decode_range(ws['!ref']);
-            for (let col = range.s.c; col <= range.e.c; col++) {
-                const cell = XLSX.utils.encode_cell({ r: 0, c: col });
-                if (!ws[cell]) ws[cell] = {};
-                ws[cell].s = header;
+                    const rowData = [
+                        index + 1,
+                        escapeCSV(row[1]), // Depth (mm)
+                        escapeCSV(row[2]), // Volume (liters)
+                        escapeCSV(row[3])  // Date Created
+                    ];
+                    csvContent += rowData.join(',') + '\n';
+                });
+
+                // Create blob and download
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'DipCharts_{{ $tank->tank_name }}.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
+        });
 
-            XLSX.utils.book_append_sheet(wb, ws, 'Dip Charts - {{ $tank->tank_name }}');
-            XLSX.writeFile(wb, 'DipCharts_{{ $tank->tank_name }}.xlsx');
+        // Delete all dip charts functionality
+        $('#deleteDipChartsBtn').on('click', function() {
+            const tankId = $(this).data('tank-id');
+            const tankName = $(this).data('tank-name');
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+            const deleteUrl = '{{ route("admin.tanks.dip_charts.delete", ":id") }}'.replace(':id', tankId);
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `This will delete ALL dip chart records for "${tankName}". This action cannot be undone!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete all!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Deleting...',
+                        text: 'Please wait while we delete the dip charts.',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    $.ajax({
+                        url: deleteUrl,
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: response.message || 'All dip charts deleted successfully',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#4154f1'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Redirect to tanks index
+                                        window.location.href = '{{ route("admin.tanks.index") }}';
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message || 'Failed to delete dip charts',
+                                    confirmButtonColor: '#4154f1'
+                                });
+                            }
+                        },
+                        error: function(xhr) {
+                            let errorMessage = 'Failed to delete dip charts. Please try again.';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                            }
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                confirmButtonColor: '#4154f1'
+                            });
+                        }
+                    });
+                }
+            });
         });
     });
 </script>

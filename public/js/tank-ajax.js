@@ -196,4 +196,109 @@ $(document).ready(function() {
         var tankId = $(this).data('id');
         window.location.href = `/tanks/${tankId}/dip-charts-page`;
     });
+
+    // Add Dip Charts functionality (CSV Upload)
+    $(document).on('click', '.add-dip-charts', function() {
+        var tankId = $(this).data('id');
+        var tankName = $(this).data('name');
+        
+        $('#upload_tank_id').val(tankId);
+        $('#uploadTankName').text(tankName);
+        $('#uploadDipChartsForm')[0].reset();
+        $('.invalid-feedback').hide();
+        $('.is-invalid').removeClass('is-invalid');
+        $('#uploadDipChartsModal').modal('show');
+    });
+
+    // Handle CSV file upload
+    $('#uploadDipChartsBtn').on('click', function() {
+        var form = $('#uploadDipChartsForm')[0];
+        var formData = new FormData(form);
+        var $btn = $(this);
+        
+        // Validate file
+        var fileInput = $('#csv_file')[0];
+        if (!fileInput.files || !fileInput.files[0]) {
+            $('#csv_file').addClass('is-invalid');
+            $('#csv_file-error').text('Please select a CSV file').show();
+            return;
+        }
+
+        // Validate file extension
+        var fileName = fileInput.files[0].name;
+        var fileExtension = fileName.split('.').pop().toLowerCase();
+        if (fileExtension !== 'csv') {
+            $('#csv_file').addClass('is-invalid');
+            $('#csv_file-error').text('Please select a valid CSV file').show();
+            return;
+        }
+
+        $('.invalid-feedback').hide();
+        $('.is-invalid').removeClass('is-invalid');
+
+        // Show loading state with SweetAlert
+        Swal.fire({
+            title: 'Uploading...',
+            text: 'Please wait while we process and import the dip charts from your CSV file.',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: '/tanks/upload-dip-charts',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#uploadDipChartsModal').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message || 'Dip charts uploaded successfully',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#4154f1'
+                    }).then(function() {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.message || 'Failed to upload dip charts',
+                        confirmButtonColor: '#4154f1'
+                    });
+                }
+            },
+            error: function(xhr) {
+                var errorMessage = 'Failed to upload dip charts. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    // Handle validation errors
+                    var errors = xhr.responseJSON.errors;
+                    $.each(errors, function(key, value) {
+                        $('#' + key).addClass('is-invalid');
+                        $('#' + key + '-error').text(value[0]).show();
+                    });
+                    errorMessage = 'Please fix the errors and try again.';
+                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: errorMessage,
+                    confirmButtonColor: '#4154f1'
+                });
+            }
+        });
+    });
 });

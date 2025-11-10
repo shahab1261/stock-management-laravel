@@ -158,6 +158,8 @@ Route::middleware('admin')->group(function () {
     Route::delete('/tanks/delete/{id}', [TankController::class, 'delete'])->name('admin.tanks.delete');
     Route::get('/tanks/{id}/dip-charts', [TankController::class, 'viewDipCharts'])->name('admin.tanks.dip_charts');
     Route::get('/tanks/{id}/dip-charts-page', [TankController::class, 'dipChartsIndex'])->name('admin.tanks.dip_charts.index');
+    Route::delete('/tanks/{id}/dip-charts/delete', [TankController::class, 'deleteDipCharts'])->name('admin.tanks.dip_charts.delete');
+    Route::post('/tanks/upload-dip-charts', [TankController::class, 'uploadDipCharts'])->name('admin.tanks.upload_dip_charts');
 
     /*************************Purchase_Routes***************************/
     Route::get('/purchase', [PurchaseController::class, 'index'])->name('purchase.index');
