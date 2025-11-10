@@ -137,7 +137,7 @@ $(document).ready(function() {
         $('#delete_tanklari_id').val(tankLariId);
         $('#deleteModal').modal('show');
     });
-    // Delete Tank Lari
+    // Delete Tank Lorry
     $('#confirmDeleteBtn').on('click', function() {
         var tankLariId = $('#delete_tanklari_id').val();
 
@@ -178,7 +178,7 @@ $(document).ready(function() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'Failed to delete Tank Lari. Please try again.',
+                    text: 'Failed to delete Tank Lorry. Please try again.',
                     confirmButtonColor: '#4154f1'
                 });
             },

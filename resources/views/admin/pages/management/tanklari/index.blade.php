@@ -1,19 +1,19 @@
 @extends('admin.layout.master')
 
-@section('title', 'Tank Lari Management')
-@section('description', 'Manage your tank lari fleet')
+@section('title', 'Tank Lorry Management')
+@section('description', 'Manage your Tank Lorry fleet')
 
 @section('content')
 <div class="container-fluid py-4">
     <!-- Header Section with Stats -->
     <div class="row mb-4">
         <div class="col-12 text-center">
-            <h3 class="mb-0"><i class="bi bi-truck text-primary me-2"></i>Tank Lari</h3>
-            <p class="text-muted mb-0">Manage your tank lari fleet and chamber capacities</p>
+            <h3 class="mb-0"><i class="bi bi-truck text-primary me-2"></i>Tank Lorry</h3>
+            <p class="text-muted mb-0">Manage your Tank Lorry fleet and chamber capacities</p>
         </div>
     </div>
 
-    <!-- Tank Lari Cards Overview -->
+    <!-- Tank Lorry Cards Overview -->
     {{-- <div class="row mb-4">
         <div class="col-md-3 mb-3">
             <div class="card border-0 shadow-sm h-100">
@@ -22,7 +22,7 @@
                         <i class="bi bi-truck text-primary" style="font-size: 1.5rem;"></i>
                     </div>
                     <div>
-                        <h6 class="text-muted mb-1">Total Tank Lari</h6>
+                        <h6 class="text-muted mb-1">Total Tank Lorry</h6>
                         <h3 class="mb-0">{{ count($tanklaris) }}</h3>
                     </div>
                 </div>
@@ -69,12 +69,12 @@
         </div>
     </div> --}}
 
-    <!-- Tank Lari Table Section -->
+    <!-- Tank Lorry Table Section -->
     <div class="row">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                    <h5 class="mb-0"><i class="bi bi-table me-2"></i>Tank Lari List</h5>
+                    <h5 class="mb-0"><i class="bi bi-table me-2"></i>Tank Lorry List</h5>
                     <div>
                         @permission('management.tanklari.create')
                         <button id="addNewTankLariBtn" class="btn btn-primary btn-sm">
@@ -161,13 +161,13 @@
     </div>
 </div>
 
-<!-- Add Tank Lari Modal -->
+<!-- Add Tank Lorry Modal -->
 <div class="modal fade" id="addTankLariModal" tabindex="-1" aria-labelledby="addTankLariModalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-primary bg-opacity-10 border-0">
                 <h5 class="modal-title">
-                    <i class="bi bi-truck me-2"></i>Add New Tank Lari
+                    <i class="bi bi-truck me-2"></i>Add New Tank Lorry
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -275,13 +275,13 @@
     </div>
 </div>
 
-<!-- Edit Tank Lari Modal -->
+<!-- Edit Tank Lorry Modal -->
 <div class="modal fade" id="editTankLariModal" tabindex="-1" aria-labelledby="editTankLariModalLabel" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-primary bg-opacity-10 border-0">
                 <h5 class="modal-title">
-                    <i class="bi bi-pencil-square me-2"></i>Edit Tank Lari
+                    <i class="bi bi-pencil-square me-2"></i>Edit Tank Lorry
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -390,7 +390,7 @@
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-danger bg-opacity-10 border-0">
                 <h5 class="modal-title text-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Delete Tank Lari
+                    <i class="bi bi-exclamation-triangle me-2"></i>Delete Tank Lorry
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

@@ -75,7 +75,7 @@ Route::middleware('admin')->group(function () {
     Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('admin.profile.password');
 
     /*************************Tank_Lari_Routes***************************/
-    Route::get('/tanklari', [TankLariController::class, 'index'])->name('admin.tanklari.index');
+    Route::get('/tanklorry', [TankLariController::class, 'index'])->name('admin.tanklari.index');
     Route::post('/tanklari/store', [TankLariController::class, 'store'])->name('admin.tanklari.store');
     Route::post('/tanklari/update', [TankLariController::class, 'update'])->name('admin.tanklari.update');
     Route::get('/tanklari/delete/{id}', [TankLariController::class, 'delete'])->name('admin.tanklari.delete');

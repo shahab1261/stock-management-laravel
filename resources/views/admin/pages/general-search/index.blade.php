@@ -87,7 +87,7 @@
                                                 <th>Amount</th>
                                                 <th>Vendor</th>
                                                 <th>Vendor Type</th>
-                                                <th>Tank Lari</th>
+                                                <th>Tank Lorry</th>
                                                 <th>Freight</th>
                                                 <th>Freight Charges</th>
                                                 <th>Notes</th>

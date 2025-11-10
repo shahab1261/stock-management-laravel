@@ -71,12 +71,12 @@ class TankLariController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Tank Lari created: {$tanklari->larry_name} (Customer: {$tanklari->customer->name})",
+                'action_description' => "Tank Lorry created: {$tanklari->larry_name} (Customer: {$tanklari->customer->name})",
             ]);
 
-            return response()->json(['success' => true, 'message' => 'Tank Lari added successfully']);
+            return response()->json(['success' => true, 'message' => 'Tank Lorry added successfully']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to add Tank Lari', 'error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Failed to add Tank Lorry', 'error' => $e->getMessage()]);
         }
     }
 
@@ -118,15 +118,15 @@ class TankLariController extends Controller
                 Logs::create([
                     'user_id' => Auth::id(),
                     'action_type' => 'Update',
-                    'action_description' => "Tank Lari updated: {$tanklari->larry_name} (Customer: {$tanklari->customer->name})",
+                    'action_description' => "Tank Lorry updated: {$tanklari->larry_name} (Customer: {$tanklari->customer->name})",
                 ]);
 
-                return response()->json(['success' => true, 'message' => 'Tank Lari updated successfully', 'tanklari' => $tanklari]);
+                return response()->json(['success' => true, 'message' => 'Tank Lorry updated successfully', 'tanklari' => $tanklari]);
             } catch (\Exception $e) {
-                return response()->json(['success' => false, 'message' => 'Failed to update Tank Lari', 'error' => $e->getMessage()], 500);
+                return response()->json(['success' => false, 'message' => 'Failed to update Tank Lorry', 'error' => $e->getMessage()], 500);
             }
         } catch (\Throwable $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to update Tank Lari', 'error' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to update Tank Lorry', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -141,12 +141,12 @@ class TankLariController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Delete',
-                'action_description' => "Tank Lari deleted: {$name} (Customer: {$tanklari->customer->name})",
+                'action_description' => "Tank Lorry deleted: {$name} (Customer: {$tanklari->customer->name})",
             ]);
 
-            return response()->json(['success' => true, 'message' => 'Tank Lari deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'Tank Lorry deleted successfully']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to delete Tank Lari', 'error' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Failed to delete Tank Lorry', 'error' => $e->getMessage()], 500);
         }
     }
 
