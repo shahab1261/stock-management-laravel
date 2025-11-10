@@ -10,4 +10,4 @@ Add New Transport	include driver form in it + logs
 remove update rates button from products plus show in product column last updated rate action date time
 auto adjust research
 check rate settlement not showing 0 after adjustments => HELIX HX7 5W-30 4L
-add new dip charts + delete + logs
+add new dip charts + delete + logs  ****

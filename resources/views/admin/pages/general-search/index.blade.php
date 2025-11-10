@@ -323,4 +323,19 @@
     </div>
 @endsection
 
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('form[action="{{ route("admin.general-search.index") }}"]').on('submit', function(e) {
+            var $input = $(this).find('input[name="q"]');
+            var value = $input.val();
+
+            value = value.replace(/,/g, '').trim();
+
+            $input.val(value);
+        });
+    });
+</script>
+@endpush
+
 

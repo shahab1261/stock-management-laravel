@@ -23,7 +23,9 @@ class GeneralSearchController extends Controller
      */
     public function index(Request $request)
     {
+        // Get query and remove commas (keep decimal points)
         $query = trim((string) $request->input('q', ''));
+        $query = str_replace(',', '', $query);
 
         $salesResults = collect();
         $purchaseResults = collect();
