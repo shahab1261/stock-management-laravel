@@ -70,6 +70,7 @@
                                     <th class="text-center">Account <small style="font-size: 10px">(Debit)</small></th>
                                     <th class="text-center">Amount</th>
                                     <th class="text-center">Description</th>
+                                    <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,6 +87,19 @@
                                         </td>
                                         <td>Rs {{ number_format($transaction->amount, 0, '', ',') }}</td>
                                         <td>{{ $transaction->description }}</td>
+                                        <td class="text-center">
+                                            @permission('payments.transaction.delete')
+                                                @php
+                                                    $ledgerPurchaseType = app('App\\Http\\Controllers\\PaymentController')->getLedgerPurchaseType($transaction->transaction_type, $transaction->payment_type);
+                                                @endphp
+                                                <button class="btn btn-sm btn-outline-danger delete-btn"
+                                                    data-id="{{ $transaction->id }}"
+                                                    data-ledger-type="{{ $ledgerPurchaseType }}"
+                                                    title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            @endpermission
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -108,5 +122,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/history-ajax.js') }}?v=1.3"></script>
+<script src="{{ asset('js/history-ajax.js') }}?v=1.7"></script>
 @endpush

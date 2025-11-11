@@ -90,6 +90,20 @@ class LubricantSalesController extends Controller
         try {
             DB::beginTransaction();
 
+            $lockDate = Settings::first()->date_lock ?? date('Y-m-d');
+            $latestSale = Sales::where('product_id', $request->product_id)
+                ->orderByDesc('create_date')
+                ->first();
+            if ($latestSale && strcmp($latestSale->create_date, $lockDate) > 0) {
+                DB::rollBack();
+                $message = "You cannot add a sale dated earlier than {$latestSale->create_date} for this product.";
+                return response()->json([
+                    'success' => false,
+                    'error' => 'sale-date-out-of-sequence',
+                    'message' => $message
+                ]);
+            }
+
             $tank = Tank::find($request->selected_tank);
             if ($request->quantity > $tank->opening_stock) {
                 return response()->json([

@@ -400,9 +400,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
                 try {
-                    // Convert all AJAX requests to Promises and execute them
-                    var requestPromises = nozzlesToProcess.map(function (nozzle) {
-                        return new Promise(function (resolve, reject) {
+                    // Process nozzles sequentially to ensure proper stock calculation
+                    var results = [];
+
+                    for (var i = 0; i < nozzlesToProcess.length; i++) {
+                        var nozzle = nozzlesToProcess[i];
+
+                        // Update progress in loader
+                        Swal.update({
+                            html: "Please wait while we process your requests.<br><small>Processing nozzle " + (i + 1) + " of " + nozzlesToProcess.length + "...</small>"
+                        });
+
+                        // Process each nozzle one by one
+                        var result = await new Promise(function (resolve, reject) {
                             $.ajax({
                                 url: window.nozzleStoreUrl || "/sales/nozzle/store",
                                 type: "POST",
@@ -431,10 +441,14 @@ document.addEventListener("DOMContentLoaded", function () {
                                 }
                             });
                         });
-                    });
 
-                    // Wait for all requests to complete
-                    var results = await Promise.all(requestPromises);
+                        results.push(result);
+
+                        // If any request fails, stop processing further nozzles
+                        if (!result.success || (result.response && !result.response.success)) {
+                            break;
+                        }
+                    }
 
                     // Close the loader
                     Swal.close();
@@ -461,7 +475,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         Swal.fire({
                             icon: "success",
                             title: "Success",
-                            text: "All sales added successfully",
+                            text: "All " + results.length + " nozzle sales added successfully with proper stock calculation",
                             confirmButtonColor: "#4154f1",
                         }).then(() => {
                             location.reload();

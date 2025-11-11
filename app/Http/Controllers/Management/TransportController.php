@@ -36,6 +36,16 @@ class TransportController extends Controller
         $validator = Validator::make($request->all(), [
             'larry_name' => 'required|string|max:255',
             'driver_id' => 'nullable|exists:drivers,id',
+            // Driver fields (required when adding driver inline)
+            'driver_type' => 'nullable|string|max:255',
+            'driver_name' => 'nullable|string|max:255',
+            'first_mobile_no' => 'nullable|string|max:20',
+            'second_mobile_no' => 'nullable|string|max:20',
+            'cnic' => 'nullable|string|max:255',
+            'vehicle_no' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
+            'reference' => 'nullable|string',
             'chamber_dip_one' => 'nullable|numeric',
             'chamber_capacity_one' => 'nullable|numeric',
             'chamber_dip_two' => 'nullable|numeric',
@@ -51,9 +61,52 @@ class TransportController extends Controller
         }
 
         try {
+            $driverId = $request->driver_id;
+
+            // Check if driver information is provided (inline driver creation)
+            if ($request->filled('driver_name')) {
+                // Validate required driver fields
+                $driverValidator = Validator::make($request->all(), [
+                    'driver_type' => 'required|string|max:255',
+                    'driver_name' => 'required|string|max:255',
+                    'first_mobile_no' => 'required|string|max:20',
+                    'cnic' => 'required|string|max:255',
+                    'vehicle_no' => 'required|string|max:255',
+                    'city' => 'required|string|max:255',
+                ]);
+
+                if ($driverValidator->fails()) {
+                    return response()->json(['success' => false, 'message' => $driverValidator->messages()->first()]);
+                }
+
+                // Create new driver
+                $driver = new Drivers();
+                $driver->driver_type = $request->driver_type;
+                $driver->driver_name = $request->driver_name;
+                $driver->first_mobile_no = $request->first_mobile_no;
+                $driver->second_mobile_no = $request->second_mobile_no;
+                $driver->cnic = $request->cnic;
+                $driver->vehicle_no = $request->vehicle_no;
+                $driver->city = $request->city;
+                $driver->address = $request->address;
+                $driver->reference = $request->reference;
+                $driver->entery_by_user = Auth::id();
+                $driver->save();
+
+                $driverId = $driver->id;
+
+                // Log driver creation
+                Logs::create([
+                    'user_id' => Auth::id(),
+                    'action_type' => 'Create',
+                    'action_description' => "Driver created: {$driver->driver_name} ({$driver->vehicle_no}) via Transport form",
+                ]);
+            }
+
+            // Create transport
             $transport = new TankLari();
             $transport->larry_name = $request->larry_name;
-            $transport->driver_id = $request->driver_id;
+            $transport->driver_id = $driverId;
             $transport->chamber_dip_one = $request->chamber_dip_one ?? 0;
             $transport->chamber_capacity_one = $request->chamber_capacity_one ?? 0;
             $transport->chamber_dip_two = $request->chamber_dip_two ?? 0;
@@ -69,12 +122,12 @@ class TransportController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Transport created: {$transport->larry_name} (Driver ID {$transport->driver_id})",
+                'action_description' => "Transport created: {$transport->larry_name}" . ($driverId ? " (Driver ID {$driverId})" : ""),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Transport added successfully',
+                'message' => 'Transport added successfully' . (isset($driver) ? ' with new driver' : ''),
                 'transport' => $transport
             ]);
         } catch (\Exception $e) {

@@ -22,6 +22,7 @@ use App\Http\Controllers\Management\SupplierController;
 use App\Http\Controllers\Management\TankLariController;
 use App\Http\Controllers\Management\TerminalController;
 use App\Http\Controllers\Management\TransportController;
+use App\Http\Controllers\Management\CustomerVehicleController;
 use App\Http\Controllers\Management\DateLockController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\JournalController;
@@ -79,6 +80,12 @@ Route::middleware('admin')->group(function () {
     Route::post('/tanklari/store', [TankLariController::class, 'store'])->name('admin.tanklari.store');
     Route::post('/tanklari/update', [TankLariController::class, 'update'])->name('admin.tanklari.update');
     Route::get('/tanklari/delete/{id}', [TankLariController::class, 'delete'])->name('admin.tanklari.delete');
+
+    /*************************Customer_Vehicles_Routes***************************/
+    Route::get('/customer-vehicles', [CustomerVehicleController::class, 'index'])->name('admin.customer-vehicles.index');
+    Route::post('/customer-vehicles/store', [CustomerVehicleController::class, 'store'])->name('admin.customer-vehicles.store');
+    Route::post('/customer-vehicles/update', [CustomerVehicleController::class, 'update'])->name('admin.customer-vehicles.update');
+    Route::delete('/customer-vehicles/delete/{id}', [CustomerVehicleController::class, 'delete'])->name('admin.customer-vehicles.delete');
 
     /*************************Drivers_Routes***************************/
     Route::get('/drivers', [DriverController::class, 'index'])->name('admin.drivers.index');

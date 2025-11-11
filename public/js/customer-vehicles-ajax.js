@@ -1,6 +1,6 @@
 $(document).ready(function() {
-    $('#addNewTransportBtn').on('click', function() {
-        $('#addTransportModal').modal('show');
+    $('#addNewCustomerVehicleBtn').on('click', function() {
+        $('#addCustomerVehicleModal').modal('show');
     });
 
     $('#submitAddForm').on('click', function() {
@@ -13,16 +13,16 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/transports/store',
+            url: '/customer-vehicles/store',
             method: 'POST',
-            data: $('#addTransportForm').serialize(),
+            data: $('#addCustomerVehicleForm').serialize(),
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
                 if (response.success) {
-                    $('#addTransportModal').modal('hide');
+                    $('#addCustomerVehicleModal').modal('hide');
 
                     Swal.fire({
                         icon: 'success',
@@ -45,7 +45,7 @@ $(document).ready(function() {
                 if (xhr.status === 422) {
                     var errors = xhr.responseJSON.errors;
                     $.each(errors, function(key, value) {
-                        // Handle both transport and driver fields
+                        // Handle both customer vehicle and driver fields
                         var fieldId = key;
                         $('#' + fieldId).addClass('is-invalid');
                         $('#' + fieldId + '-error').html(value[0]).show();
@@ -67,25 +67,17 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', '.edit-transport', function() {
-        $('#editTransportForm')[0].reset();
+    $(document).on('click', '.edit-customer-vehicle', function() {
+        $('#editCustomerVehicleForm')[0].reset();
         $('.invalid-feedback').hide();
         $('.is-invalid').removeClass('is-invalid');
 
-        var transport = $(this);
-        $('#editTransportForm #edit_id').val(transport.data('id'));
-        $('#editTransportForm #edit_larry_name').val(transport.data('name'));
-        $('#editTransportForm #edit_driver_id').val(transport.data('driver'));
-        $('#editTransportForm #edit_chamber_dip_one').val(transport.data('chamberDipOne'));
-        $('#editTransportForm #edit_chamber_capacity_one').val(transport.data('chamberCapacityOne'));
-        $('#editTransportForm #edit_chamber_dip_two').val(transport.data('chamberDipTwo'));
-        $('#editTransportForm #edit_chamber_capacity_two').val(transport.data('chamberCapacityTwo'));
-        $('#editTransportForm #edit_chamber_dip_three').val(transport.data('chamberDipThree'));
-        $('#editTransportForm #edit_chamber_capacity_three').val(transport.data('chamberCapacityThree'));
-        $('#editTransportForm #edit_chamber_dip_four').val(transport.data('chamberDipFour'));
-        $('#editTransportForm #edit_chamber_capacity_four').val(transport.data('chamberCapacityFour'));
+        var customerVehicle = $(this);
+        $('#editCustomerVehicleForm #edit_id').val(customerVehicle.data('id'));
+        $('#editCustomerVehicleForm #edit_larry_name').val(customerVehicle.data('name'));
+        $('#editCustomerVehicleForm #edit_customer_id').val(customerVehicle.data('customer'));
 
-        $('#editTransportModal').modal('show');
+        $('#editCustomerVehicleModal').modal('show');
     });
 
     $('#submitEditForm').on('click', function() {
@@ -98,16 +90,16 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/transports/update',
+            url: '/customer-vehicles/update',
             method: 'POST',
-            data: $('#editTransportForm').serialize(),
+            data: $('#editCustomerVehicleForm').serialize(),
             dataType: 'json',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
                 if (response.success) {
-                    $('#editTransportModal').modal('hide');
+                    $('#editCustomerVehicleModal').modal('hide');
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -149,15 +141,15 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', '.delete-transport', function() {
-        var transportId = $(this).data('id');
-        var transportName = $(this).data('name');
-        $('#delete_transport_id').val(transportId);
+    $(document).on('click', '.delete-customer-vehicle', function() {
+        var customerVehicleId = $(this).data('id');
+        var customerVehicleName = $(this).data('name');
+        $('#delete_customer_vehicle_id').val(customerVehicleId);
         $('#deleteModal').modal('show');
     });
 
     $('#confirmDeleteBtn').on('click', function() {
-        var transportId = $('#delete_transport_id').val();
+        var customerVehicleId = $('#delete_customer_vehicle_id').val();
 
         var $btn = $(this);
         $btn.prop('disabled', true);
@@ -165,7 +157,7 @@ $(document).ready(function() {
         $btn.find('.submit-icon').addClass('d-none');
 
         $.ajax({
-            url: '/transports/delete/' + transportId,
+            url: '/customer-vehicles/delete/' + customerVehicleId,
             method: 'DELETE',
             dataType: 'json',
             headers: {
@@ -196,7 +188,7 @@ $(document).ready(function() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'Failed to delete transport. Please try again.',
+                    text: 'Failed to delete customer vehicle. Please try again.',
                     confirmButtonColor: '#4154f1'
                 });
             },

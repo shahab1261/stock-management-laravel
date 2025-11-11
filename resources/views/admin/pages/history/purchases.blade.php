@@ -91,6 +91,7 @@
                                     <th class="text-center">Receipt</th>
                                     <th class="text-center">Comments</th>
                                     <th class="text-center">Rate Adjustment</th>
+                                    <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -129,6 +130,21 @@
                                         </td>
                                         <td>{{ $purchase->comments }}</td>
                                         <td><small>Rs</small> {{ number_format($purchase->rate_adjustment, 2) }}</td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-1">
+                                                @if ($purchase->sold_quantity < 1)
+                                                    @permission('purchase.delete')
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-danger delete-purchase-btn"
+                                                            data-id="{{ $purchase->id }}"
+                                                            data-tank="{{ $purchase->tank ? $purchase->tank->id : '' }}"
+                                                            data-stock="{{ $purchase->stock }}">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    @endpermission
+                                                @endif
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -195,5 +211,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/history-ajax.js') }}?v=1.3"></script>
+<script src="{{ asset('js/history-ajax.js') }}?v=1.7"></script>
 @endpush

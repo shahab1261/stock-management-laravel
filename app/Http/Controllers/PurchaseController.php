@@ -283,6 +283,51 @@ class PurchaseController extends Controller
                 'actual_short_loss_gain' => 'nullable|numeric',
             ]);
 
+            $setting = Settings::first();
+            $purchaseDateRaw = $setting ? $setting->date_lock : null;
+
+            if (!$purchaseDateRaw) {
+                DB::rollBack();
+                $message = 'Invalid purchase date configuration.';
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'invalid-purchase-date',
+                        'message' => $message,
+                    ], 422);
+                }
+                return back()->with('error', $message)->withInput();
+            }
+
+            $latestPurchase = Purchase::where('product_id', $request->product_id)
+                ->orderByDesc('purchase_date')
+                ->first();
+
+            if ($latestPurchase) {
+                // Compare as stored (same format as purchase_date column)
+                if (strcmp($latestPurchase->purchase_date, $purchaseDateRaw) > 0) {
+                    DB::rollBack();
+                    $message = sprintf(
+                        'You cannot add a purchase dated earlier than %s for this product.',
+                        $latestPurchase->purchase_date
+                    );
+
+                    if ($request->ajax()) {
+                        return response()->json([
+                            'success' => false,
+                            'error' => 'purchase-date-out-of-sequence',
+                            'message' => $message,
+                            'latest_purchase_date' => $latestPurchase->purchase_date,
+                        ], 422);
+                    }
+
+                    return back()->with('error', $message)->withInput();
+                }
+            }
+
+            // Keep original saving logic as-is
+            $purchaseDate = Settings::first()->date_lock;
+
             // Check tank capacity
             if ($request->tank_id) {
                 $tank = Tank::find($request->tank_id);
@@ -327,8 +372,6 @@ class PurchaseController extends Controller
                 ]);
             }
 
-
-            $purchaseDate = Settings::first()->date_lock;
 
             $productRate = Product::where('id', $request->product_id)->first()->current_purchase;
             $rates = $productRate * $request->stock;
@@ -690,6 +733,33 @@ class PurchaseController extends Controller
                 'stock' => $productPreviousStock,
                 'stock_date' => $stockDate,
             ]);
+        }
+    }
+
+    /**
+     * Normalize purchase date input to a Carbon instance (start of day).
+     *
+     * @param  mixed  $date
+     * @return \Carbon\Carbon|null
+     */
+    private function normalizePurchaseDate($date): ?Carbon
+    {
+        if (empty($date)) {
+            return null;
+        }
+
+        if ($date instanceof Carbon) {
+            return $date->copy()->startOfDay();
+        }
+
+        try {
+            if (is_string($date) && strpos($date, '/') !== false) {
+                return Carbon::createFromFormat('d/m/Y', $date)->startOfDay();
+            }
+
+            return Carbon::parse($date)->startOfDay();
+        } catch (\Exception $e) {
+            return null;
         }
     }
 }

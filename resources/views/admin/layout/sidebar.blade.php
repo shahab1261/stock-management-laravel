@@ -436,7 +436,7 @@
 
 
             <!-- Management Menu Item -->
-            @if(auth()->user()->hasAnyPermission(['management.customers.view', 'management.banks.view', 'management.tanklari.view', 'management.drivers.view', 'management.employees.view', 'management.expenses.view', 'management.incomes.view', 'management.nozzles.view', 'management.products.view', 'management.tanks.view', 'management.suppliers.view', 'management.terminals.view', 'management.transports.view', 'management.users.view', 'management.settings.view', 'management.date-lock.view']))
+            @if(auth()->user()->hasAnyPermission(['management.customers.view', 'management.banks.view', 'management.tanklari.view', 'management.customer-vehicles.view', 'management.drivers.view', 'management.employees.view', 'management.expenses.view', 'management.incomes.view', 'management.nozzles.view', 'management.products.view', 'management.tanks.view', 'management.suppliers.view', 'management.terminals.view', 'management.transports.view', 'management.users.view', 'management.settings.view', 'management.date-lock.view']))
             <li class="menu-item mb-2" data-name="security">
                 <a href="javascript:void(0)" class="menu-link d-flex align-items-center rounded p-2" onclick="toggleSubmenu('securitySubmenu')">
                     <div class="menu-icon d-flex align-items-center justify-content-center me-3">
@@ -462,6 +462,7 @@
                             </a>
                         </li>
                         @endpermission
+                        @if($softwareType == 1)
                         @permission('management.tanklari.view')
                         <li class="submenu-item mb-2">
                             <a href="{{ route('admin.tanklari.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
@@ -470,6 +471,17 @@
                             </a>
                         </li>
                         @endpermission
+                        @endif
+                        @if($softwareType == 2)
+                        @permission('management.customer-vehicles.view')
+                        <li class="submenu-item mb-2">
+                            <a href="{{ route('admin.customer-vehicles.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                <i class="bi bi-car-front me-2"></i>
+                                <span class="submenu-text">Customer Vehicles</span>
+                            </a>
+                        </li>
+                        @endpermission
+                        @endif
                         @permission('management.drivers.view')
                         <li class="submenu-item mb-2">
                             <a href="{{ route('admin.drivers.index') }}" class="submenu-link d-flex align-items-center rounded p-2">

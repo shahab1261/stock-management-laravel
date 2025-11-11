@@ -204,6 +204,125 @@
                             </table>
                         </div>
                     </div>
+
+                    <!-- Add Driver Toggle -->
+                    <div class="col-12 mt-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="addDriverToggle" style="width: 3em; height: 1.5em;">
+                            <label class="form-check-label fw-medium" for="addDriverToggle" style="margin-left: 13px;">
+                                <i class="bi bi-person-plus me-2"></i>Add Driver
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Driver Form Section (Hidden by default) -->
+                    <div id="driverFormSection" class="d-none">
+                        <div class="col-12">
+                            <hr class="text-muted">
+                            <h5 class="mb-3 text-primary"><i class="bi bi-person-plus me-2"></i>Driver Information</h5>
+                        </div>
+
+                        <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="driver_type" class="form-label fw-medium">Driver Type <span class="text-danger">*</span></label>
+                            <div class="input-group mb-0">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-tag"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="driver_type" name="driver_type" placeholder="Enter driver type">
+                            </div>
+                            <div class="invalid-feedback" id="driver_type-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="driver_name" class="form-label fw-medium">Driver Name <span class="text-danger">*</span></label>
+                            <div class="input-group mb-0">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="driver_name" name="driver_name" placeholder="Enter driver name">
+                            </div>
+                            <div class="invalid-feedback" id="driver_name-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="first_mobile_no" class="form-label fw-medium">Mobile No. <span class="text-danger">*</span></label>
+                            <div class="input-group mb-0">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-telephone"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="first_mobile_no" name="first_mobile_no" placeholder="Enter primary mobile number">
+                            </div>
+                            <div class="invalid-feedback" id="first_mobile_no-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="second_mobile_no" class="form-label fw-medium">Mobile No.2</label>
+                            <div class="input-group mb-0">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-telephone"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="second_mobile_no" name="second_mobile_no" placeholder="Enter secondary mobile number">
+                            </div>
+                            <div class="invalid-feedback" id="second_mobile_no-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="cnic" class="form-label fw-medium">CNIC No <span class="text-danger">*</span></label>
+                            <div class="input-group mb-0">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-card-text"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="cnic" name="cnic" placeholder="Enter CNIC number">
+                            </div>
+                            <div class="invalid-feedback" id="cnic-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="vehicle_no" class="form-label fw-medium">Vehicle No <span class="text-danger">*</span></label>
+                            <div class="input-group mb-0">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-truck"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="vehicle_no" name="vehicle_no" placeholder="Enter vehicle number">
+                            </div>
+                            <div class="invalid-feedback" id="vehicle_no-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="city" class="form-label fw-medium">City <span class="text-danger">*</span></label>
+                            <div class="input-group mb-0">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-geo-alt"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="city" name="city" placeholder="Enter city">
+                            </div>
+                            <div class="invalid-feedback" id="city-error"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="address" class="form-label fw-medium">Address</label>
+                            <div class="input-group mb-0">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-house"></i>
+                                </span>
+                                <textarea class="form-control border-start-0" id="address" name="address" rows="1" placeholder="Enter address"></textarea>
+                            </div>
+                            <div class="invalid-feedback" id="address-error"></div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="reference" class="form-label fw-medium">Reference</label>
+                            <div class="input-group mb-0">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-journal-text"></i>
+                                </span>
+                                <textarea class="form-control border-start-0" id="reference" name="reference" rows="2" placeholder="Enter reference details"></textarea>
+                            </div>
+                            <div class="invalid-feedback" id="reference-error"></div>
+                        </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer bg-light border-0">
@@ -442,6 +561,37 @@
             lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
             pageLength: 10,
             order: [[0, 'asc']],
+        });
+
+        // Handle Add Driver Toggle
+        $('#addDriverToggle').on('change', function() {
+            if ($(this).is(':checked')) {
+                $('#driverFormSection').removeClass('d-none');
+                $('#driver_id').prop('required', false).val('');
+                $('#driver_id').closest('.col-md-6').addClass('d-none');
+            } else {
+                $('#driverFormSection').addClass('d-none');
+                $('#driver_id').prop('required', true);
+                $('#driver_id').closest('.col-md-6').removeClass('d-none');
+                // Clear driver form fields
+                $('#driverFormSection input, #driverFormSection textarea').val('');
+                $('#driverFormSection .invalid-feedback').hide();
+                $('#driverFormSection .is-invalid').removeClass('is-invalid');
+            }
+        });
+
+        // Reset form when modal is closed
+        $('#addTransportModal').on('hidden.bs.modal', function() {
+            $('#addTransportForm')[0].reset();
+            $('#addDriverToggle').prop('checked', false);
+            $('#driverFormSection').addClass('d-none');
+            $('#driver_id').prop('required', true).val('');
+            $('#driver_id').closest('.col-md-6').removeClass('d-none');
+            $('#driverFormSection input, #driverFormSection textarea').val('');
+            $('#addTransportForm .invalid-feedback').hide();
+            $('#addTransportForm .is-invalid').removeClass('is-invalid');
+            $('#driverFormSection .invalid-feedback').hide();
+            $('#driverFormSection .is-invalid').removeClass('is-invalid');
         });
     });
 </script>

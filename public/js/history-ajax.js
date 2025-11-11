@@ -169,6 +169,79 @@ $(document).ready(function () {
         });
     });
 
+    // Handle delete purchase button (history page)
+    $(document).on('click', '.delete-purchase-btn', function(e) {
+        e.preventDefault();
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        var purchaseId = $(this).data('id');
+        var tankId = $(this).data('tank');
+        var purchasedStock = $(this).data('stock');
+        if (!purchaseId) {
+            showError('Purchase ID not found');
+            return;
+        }
+        confirmDelete(function() {
+            $.ajax({
+                url: '/purchases/delete',
+                type: 'POST',
+                data: {
+                    _token: csrfToken,
+                    purchase_id: purchaseId,
+                    tank_id: tankId,
+                    purchasedstock: purchasedStock
+                },
+                headers: { 'X-CSRF-TOKEN': csrfToken },
+                success: function(resp) {
+                    // Controller returns "true"/"false" as string
+                    if ((typeof resp === 'string' && resp.trim() === 'true') || (resp && resp.success === true)) {
+                        showSuccess('Purchase deleted successfully');
+                        setTimeout(function(){ location.reload(); }, 800);
+                    } else {
+                        showError('Failed to delete purchase, please try again');
+                    }
+                },
+                error: function() {
+                    showError('Failed to delete purchase, please try again');
+                }
+            });
+        });
+    });
+
+    // Handle delete payment/receipt transaction (history pages)
+    $(document).on('click', '.delete-btn', function(e) {
+        e.preventDefault();
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        var transactionId = $(this).data('id');
+        var ledgerType = $(this).data('ledger-type');
+        if (!transactionId || ledgerType === undefined) {
+            showError('Missing transaction info');
+            return;
+        }
+        confirmDelete(function() {
+            $.ajax({
+                url: '/payments/transaction/delete',
+                type: 'DELETE',
+                data: {
+                    _token: csrfToken,
+                    transaction_id: transactionId,
+                    ledger_purchase_type: ledgerType
+                },
+                headers: { 'X-CSRF-TOKEN': csrfToken },
+                success: function(resp) {
+                    if (resp && resp.success) {
+                        showSuccess(resp.message || 'Transaction deleted successfully');
+                        setTimeout(function(){ location.reload(); }, 800);
+                    } else {
+                        showError((resp && resp.message) ? resp.message : 'Failed to delete transaction, please try again');
+                    }
+                },
+                error: function() {
+                    showError('Failed to delete transaction, please try again');
+                }
+            });
+        });
+    });
+
     // Date filter functionality
     $("#start_date, #end_date").on("change", function () {
         var startDate = $("#start_date").val();

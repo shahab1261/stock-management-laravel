@@ -317,7 +317,7 @@
 </style>
 
 @push('scripts')
-<script src="{{ asset('js/wet-stock.js') }}?v=1.3"></script>
+<script src="{{ asset('js/wet-stock.js') }}?v=1.7"></script>
 <script>
     $(document).ready(function() {
         $('#wetStockTable').DataTable({

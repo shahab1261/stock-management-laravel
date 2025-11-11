@@ -113,6 +113,18 @@ class SalesController extends Controller
                 'selected_tank' => 'required|integer',
             ]);
 
+            $lockDate = \App\Models\Management\Settings::first()->date_lock ?? date('Y-m-d');
+            $latestSale = \App\Models\Sales::where('product_id', $request->product_id)
+                ->orderByDesc('create_date')
+                ->first();
+            if ($latestSale && strcmp($latestSale->create_date, $lockDate) > 0) {
+                DB::rollBack();
+                $message = "You cannot add a sale dated earlier than {$latestSale->create_date} for this product.";
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'error' => 'sale-date-out-of-sequence', 'message' => $message], 422);
+                }
+                return back()->with('error', $message)->withInput();
+            }
             // Check tank stock availability
             $tank = Tank::find($request->selected_tank);
             if (!$tank) {
