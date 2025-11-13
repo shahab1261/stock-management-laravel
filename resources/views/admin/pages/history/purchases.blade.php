@@ -101,6 +101,7 @@
                                         <td>{{ date('d-m-Y', strtotime($purchase->purchase_date)) }}</td>
                                         <td>
                                             {{ $purchase->vendor->vendor_name }}
+                                            <span class="badge bg-secondary ms-2">{{ $purchase->vendor->vendor_type }}</span>
                                         </td>
                                         <td>
                                             {{ $purchase->product ? $purchase->product->name : 'Not found / deleted' }}

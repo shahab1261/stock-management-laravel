@@ -101,7 +101,7 @@
                                         <td>{{ date('d-m-Y', strtotime($sale->create_date)) }}</td>
                                         <td>
                                             {{ $sale->vendor->vendor_name }}
-                                            <span class="badge bg-secondary">{{ $sale->vendor->vendor_type }}</span>
+                                            <span class="badge bg-secondary ms-2">{{ $sale->vendor->vendor_type }}</span>
                                         </td>
                                         <td>
                                             {{ $sale->product ? $sale->product->name : 'Not found / deleted' }}

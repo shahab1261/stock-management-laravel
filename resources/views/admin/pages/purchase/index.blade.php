@@ -89,7 +89,10 @@
                                                     $tankName = \App\Models\Management\Tank::find($purchase->tank_id)
                                                         ->tank_name;
                                                 @endphp
-                                                <td class="ps-3 text-start">{{ $vendor->vendor_name }}</td>
+                                                <td class="ps-3 text-start">
+                                                    {{ $vendor->vendor_name }}
+                                                    <span class="badge bg-secondary ms-2">{{ $vendor->vendor_type }}</span>
+                                                </td>
                                                 <td class="ps-3 text-start">{{ $productName }}</td>
                                                 <td class="ps-3 text-start">{{ $tankLorry ?? 'Not Found' }}</td>
                                                 <td class="ps-3 text-start">

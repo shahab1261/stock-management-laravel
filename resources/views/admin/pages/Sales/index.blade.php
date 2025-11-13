@@ -79,7 +79,8 @@
                                         $tankName = \App\Models\Management\Tank::find($sale->tank_id)->tank_name;
                                     @endphp
                                     <td class="ps-3 text-start">
-                                        <span class="badge bg-primary">{{ $vendor->vendor_type }}</span>
+                                        {{ $vendor->vendor_name }}
+                                        <span class="badge bg-secondary ms-2">{{ $vendor->vendor_type }}</span>
                                     </td>
                                     <td class="ps-3 text-start">{{ $productName }}</td>
                                     <td class="ps-3 text-start">
