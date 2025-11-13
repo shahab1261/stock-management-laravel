@@ -87,6 +87,8 @@ Route::middleware('admin')->group(function () {
     Route::post('/customer-vehicles/update', [CustomerVehicleController::class, 'update'])->name('admin.customer-vehicles.update');
     Route::delete('/customer-vehicles/delete/{id}', [CustomerVehicleController::class, 'delete'])->name('admin.customer-vehicles.delete');
 
+
+
     /*************************Drivers_Routes***************************/
     Route::get('/drivers', [DriverController::class, 'index'])->name('admin.drivers.index');
     Route::post('/drivers/store', [DriverController::class, 'store'])->name('admin.drivers.store');
@@ -185,6 +187,8 @@ Route::middleware('admin')->group(function () {
     Route::post('/sales', [SalesController::class, 'store'])->name('sales.store');
     Route::get('/sales/create', [SalesController::class, 'create'])->name('sales.create');
     Route::post('/sales/delete', [SalesController::class, 'delete'])->name('sales.delete');
+    Route::get('/sales/{id}/edit-vendor', [SalesController::class, 'editVendor'])->name('sales.edit-vendor');
+    Route::post('/sales/{id}/update-vendor', [SalesController::class, 'updateVendor'])->name('sales.update-vendor');
     Route::post('/product/tank/update', [SalesController::class, 'productTankUpdate'])->name('sales.product.tank.update');
 
     // Nozzle Sales
@@ -192,6 +196,8 @@ Route::middleware('admin')->group(function () {
     Route::post('/sales/nozzle/precheck', [App\Http\Controllers\NozzleSalesController::class, 'precheck'])->name('sales.nozzle.precheck');
     Route::post('/sales/nozzle/product-nozzles', [App\Http\Controllers\NozzleSalesController::class, 'productNozzles'])->name('sales.nozzle.product_nozzles');
     Route::post('/sales/nozzle/store', [App\Http\Controllers\NozzleSalesController::class, 'store'])->name('sales.nozzle.store');
+    Route::get('/sales/nozzle/{id}/edit-vendor', [App\Http\Controllers\NozzleSalesController::class, 'editVendor'])->name('sales.nozzle.edit-vendor');
+    Route::post('/sales/nozzle/{id}/update-vendor', [App\Http\Controllers\NozzleSalesController::class, 'updateVendor'])->name('sales.nozzle.update-vendor');
     Route::delete('/sales/{id}', [App\Http\Controllers\NozzleSalesController::class, 'deleteSale'])->name('sales.destroy');
 
     // Lubricant (General) Sales
@@ -205,6 +211,8 @@ Route::middleware('admin')->group(function () {
     Route::post('/sales/credit/tanks', [App\Http\Controllers\CreditSalesController::class, 'getTanksByProduct'])->name('sales.credit.tanks');
     Route::post('/sales/credit/product-rate', [App\Http\Controllers\CreditSalesController::class, 'getProductRate'])->name('sales.credit.product_rate');
     Route::post('/sales/credit/customer-vehicles', [App\Http\Controllers\CreditSalesController::class, 'getCustomerVehicles'])->name('sales.credit.customer_vehicles');
+    Route::get('/sales/credit/{id}/edit-vendor', [App\Http\Controllers\CreditSalesController::class, 'editVendor'])->name('sales.credit.edit-vendor');
+    Route::post('/sales/credit/{id}/update-vendor', [App\Http\Controllers\CreditSalesController::class, 'updateVendor'])->name('sales.credit.update-vendor');
     Route::post('/sales/credit/delete', [App\Http\Controllers\CreditSalesController::class, 'delete'])->name('sales.credit.delete');
 
         /*************************Daybook_Routes***************************/
@@ -214,18 +222,26 @@ Route::middleware('admin')->group(function () {
     // Bank Receiving Routes
     Route::get('/payments/bank-receiving', [App\Http\Controllers\PaymentController::class, 'bankReceiving'])->name('admin.payments.bank-receiving');
     Route::post('/payments/bank-receiving/store', [App\Http\Controllers\PaymentController::class, 'storeBankReceiving'])->name('admin.payments.bank-receiving.store');
+    Route::get('/payments/bank-receiving/{id}/edit-vendor', [App\Http\Controllers\PaymentController::class, 'editBankReceivingVendor'])->name('payments.bank-receiving.edit-vendor');
+    Route::post('/payments/bank-receiving/{id}/update-vendor', [App\Http\Controllers\PaymentController::class, 'updateBankReceivingVendor'])->name('payments.bank-receiving.update-vendor');
 
     // Bank Payments Routes
     Route::get('/payments/bank-payments', [App\Http\Controllers\PaymentController::class, 'bankPayments'])->name('admin.payments.bank-payments');
     Route::post('/payments/bank-payments/store', [App\Http\Controllers\PaymentController::class, 'storeBankPayment'])->name('admin.payments.bank-payments.store');
+    Route::get('/payments/bank-payments/{id}/edit-vendor', [App\Http\Controllers\PaymentController::class, 'editBankPaymentVendor'])->name('payments.bank-payments.edit-vendor');
+    Route::post('/payments/bank-payments/{id}/update-vendor', [App\Http\Controllers\PaymentController::class, 'updateBankPaymentVendor'])->name('payments.bank-payments.update-vendor');
 
     // Cash Receiving Routes
     Route::get('/payments/cash-receiving', [App\Http\Controllers\PaymentController::class, 'cashReceiving'])->name('admin.payments.cash-receiving');
     Route::post('/payments/cash-receiving/store', [App\Http\Controllers\PaymentController::class, 'storeCashReceiving'])->name('admin.payments.cash-receiving.store');
+    Route::get('/payments/cash-receiving/{id}/edit-vendor', [App\Http\Controllers\PaymentController::class, 'editCashReceivingVendor'])->name('payments.cash-receiving.edit-vendor');
+    Route::post('/payments/cash-receiving/{id}/update-vendor', [App\Http\Controllers\PaymentController::class, 'updateCashReceivingVendor'])->name('payments.cash-receiving.update-vendor');
 
     // Cash Payments Routes
     Route::get('/payments/cash-payments', [App\Http\Controllers\PaymentController::class, 'cashPayments'])->name('admin.payments.cash-payments');
     Route::post('/payments/cash-payments/store', [App\Http\Controllers\PaymentController::class, 'storeCashPayment'])->name('admin.payments.cash-payments.store');
+    Route::get('/payments/cash-payments/{id}/edit-vendor', [App\Http\Controllers\PaymentController::class, 'editCashPaymentVendor'])->name('payments.cash-payments.edit-vendor');
+    Route::post('/payments/cash-payments/{id}/update-vendor', [App\Http\Controllers\PaymentController::class, 'updateCashPaymentVendor'])->name('payments.cash-payments.update-vendor');
 
     // Delete Transaction Route
     Route::delete('/payments/transaction/delete', [App\Http\Controllers\PaymentController::class, 'deleteTransaction'])->name('admin.payments.transaction.delete');
@@ -246,6 +262,8 @@ Route::middleware('admin')->group(function () {
     Route::delete('/journal/delete/{id}', [JournalController::class, 'destroy'])->name('admin.journal.destroy');
     Route::get('/journal/vendors', [JournalController::class, 'getVendorsByType'])->name('admin.journal.vendors');
     Route::get('/journal/voucher-details/{id}', [JournalController::class, 'getVoucherDetails'])->name('admin.journal.voucher-details');
+    Route::get('/journal/{id}/edit-vendor', [JournalController::class, 'editVendor'])->name('journal.edit-vendor');
+    Route::post('/journal/{id}/update-vendor', [JournalController::class, 'updateVendor'])->name('journal.update-vendor');
 
     /*************************Trial_Balance_Routes***************************/
     Route::get('/trial-balance', [TrialBalanceController::class, 'index'])->name('admin.trial-balance.index');
@@ -310,15 +328,33 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-Route::get('/run-datelock-seeder', function () {
-    Artisan::call('db:seed', [
-        '--class' => 'NewPermissionsSeeder',
-        '--force' => true,
-    ]);
-    Artisan::call('db:seed', [
-        '--class' => 'RolePermissionSeeder',
-        '--force' => true,
-    ]);
+// Route::get('/run-datelock-seeder', function () {
+//     Artisan::call('db:seed', [
+//         '--class' => 'NewPermissionsSeeder',
+//         '--force' => true,
+//     ]);
+//     Artisan::call('db:seed', [
+//         '--class' => 'RolePermissionSeeder',
+//         '--force' => true,
+//     ]);
 
-    return "DateLockPermissionsSeeder has been run.";
-});
+//     return "DateLockPermissionsSeeder has been run.";
+// });
+
+    /*************************Seeder_Routes_For_Live***************************/
+    Route::get('/run-permissions-seeder', function() {
+        try {
+            // Run the seeder
+            \Illuminate\Support\Facades\Artisan::call('db:seed', [
+                '--class' => 'RolePermissionSeeder'
+            ]);
+
+            // Clear permission cache
+            \Illuminate\Support\Facades\Artisan::call('permission:cache-reset');
+
+             return "PermissionsSeeder has been run.";
+
+        } catch (\Exception $e) {
+            return "Error";
+        }
+    })->name('admin.run-permissions-seeder');

@@ -442,7 +442,7 @@
 </style>
 
 @push('scripts')
-<script src="{{ asset('js/profit.js') }}?v=1.7"></script>
+<script src="{{ asset('js/profit.js') }}?v=1.9"></script>
 <script>
     $(document).ready(function() {
         $('#profitTable').DataTable({

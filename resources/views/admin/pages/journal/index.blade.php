@@ -126,12 +126,21 @@
                                     </td>
                                     <td>{{ $entry->description }}</td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-danger delete-btn p-2"
-                                                data-id="{{ $entry->id }}"
-                                                data-voucher-id="{{ $entry->voucher_id }}"
-                                                title="Delete Voucher">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            @permission('journal.edit')
+                                                <a href="{{ route('journal.edit-vendor', $entry->id) }}" 
+                                                   class="btn btn-sm btn-warning p-2" 
+                                                   title="Edit Vendor">
+                                                    <i class="bi bi-person-gear"></i>
+                                                </a>
+                                            @endpermission
+                                            <button class="btn btn-sm btn-outline-danger delete-btn p-2"
+                                                    data-id="{{ $entry->id }}"
+                                                    data-voucher-id="{{ $entry->voucher_id }}"
+                                                    title="Delete Voucher">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach

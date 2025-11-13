@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sales;
 use App\Models\Purchase;
+use App\Models\CreditSales;
 use App\Models\Transaction;
 use App\Models\JournalEntry;
 use App\Models\Management\Banks;
@@ -179,10 +180,10 @@ class AccountHistoryController extends Controller
      */
     private function getCreditSales($vendorId = '', $startDate = '', $endDate = '', $vendorType = '')
     {
-        $query = DB::table('credit_sales');
+        $query = CreditSales::with(['product', 'vehicle']);
 
         if (!empty($startDate) && !empty($endDate)) {
-            $query->whereBetween(DB::raw('DATE(transasction_date)'), [$startDate, $endDate]);
+            $query->whereBetween('transasction_date', [$startDate, $endDate]);
         }
 
         if (!empty($vendorId) && !empty($vendorType)) {

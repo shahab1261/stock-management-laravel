@@ -70,6 +70,7 @@
                                     <th class="text-center">Entry Type</th>
                                     <th class="text-center">Amount</th>
                                     <th class="text-center">Description</th>
+                                    <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,6 +87,17 @@
                                         </td>
                                         <td>Rs {{ number_format($journal->amount, 0, '', ',') }}</td>
                                         <td>{{ $journal->description }}</td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-1">
+                                                @permission('journal.edit')
+                                                    <a href="{{ route('journal.edit-vendor', $journal->id) }}"
+                                                       class="btn btn-sm btn-warning p-2"
+                                                       title="Edit Vendor">
+                                                        <i class="bi bi-person-gear"></i>
+                                                    </a>
+                                                @endpermission
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -93,6 +105,7 @@
                                 <tr>
                                     <th colspan="4" class="text-end">Total:</th>
                                     <th class="text-center">Rs {{ number_format($journalTotals->total_amount, 0, '', ',') }}</th>
+                                    <th>-</th>
                                     <th>-</th>
                                 </tr>
                             </tfoot>
@@ -108,5 +121,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/history-ajax.js') }}?v=1.7"></script>
+<script src="{{ asset('js/history-ajax.js') }}?v=1.9"></script>
 @endpush

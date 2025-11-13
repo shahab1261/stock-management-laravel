@@ -111,6 +111,13 @@
                                     <td class="fw-medium text-success">Rs {{ number_format($transaction->amount, 2) }}</td>
                                     <td>{{ $transaction->description }}</td>
                                     <td class="text-center">
+                                        @permission('payments.cash-receiving.edit')
+                                            <a href="{{ route('payments.cash-receiving.edit-vendor', $transaction->tid) }}" 
+                                               class="btn btn-sm btn-outline-primary me-1" 
+                                               title="Edit Vendor">
+                                                <i class="bi bi-person-gear"></i>
+                                            </a>
+                                        @endpermission
                                         @permission('payments.transaction.delete')
                                             @php
                                                 $ledgerPurchaseType = app('App\\Http\\Controllers\\PaymentController')->getLedgerPurchaseType($transaction->transaction_type, $transaction->payment_type);

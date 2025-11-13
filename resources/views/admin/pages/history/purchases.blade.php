@@ -101,7 +101,6 @@
                                         <td>{{ date('d-m-Y', strtotime($purchase->purchase_date)) }}</td>
                                         <td>
                                             {{ $purchase->vendor->vendor_name }}
-                                            <span class="badge bg-secondary">{{ $purchase->vendor->vendor_type }}</span>
                                         </td>
                                         <td>
                                             {{ $purchase->product ? $purchase->product->name : 'Not found / deleted' }}
@@ -132,6 +131,15 @@
                                         <td><small>Rs</small> {{ number_format($purchase->rate_adjustment, 2) }}</td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-1">
+                                                <button type="button" class="btn btn-sm btn-primary show-chambers-btn"
+                                                    data-id="{{ $purchase->id }}" data-name>
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                                @permission('purchase.edit')
+                                                    <a href="{{ route('purchase.edit-vendor', $purchase->id) }}" class="btn btn-sm btn-warning">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
+                                                @endpermission
                                                 @if ($purchase->sold_quantity < 1)
                                                     @permission('purchase.delete')
                                                         <button type="button"
@@ -211,5 +219,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/history-ajax.js') }}?v=1.7"></script>
+<script src="{{ asset('js/history-ajax.js') }}?v=1.9"></script>
 @endpush

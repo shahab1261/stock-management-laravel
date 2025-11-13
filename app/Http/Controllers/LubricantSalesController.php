@@ -96,7 +96,7 @@ class LubricantSalesController extends Controller
                 ->first();
             if ($latestSale && strcmp($latestSale->create_date, $lockDate) > 0) {
                 DB::rollBack();
-                $message = "You cannot add a sale dated earlier than {$latestSale->create_date} for this product.";
+                $message = "You cannot sale of this date because a sale already recorded of future date.";
                 return response()->json([
                     'success' => false,
                     'error' => 'sale-date-out-of-sequence',

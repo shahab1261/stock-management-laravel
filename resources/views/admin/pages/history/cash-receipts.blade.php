@@ -88,17 +88,26 @@
                                         <td>Rs {{ number_format($transaction->amount, 0, '', ',') }}</td>
                                         <td>{{ $transaction->description }}</td>
                                         <td class="text-center">
-                                            @permission('payments.transaction.delete')
-                                                @php
-                                                    $ledgerPurchaseType = app('App\\Http\\Controllers\\PaymentController')->getLedgerPurchaseType($transaction->transaction_type, $transaction->payment_type);
-                                                @endphp
-                                                <button class="btn btn-sm btn-outline-danger delete-btn"
-                                                    data-id="{{ $transaction->id }}"
-                                                    data-ledger-type="{{ $ledgerPurchaseType }}"
-                                                    title="Delete">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            @endpermission
+                                            <div class="d-flex justify-content-center gap-1">
+                                                @permission('payments.cash-receiving.edit')
+                                                    <a href="{{ route('payments.cash-receiving.edit-vendor', $transaction->id) }}"
+                                                       class="btn btn-sm btn-outline-primary me-1"
+                                                       title="Edit Vendor">
+                                                        <i class="bi bi-person-gear"></i>
+                                                    </a>
+                                                @endpermission
+                                                @permission('payments.transaction.delete')
+                                                    @php
+                                                        $ledgerPurchaseType = app('App\\Http\\Controllers\\PaymentController')->getLedgerPurchaseType($transaction->transaction_type, $transaction->payment_type);
+                                                    @endphp
+                                                    <button class="btn btn-sm btn-outline-danger delete-btn"
+                                                        data-id="{{ $transaction->id }}"
+                                                        data-ledger-type="{{ $ledgerPurchaseType }}"
+                                                        title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                @endpermission
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -122,5 +131,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/history-ajax.js') }}?v=1.7"></script>
+<script src="{{ asset('js/history-ajax.js') }}?v=1.9"></script>
 @endpush

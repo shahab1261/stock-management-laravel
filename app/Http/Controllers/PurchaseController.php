@@ -178,7 +178,7 @@ class PurchaseController extends Controller
                 'user_id' => Auth::id(),
                 'action_type' => 'Update',
                 'action_description' => 'Updated purchase vendor: Purchase ID ' . $purchase->id .
-                    ' | From ' . ($oldVendor->vendor_name ?? 'N/A') . ' (' . ($oldVendor->vendor_type ?? '-') . ')' .
+                    ' | Vendor changed from ' . ($oldVendor->vendor_name ?? 'N/A') . ' (' . ($oldVendor->vendor_type ?? '-') . ')' .
                     ' To ' . ($newVendor->vendor_name ?? 'N/A') . ' (' . ($newVendor->vendor_type ?? '-') . ')',
             ]);
 
@@ -304,13 +304,9 @@ class PurchaseController extends Controller
                 ->first();
 
             if ($latestPurchase) {
-                // Compare as stored (same format as purchase_date column)
                 if (strcmp($latestPurchase->purchase_date, $purchaseDateRaw) > 0) {
                     DB::rollBack();
-                    $message = sprintf(
-                        'You cannot add a purchase dated earlier than %s for this product.',
-                        $latestPurchase->purchase_date
-                    );
+                    $message = 'You cannot purchase of this date because a purchase already recorded of future date.';
 
                     if ($request->ajax()) {
                         return response()->json([

@@ -254,5 +254,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/daybook-ajax.js') }}?v=1.7"></script>
+<script src="{{ asset('js/daybook-ajax.js') }}?v=1.9"></script>
 @endpush

@@ -485,7 +485,7 @@
                                                                 <tr>
                                                                     <td class="text-center">{{ $creditSale->id }}</td>
                                                                     <td class="text-center">{{ date('d-m-Y', strtotime($creditSale->transasction_date)) }}</td>
-                                                                    <td class="text-center">{{ $creditSale->product_id ?? 'Unknown' }}</td>
+                                                                    <td class="text-center">{{ $creditSale->product->name ?? 'Unknown' }}</td>
                                                                     <td class="text-center">{{ number_format($creditSale->quantity, 2) }} <small class="text-muted">ltr</small></td>
                                                                     <td class="text-center">Rs {{ number_format($creditSale->rate, 2) }}</td>
                                                                     <td class="text-center">Rs {{ number_format($creditSale->amount) }}</td>
@@ -799,5 +799,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/account-history.js') }}?v=1.7"></script>
+<script src="{{ asset('js/account-history.js') }}?v=1.9"></script>
 @endpush

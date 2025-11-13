@@ -25,12 +25,16 @@ class PaymentController extends Controller
     {
         $this->middleware('permission:payments.bank-receiving.view')->only(['bankReceiving']);
         $this->middleware('permission:payments.bank-receiving.create')->only(['storeBankReceiving']);
+        $this->middleware('permission:payments.bank-receiving.edit')->only(['editBankReceivingVendor', 'updateBankReceivingVendor']);
         $this->middleware('permission:payments.bank-payments.view')->only(['bankPayments']);
         $this->middleware('permission:payments.bank-payments.create')->only(['storeBankPayment']);
+        $this->middleware('permission:payments.bank-payments.edit')->only(['editBankPaymentVendor', 'updateBankPaymentVendor']);
         $this->middleware('permission:payments.cash-receiving.view')->only(['cashReceiving']);
         $this->middleware('permission:payments.cash-receiving.create')->only(['storeCashReceiving']);
+        $this->middleware('permission:payments.cash-receiving.edit')->only(['editCashReceivingVendor', 'updateCashReceivingVendor']);
         $this->middleware('permission:payments.cash-payments.view')->only(['cashPayments']);
         $this->middleware('permission:payments.cash-payments.create')->only(['storeCashPayment']);
+        $this->middleware('permission:payments.cash-payments.edit')->only(['editCashPaymentVendor', 'updateCashPaymentVendor']);
         $this->middleware('permission:payments.transaction.delete')->only(['deleteTransaction']);
     }
     /**
@@ -613,6 +617,426 @@ class PaymentController extends Controller
         } catch (Exception $e) {
             DB::rollback();
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Edit Cash Receiving Vendor
+     */
+    public function editCashReceivingVendor($id)
+    {
+        $transaction = Transaction::where('tid', $id)->firstOrFail();
+
+        // Get all vendors for dropdown
+        $suppliers = Suppliers::where('status', 1)->get();
+        $customers = Customers::where('status', 1)->get();
+        $employees = User::where('user_type','Employee')->get();
+        $banks = Banks::all();
+        $products = Product::all();
+        $expenses = Expenses::all();
+        $incomes = Incomes::all();
+
+        return view('admin.pages.payments.edit-vendor-cash-receiving', compact(
+            'transaction', 'suppliers', 'customers', 'employees', 'banks', 'products', 'expenses', 'incomes'
+        ));
+    }
+
+    /**
+     * Update Cash Receiving Vendor
+     */
+    public function updateCashReceivingVendor(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'vendor_id' => 'required',
+                'vendor_data_type' => 'required|integer|min:1|max:9'
+            ]);
+
+            $vendorId = $request->vendor_id;
+            $vendorType = $request->vendor_data_type;
+
+            // Validate vendor exists for the given type
+            $vendor = $this->getVendorByType($vendorType, $vendorId);
+            if (!$vendor || !$vendor->vendor_name) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Selected vendor not found'
+                ], 400);
+            }
+
+            DB::beginTransaction();
+
+            $transaction = Transaction::where('tid', $id)->firstOrFail();
+
+            // Store old vendor info for logging
+            $oldVendorId = $transaction->vendor_id;
+            $oldVendorType = $transaction->vendor_type;
+
+            // Update transaction record
+            $transaction->vendor_id = $vendorId;
+            $transaction->vendor_type = $vendorType;
+            $transaction->vendor_name = $vendor->vendor_name;
+            $transaction->save();
+
+            // Update vendor on related ledger entries for this transaction
+            // Cash receiving has ledger entries with purchase_type = 8
+            Ledger::where('purchase_type', 8)
+                ->where('transaction_id', $transaction->tid)
+                ->where('transaction_type', 1) // credit side for vendor
+                ->update([
+                    'vendor_type' => $vendorType,
+                    'vendor_id' => $vendorId,
+                ]);
+
+            DB::commit();
+
+            // Log the change
+            $oldVendor = $this->getVendorByType($oldVendorType, $oldVendorId);
+            $newVendor = $this->getVendorByType($vendorType, $vendorId);
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => 'Updated cash receiving vendor: Transaction ID ' . $transaction->tid .
+                    ' | Vendor changed from ' . ($oldVendor->vendor_name ?? 'N/A') . ' (' . ($oldVendor->vendor_type ?? '-') . ')' .
+                    ' To ' . ($newVendor->vendor_name ?? 'N/A') . ' (' . ($newVendor->vendor_type ?? '-') . ')',
+            ]);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Vendor updated successfully',
+                    'redirect' => route('admin.payments.cash-receiving')
+                ], 200);
+            }
+
+            return redirect()->route('admin.payments.cash-receiving')->with('success', 'Vendor updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error updating vendor: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Error updating vendor: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Edit Cash Payment Vendor
+     */
+    public function editCashPaymentVendor($id)
+    {
+        $transaction = Transaction::where('tid', $id)->firstOrFail();
+
+        // Get all vendors for dropdown
+        $suppliers = Suppliers::where('status', 1)->get();
+        $customers = Customers::where('status', 1)->get();
+        $employees = User::where('user_type','Employee')->get();
+        $banks = Banks::all();
+        $products = Product::all();
+        $expenses = Expenses::all();
+        $incomes = Incomes::all();
+
+        return view('admin.pages.payments.edit-vendor-cash-payment', compact(
+            'transaction', 'suppliers', 'customers', 'employees', 'banks', 'products', 'expenses', 'incomes'
+        ));
+    }
+
+    /**
+     * Update Cash Payment Vendor
+     */
+    public function updateCashPaymentVendor(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'vendor_id' => 'required',
+                'vendor_data_type' => 'required|integer|min:1|max:9'
+            ]);
+
+            $vendorId = $request->vendor_id;
+            $vendorType = $request->vendor_data_type;
+
+            // Validate vendor exists for the given type
+            $vendor = $this->getVendorByType($vendorType, $vendorId);
+            if (!$vendor || !$vendor->vendor_name) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Selected vendor not found'
+                ], 400);
+            }
+
+            DB::beginTransaction();
+
+            $transaction = Transaction::where('tid', $id)->firstOrFail();
+
+            // Store old vendor info for logging
+            $oldVendorId = $transaction->vendor_id;
+            $oldVendorType = $transaction->vendor_type;
+
+            // Update transaction record
+            $transaction->vendor_id = $vendorId;
+            $transaction->vendor_type = $vendorType;
+            $transaction->vendor_name = $vendor->vendor_name;
+            $transaction->save();
+
+            // Update vendor on related ledger entries for this transaction
+            // Cash payment has ledger entries with purchase_type = 9
+            Ledger::where('purchase_type', 9)
+                ->where('transaction_id', $transaction->tid)
+                ->where('transaction_type', 2) // debit side for vendor
+                ->update([
+                    'vendor_type' => $vendorType,
+                    'vendor_id' => $vendorId,
+                ]);
+
+            DB::commit();
+
+            // Log the change
+            $oldVendor = $this->getVendorByType($oldVendorType, $oldVendorId);
+            $newVendor = $this->getVendorByType($vendorType, $vendorId);
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => 'Updated cash payment vendor: Transaction ID ' . $transaction->tid .
+                    ' | Vendor changed from ' . ($oldVendor->vendor_name ?? 'N/A') . ' (' . ($oldVendor->vendor_type ?? '-') . ')' .
+                    ' To ' . ($newVendor->vendor_name ?? 'N/A') . ' (' . ($newVendor->vendor_type ?? '-') . ')',
+            ]);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Vendor updated successfully',
+                    'redirect' => route('admin.payments.cash-payments')
+                ], 200);
+            }
+
+            return redirect()->route('admin.payments.cash-payments')->with('success', 'Vendor updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error updating vendor: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Error updating vendor: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Edit Bank Receiving Vendor
+     */
+    public function editBankReceivingVendor($id)
+    {
+        $transaction = Transaction::where('tid', $id)->firstOrFail();
+
+        // Get all vendors for dropdown
+        $suppliers = Suppliers::where('status', 1)->get();
+        $customers = Customers::where('status', 1)->get();
+        $employees = User::where('user_type','Employee')->get();
+        $banks = Banks::all();
+        $products = Product::all();
+        $expenses = Expenses::all();
+        $incomes = Incomes::all();
+
+        return view('admin.pages.payments.edit-vendor-bank-receiving', compact(
+            'transaction', 'suppliers', 'customers', 'employees', 'banks', 'products', 'expenses', 'incomes'
+        ));
+    }
+
+    /**
+     * Update Bank Receiving Vendor
+     */
+    public function updateBankReceivingVendor(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'vendor_id' => 'required',
+                'vendor_data_type' => 'required|integer|min:1|max:9'
+            ]);
+
+            $vendorId = $request->vendor_id;
+            $vendorType = $request->vendor_data_type;
+
+            // Validate vendor exists for the given type
+            $vendor = $this->getVendorByType($vendorType, $vendorId);
+            if (!$vendor || !$vendor->vendor_name) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Selected vendor not found'
+                ], 400);
+            }
+
+            DB::beginTransaction();
+
+            $transaction = Transaction::where('tid', $id)->firstOrFail();
+
+            // Store old vendor info for logging
+            $oldVendorId = $transaction->vendor_id;
+            $oldVendorType = $transaction->vendor_type;
+
+            // Update transaction record
+            $transaction->vendor_id = $vendorId;
+            $transaction->vendor_type = $vendorType;
+            $transaction->vendor_name = $vendor->vendor_name;
+            $transaction->save();
+
+            // Update vendor on related ledger entries for this transaction
+            // Bank receiving has ledger entries with purchase_type = 7
+            Ledger::where('purchase_type', 7)
+                ->where('transaction_id', $transaction->tid)
+                ->where('transaction_type', 1) // credit side for vendor
+                ->update([
+                    'vendor_type' => $vendorType,
+                    'vendor_id' => $vendorId,
+                ]);
+
+            DB::commit();
+
+            // Log the change
+            $oldVendor = $this->getVendorByType($oldVendorType, $oldVendorId);
+            $newVendor = $this->getVendorByType($vendorType, $vendorId);
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => 'Updated bank receiving vendor: Transaction ID ' . $transaction->tid .
+                    ' | Vendor changed from ' . ($oldVendor->vendor_name ?? 'N/A') . ' (' . ($oldVendor->vendor_type ?? '-') . ')' .
+                    ' To ' . ($newVendor->vendor_name ?? 'N/A') . ' (' . ($newVendor->vendor_type ?? '-') . ')',
+            ]);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Vendor updated successfully',
+                    'redirect' => route('admin.payments.bank-receiving')
+                ], 200);
+            }
+
+            return redirect()->route('admin.payments.bank-receiving')->with('success', 'Vendor updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error updating vendor: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Error updating vendor: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Edit Bank Payment Vendor
+     */
+    public function editBankPaymentVendor($id)
+    {
+        $transaction = Transaction::where('tid', $id)->firstOrFail();
+
+        // Get all vendors for dropdown
+        $suppliers = Suppliers::where('status', 1)->get();
+        $customers = Customers::where('status', 1)->get();
+        $employees = User::where('user_type','Employee')->get();
+        $banks = Banks::all();
+        $products = Product::all();
+        $expenses = Expenses::all();
+        $incomes = Incomes::all();
+
+        return view('admin.pages.payments.edit-vendor-bank-payment', compact(
+            'transaction', 'suppliers', 'customers', 'employees', 'banks', 'products', 'expenses', 'incomes'
+        ));
+    }
+
+    /**
+     * Update Bank Payment Vendor
+     */
+    public function updateBankPaymentVendor(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'vendor_id' => 'required',
+                'vendor_data_type' => 'required|integer|min:1|max:9'
+            ]);
+
+            $vendorId = $request->vendor_id;
+            $vendorType = $request->vendor_data_type;
+
+            // Validate vendor exists for the given type
+            $vendor = $this->getVendorByType($vendorType, $vendorId);
+            if (!$vendor || !$vendor->vendor_name) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Selected vendor not found'
+                ], 400);
+            }
+
+            DB::beginTransaction();
+
+            $transaction = Transaction::where('tid', $id)->firstOrFail();
+
+            // Store old vendor info for logging
+            $oldVendorId = $transaction->vendor_id;
+            $oldVendorType = $transaction->vendor_type;
+
+            // Update transaction record
+            $transaction->vendor_id = $vendorId;
+            $transaction->vendor_type = $vendorType;
+            $transaction->vendor_name = $vendor->vendor_name;
+            $transaction->save();
+
+            // Update vendor on related ledger entries for this transaction
+            // Bank payment has ledger entries with purchase_type = 3
+            Ledger::where('purchase_type', 3)
+                ->where('transaction_id', $transaction->tid)
+                ->where('transaction_type', 2) // debit side for vendor
+                ->update([
+                    'vendor_type' => $vendorType,
+                    'vendor_id' => $vendorId,
+                ]);
+
+            DB::commit();
+
+            // Log the change
+            $oldVendor = $this->getVendorByType($oldVendorType, $oldVendorId);
+            $newVendor = $this->getVendorByType($vendorType, $vendorId);
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => 'Updated bank payment vendor: Transaction ID ' . $transaction->tid .
+                    ' | Vendor changed from ' . ($oldVendor->vendor_name ?? 'N/A') . ' (' . ($oldVendor->vendor_type ?? '-') . ')' .
+                    ' To ' . ($newVendor->vendor_name ?? 'N/A') . ' (' . ($newVendor->vendor_type ?? '-') . ')',
+            ]);
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Vendor updated successfully',
+                    'redirect' => route('admin.payments.bank-payments')
+                ], 200);
+            }
+
+            return redirect()->route('admin.payments.bank-payments')->with('success', 'Vendor updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error updating vendor: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->back()->with('error', 'Error updating vendor: ' . $e->getMessage());
         }
     }
 

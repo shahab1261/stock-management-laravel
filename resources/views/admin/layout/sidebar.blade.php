@@ -482,14 +482,16 @@
                         </li>
                         @endpermission
                         @endif
-                        @permission('management.drivers.view')
-                        <li class="submenu-item mb-2">
-                            <a href="{{ route('admin.drivers.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
-                                <i class="bi bi-people-fill me-2"></i>
-                                <span class="submenu-text">Drivers</span>
-                            </a>
-                        </li>
-                        @endpermission
+                        @if($softwareType == 1)
+                            @permission('management.drivers.view')
+                            <li class="submenu-item mb-2">
+                                <a href="{{ route('admin.drivers.index') }}" class="submenu-link d-flex align-items-center rounded p-2">
+                                    <i class="bi bi-people-fill me-2"></i>
+                                    <span class="submenu-text">Drivers</span>
+                                </a>
+                            </li>
+                            @endpermission
+                        @endif
                         @permission('management.employees.view')
                         <li class="submenu-item mb-2">
                             <a href="{{ route('admin.employees.index') }}" class="submenu-link d-flex align-items-center rounded p-2">

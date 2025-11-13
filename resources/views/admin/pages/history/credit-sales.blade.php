@@ -90,11 +90,20 @@
                                         <td>Rs {{ number_format($row->amount, 0, '', ',') }}</td>
                                         <td>{{ $row->notes }}</td>
                                         <td class="text-center">
-                                            @permission('sales.credit.delete')
-                                                <button class="btn btn-sm btn-danger delete-credit-sale-btn" data-ledgerpurchasetype="12" data-id="{{ $row->id }}">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            @endpermission
+                                            <div class="d-flex justify-content-center gap-1">
+                                                @permission('sales.credit.edit')
+                                                    <a href="{{ route('sales.credit.edit-vendor', $row->id) }}" 
+                                                       class="btn btn-sm btn-warning" 
+                                                       title="Edit Vendor">
+                                                        <i class="bi bi-person-gear"></i>
+                                                    </a>
+                                                @endpermission
+                                                @permission('sales.credit.delete')
+                                                    <button class="btn btn-sm btn-danger delete-credit-sale-btn" data-ledgerpurchasetype="12" data-id="{{ $row->id }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                @endpermission
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -112,6 +112,13 @@
                                                         && $value->last_row_id == $sale->id;
                                                 });
                                             @endphp
+                                            @permission('sales.edit')
+                                                <a href="{{ route('sales.edit-vendor', $sale->id) }}" 
+                                                   class="btn btn-sm btn-warning" 
+                                                   title="Edit Vendor">
+                                                    <i class="bi bi-person-gear"></i>
+                                                </a>
+                                            @endpermission
                                             @if($isLast)
                                                 @permission('sales.delete')
                                                 <button type="button" class="btn btn-sm btn-danger delete-sales-btn"

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Logs;
+use App\Models\User;
+use App\Models\Ledger;
 use App\Models\JournalEntry;
 use Illuminate\Http\Request;
 use App\Models\Management\Banks;
@@ -23,6 +25,7 @@ class JournalController extends Controller
         $this->middleware('permission:journal.view')->only('index');
         $this->middleware('permission:journal.create')->only('store');
         $this->middleware('permission:journal.delete')->only('destroy');
+        $this->middleware('permission:journal.edit')->only(['editVendor', 'updateVendor']);
     }
 
     /**
@@ -273,6 +276,201 @@ class JournalController extends Controller
         }
 
         return response()->json($vendors);
+    }
+
+    /**
+     * Show edit vendor form for a journal entry (only vendor fields)
+     */
+    public function editVendor($id)
+    {
+        $journalEntry = JournalEntry::findOrFail($id);
+
+        $incomes = Incomes::all();
+        $expenses = Expenses::all();
+        $banks = Banks::all();
+        $products = Product::all();
+        $customers = Customers::all();
+        $suppliers = Suppliers::all();
+        $employees = User::where('user_type','Employee')->get();
+
+        return view('admin.pages.journal.edit-vendor', compact(
+            'journalEntry', 'incomes', 'expenses', 'banks', 'products', 'customers', 'suppliers', 'employees'
+        ));
+    }
+
+    /**
+     * Update the vendor fields on journal entry and cascade to related tables
+     */
+    public function updateVendor(Request $request, $id)
+    {
+        $request->validate([
+            'vendor_id' => 'required',
+            'vendor_data_type' => 'required|integer|in:1,2,3,4,5,6,7,8,9'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $journalEntry = JournalEntry::findOrFail($id);
+
+            $oldVendorId = $journalEntry->vendor_id;
+            $oldVendorType = $journalEntry->vendor_type;
+
+            // Server-side validation to ensure vendor_id exists for the given vendor_data_type
+            $vendorType = (int) $request->vendor_data_type;
+            $vendorId = $request->vendor_id;
+            $isValid = false;
+            switch ($vendorType) {
+                case 1: // Supplier
+                    $isValid = Suppliers::where('id', $vendorId)->exists();
+                    break;
+                case 2: // Customer
+                    $isValid = Customers::where('id', $vendorId)->exists();
+                    break;
+                case 3: // Product
+                    $isValid = Product::where('id', $vendorId)->exists();
+                    break;
+                case 4: // Expense
+                    $isValid = Expenses::where('id', $vendorId)->exists();
+                    break;
+                case 5: // Income
+                    $isValid = Incomes::where('id', $vendorId)->exists();
+                    break;
+                case 6: // Bank
+                    $isValid = Banks::where('id', $vendorId)->exists();
+                    break;
+                case 7: // Cash
+                    $isValid = ((string)$vendorId === '7');
+                    break;
+                case 8: // MP
+                    $isValid = ((string)$vendorId === '8');
+                    break;
+                case 9: // Employee
+                    $isValid = User::where('user_type', 'Employee')->where('id', $vendorId)->exists();
+                    break;
+            }
+
+            if (!$isValid) {
+                DB::rollBack();
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid vendor selection for the chosen type.'
+                    ], 422);
+                }
+                return back()->with('error', 'Invalid vendor selection for the chosen type.');
+            }
+
+            // Update journal entry record
+            $journalEntry->vendor_id = $vendorId;
+            $journalEntry->vendor_type = $vendorType;
+            $journalEntry->save();
+
+            // Update vendor on related ledger entries for this journal entry
+            // Journal entries have ledger entries with purchase_type = 10
+            Ledger::where('purchase_type', 10)
+                ->where('transaction_id', $journalEntry->id)
+                ->update([
+                    'vendor_type' => $vendorType,
+                    'vendor_id' => $vendorId,
+                ]);
+
+            // Log the change
+            $oldVendor = $this->getVendorByType($oldVendorType, $oldVendorId);
+            $newVendor = $this->getVendorByType($vendorType, $vendorId);
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => 'Updated journal entry vendor: Journal Entry ID ' . $journalEntry->id .
+                    ' | Voucher: ' . $journalEntry->voucher_id .
+                    ' | Vendor changed from ' . ($oldVendor->vendor_name ?? 'N/A') . ' (' . ($oldVendor->vendor_type ?? '-') . ')' .
+                    ' To ' . ($newVendor->vendor_name ?? 'N/A') . ' (' . ($newVendor->vendor_type ?? '-') . ')',
+            ]);
+
+            DB::commit();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Vendor updated successfully',
+                    'redirect' => route('admin.journal.index')
+                ], 200);
+            }
+
+            return redirect()->route('admin.journal.index')->with('success', 'Vendor updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ], 500);
+            }
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Get vendor by type (similar to other controllers)
+     */
+    public function getVendorByType($vendorType, $vendorId)
+    {
+        $vendorDetails = [];
+        $vendorName = '';
+        $vendorTypeName = '';
+
+        switch ($vendorType) {
+            case 1:
+                $vendorDetails = Suppliers::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'Supplier';
+                break;
+            case 2:
+                $vendorDetails = Customers::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'customer';
+                break;
+            case 3:
+                $vendorDetails = Product::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'product';
+                break;
+            case 4:
+                $vendorDetails = Expenses::find($vendorId);
+                $vendorName = $vendorDetails->expense_name ?? '';
+                $vendorTypeName = 'expense';
+                break;
+            case 5:
+                $vendorDetails = Incomes::find($vendorId);
+                $vendorName = $vendorDetails->income_name ?? '';
+                $vendorTypeName = 'income';
+                break;
+            case 6:
+                $vendorDetails = Banks::find($vendorId);
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'bank';
+                break;
+            case 7:
+                $vendorName = 'cash';
+                $vendorTypeName = 'cash';
+                break;
+            case 8:
+                $vendorName = 'MP';
+                $vendorTypeName = 'MP';
+                break;
+            case 9:
+                $vendorDetails = User::where('user_type','Employee')->first();
+                $vendorName = $vendorDetails->name ?? '';
+                $vendorTypeName = 'employee';
+                break;
+        }
+
+        return (object)[
+            'vendor_details' => $vendorDetails,
+            'vendor_name' => $vendorName,
+            'vendor_type' => $vendorTypeName
+        ];
     }
 
     /**

@@ -215,12 +215,21 @@
                                                 <td class="ps-3 text-center">Rs {{ number_format($creditSale->amount) }}</td>
                                                 <td class="ps-3 text-center">{{ $creditSale->notes }}</td>
                                                 <td class="ps-3 text-center">
-                                                    @permission('sales.credit.delete')
-                                                        <button class="btn btn-sm btn-danger delete-credit-sale-btn"
-                                                                data-ledgerpurchasetype="12" data-id="{{ $creditSale->id }}">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    @endpermission
+                                                    <div class="d-flex justify-content-center gap-1">
+                                                        @permission('sales.credit.edit')
+                                                            <a href="{{ route('sales.credit.edit-vendor', $creditSale->id) }}" 
+                                                               class="btn btn-sm btn-warning" 
+                                                               title="Edit Vendor">
+                                                                <i class="bi bi-person-gear"></i>
+                                                            </a>
+                                                        @endpermission
+                                                        @permission('sales.credit.delete')
+                                                            <button class="btn btn-sm btn-danger delete-credit-sale-btn"
+                                                                    data-ledgerpurchasetype="12" data-id="{{ $creditSale->id }}">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        @endpermission
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach

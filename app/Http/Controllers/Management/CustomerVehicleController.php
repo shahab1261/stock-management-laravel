@@ -137,4 +137,5 @@ class CustomerVehicleController extends Controller
             ], 500);
         }
     }
+
 }

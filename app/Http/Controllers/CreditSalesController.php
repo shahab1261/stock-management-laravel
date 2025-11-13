@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Logs;
+use App\Models\User;
 use App\Models\Ledger;
 use App\Models\CreditSales;
 use Illuminate\Http\Request;
 use App\Models\Management\Tank;
+use App\Models\Management\Banks;
+use App\Models\Management\Incomes;
 use App\Models\Management\Product;
+use App\Models\Management\Expenses;
 use App\Models\Management\Settings;
 use App\Models\Management\TankLari;
 use App\Models\Management\Customers;
+use App\Models\Management\Suppliers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,6 +28,7 @@ class CreditSalesController extends Controller
         $this->middleware('permission:sales.credit.view')->only(['index']);
         $this->middleware('permission:sales.credit.create')->only(['store']);
         $this->middleware('permission:sales.credit.delete')->only(['delete']);
+        $this->middleware('permission:sales.credit.edit')->only(['editVendor', 'updateVendor']);
     }
 
     public function index()
@@ -101,8 +107,9 @@ class CreditSalesController extends Controller
         try {
             $customerId = $request->input('customer_id');
             $vehicles = TankLari::where('customer_id', $customerId)
-                               ->where('tank_type', 3)
-                               ->get();
+                ->whereIn('tank_type', [3, 4])
+                ->orderBy('larry_name')
+                ->get();
 
             return response()->json(['success' => true, 'vehicles' => $vehicles]);
         } catch (Exception $e) {
@@ -299,6 +306,142 @@ class CreditSalesController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Show edit vendor form for a credit sale (only vendor fields)
+     */
+    public function editVendor($id)
+    {
+        $creditSale = CreditSales::findOrFail($id);
+
+        $incomes = Incomes::all();
+        $expenses = Expenses::all();
+        $banks = Banks::all();
+        $products = Product::all();
+        $customers = Customers::all();
+        $suppliers = Suppliers::all();
+        $employees = User::where('user_type','Employee')->get();
+
+        return view('admin.pages.Sales.edit-vendor-credit', compact(
+            'creditSale', 'incomes', 'expenses', 'banks', 'products', 'customers', 'suppliers', 'employees'
+        ));
+    }
+
+    /**
+     * Update the vendor fields on credit sale and cascade to related tables
+     */
+    public function updateVendor(Request $request, $id)
+    {
+        $request->validate([
+            'vendor_id' => 'required',
+            'vendor_data_type' => 'required|integer|in:1,2,3,4,5,6,7,8,9'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $creditSale = CreditSales::findOrFail($id);
+
+            $oldVendorId = $creditSale->vendor_id;
+            $oldVendorType = $creditSale->vendor_type;
+
+            // Server-side validation to ensure vendor_id exists for the given vendor_data_type
+            $vendorType = (int) $request->vendor_data_type;
+            $vendorId = $request->vendor_id;
+            $isValid = false;
+            switch ($vendorType) {
+                case 1: // Supplier
+                    $isValid = Suppliers::where('id', $vendorId)->exists();
+                    break;
+                case 2: // Customer
+                    $isValid = Customers::where('id', $vendorId)->exists();
+                    break;
+                case 3: // Product
+                    $isValid = Product::where('id', $vendorId)->exists();
+                    break;
+                case 4: // Expense
+                    $isValid = Expenses::where('id', $vendorId)->exists();
+                    break;
+                case 5: // Income
+                    $isValid = Incomes::where('id', $vendorId)->exists();
+                    break;
+                case 6: // Bank
+                    $isValid = Banks::where('id', $vendorId)->exists();
+                    break;
+                case 7: // Cash
+                    $isValid = ((string)$vendorId === '7');
+                    break;
+                case 8: // MP
+                    $isValid = ((string)$vendorId === '8');
+                    break;
+                case 9: // Employee
+                    $isValid = User::where('user_type', 'Employee')->where('id', $vendorId)->exists();
+                    break;
+            }
+
+            if (!$isValid) {
+                DB::rollBack();
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid vendor selection for the chosen type.'
+                    ], 422);
+                }
+                return back()->with('error', 'Invalid vendor selection for the chosen type.');
+            }
+
+            // Update credit sale record
+            $creditSale->vendor_id = $vendorId;
+            $creditSale->vendor_type = $vendorType;
+            $creditSale->save();
+
+            // Update vendor on related ledger entries for this credit sale
+            // There are two ledger rows for a credit sale (purchase_type = 12)
+            //  - vendor (original vendor_type) DEBIT -> needs updating
+            //  - cash (vendor_type = 7) CREDIT
+            Ledger::where('purchase_type', 12)
+                ->where('transaction_id', $creditSale->id)
+                ->where('transaction_type', 2) // vendor debit side
+                ->update([
+                    'vendor_type' => $vendorType,
+                    'vendor_id' => $vendorId,
+                ]);
+
+            // Log the change
+            $oldVendor = $this->getVendorByType($oldVendorType, $oldVendorId);
+            $newVendor = $this->getVendorByType($vendorType, $vendorId);
+
+            Logs::create([
+                'user_id' => Auth::id(),
+                'action_type' => 'Update',
+                'action_description' => 'Updated credit sale vendor: Credit Sale ID ' . $creditSale->id .
+                    ' | Vendor changed from ' . ($oldVendor->vendor_name ?? 'N/A') . ' (' . ($oldVendor->vendor_type ?? '-') . ')' .
+                    ' To ' . ($newVendor->vendor_name ?? 'N/A') . ' (' . ($newVendor->vendor_type ?? '-') . ')',
+            ]);
+
+            DB::commit();
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Vendor updated successfully',
+                    'redirect' => route('sales.credit.index')
+                ], 200);
+            }
+
+            return redirect()->route('sales.credit.index')->with('success', 'Vendor updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ], 500);
+            }
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
     public function getVendorByType($vendorType, $vendorId)
     {
         // dd($vendorType, $vendorId);

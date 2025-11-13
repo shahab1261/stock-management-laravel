@@ -171,7 +171,10 @@
                             <tbody>
                                 @foreach($wetStockData as $row)
                                 <tr class="{{ $row['tank_name'] === 'TOTAL' ? 'table-primary fw-bold' : '' }}">
-                                    <td class="text-center">
+                                    @php
+                                        $dateOrderValue = $row['date'] ? $row['date']->format('Ymd') : '99999999';
+                                    @endphp
+                                    <td class="text-center" data-order="{{ $dateOrderValue }}">
                                         @if($row['date'])
                                             {{ $row['date']->format('d-m-Y') }}
                                         @else
@@ -317,7 +320,7 @@
 </style>
 
 @push('scripts')
-<script src="{{ asset('js/wet-stock.js') }}?v=1.7"></script>
+<script src="{{ asset('js/wet-stock.js') }}?v=1.9"></script>
 <script>
     $(document).ready(function() {
         $('#wetStockTable').DataTable({
@@ -327,7 +330,6 @@
             dom: '<"row align-items-center"<"col-md-6"l><"col-md-6 text-end"f>>t<"row align-items-center"<"col-md-6"i><"col-md-6 text-end"p>>',
             lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "All"]],
             pageLength: 50,
-            order: [[0, 'asc']],
             columnDefs: [
                 { targets: [2,3,4,5,7,8,9,11], className: 'text-end' },
                 { targets: [6,10,12], className: 'text-center' }

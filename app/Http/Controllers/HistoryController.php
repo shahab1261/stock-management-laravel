@@ -756,6 +756,7 @@ class HistoryController extends Controller
 
             $processedData[] = (object)[
                 'id' => $journal->id,
+                'voucher_id' => $journal->voucher_id ?? $journal->id,
                 'transaction_date' => $journal->transaction_date,
                 'vendor' => $vendor,
                 'amount' => $journal->amount,

@@ -146,6 +146,13 @@
                                         <td>{{ $sale->notes }}</td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-1">
+                                                @permission('sales.edit')
+                                                    <a href="{{ route('sales.edit-vendor', $sale->id) }}"
+                                                       class="btn btn-sm btn-warning"
+                                                       title="Edit Vendor">
+                                                        <i class="bi bi-person-gear"></i>
+                                                    </a>
+                                                @endpermission
                                                 @php
                                                     $isLast = $sales_detail->contains(function ($value) use ($sale) {
                                                         return $value->product_id == ($sale->product->id ?? null)
@@ -228,7 +235,7 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/history-ajax.js') }}?v=1.7"></script>
+<script src="{{ asset('js/history-ajax.js') }}?v=1.9"></script>
 <script>
 (function(){
     if (!window.historyDeleteBound) {

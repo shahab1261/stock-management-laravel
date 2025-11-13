@@ -85,6 +85,13 @@
                                                                     $value->last_row_id == $sale->id;
                                                             });
                                                         @endphp
+                                                        @permission('sales.nozzle.edit')
+                                                            <a href="{{ route('sales.nozzle.edit-vendor', $sale->id) }}"
+                                                               class="btn btn-sm btn-warning"
+                                                               title="Edit Vendor">
+                                                                <i class="bi bi-person-gear"></i>
+                                                            </a>
+                                                        @endpermission
                                                         @if ($isLast)
                                                             @permission('sales.nozzle.delete')
                                                                 <button type="button"
@@ -252,5 +259,5 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('js/nozzle-sales-ajax.js') }}?v=1.7"></script>
+    <script src="{{ asset('js/nozzle-sales-ajax.js') }}?v=1.9"></script>
 @endpush
