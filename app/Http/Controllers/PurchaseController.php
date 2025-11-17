@@ -304,7 +304,7 @@ class PurchaseController extends Controller
                 ->first();
 
             if ($latestPurchase) {
-                if (strcmp($latestPurchase->purchase_date, $purchaseDateRaw) > 0) {
+                if (Carbon::parse($latestPurchase->purchase_date)->isAfter($purchaseDateRaw)) {
                     DB::rollBack();
                     $message = 'You cannot purchase of this date because a purchase already recorded of future date.';
 

@@ -94,7 +94,7 @@ class LubricantSalesController extends Controller
             $latestSale = Sales::where('product_id', $request->product_id)
                 ->orderByDesc('create_date')
                 ->first();
-            if ($latestSale && strcmp($latestSale->create_date, $lockDate) > 0) {
+            if ($latestSale && Carbon::parse($latestSale->create_date)->isAfter(Carbon::parse($lockDate))) {
                 DB::rollBack();
                 $message = "You cannot sale of this date because a sale already recorded of future date.";
                 return response()->json([

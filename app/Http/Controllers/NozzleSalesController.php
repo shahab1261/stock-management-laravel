@@ -137,7 +137,7 @@ class NozzleSalesController extends Controller
             $latestSale = \App\Models\Sales::where('product_id', $request->product_id)
                 ->orderByDesc('create_date')
                 ->first();
-            if ($latestSale && strcmp($latestSale->create_date, $lockDate) > 0) {
+            if ($latestSale && Carbon::parse($latestSale->create_date)->isAfter(Carbon::parse($request->sale_date))) {
                 DB::rollBack();
                 return response()->json([
                     'success' => false,
