@@ -328,7 +328,7 @@
 </style>
 
 @push('scripts')
-<script src="{{ asset('js/trial-balance.js') }}?v=1.9"></script>
+<script src="{{ asset('js/trial-balance.js') }}?v=4.1"></script>
 <script>
     $(document).ready(function() {
         $('#trialBalanceTable').DataTable({

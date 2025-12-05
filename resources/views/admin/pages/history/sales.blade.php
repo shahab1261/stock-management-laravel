@@ -235,7 +235,7 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/history-ajax.js') }}?v=1.9"></script>
+<script src="{{ asset('js/history-ajax.js') }}?v=4.1"></script>
 <script>
 (function(){
     if (!window.historyDeleteBound) {

@@ -155,7 +155,7 @@
                                 <tr>
                                     <th class="ps-3 text-center">Date</th>
                                     <th class="ps-3 text-center">Tank</th>
-                                    <th class="ps-3 text-center">O/Stock</th>
+                                    <th class="ps-3 text-center">Opening Physical Stock</th>
                                     <th class="ps-3 text-center">Purchase</th>
                                     <th class="ps-3 text-center">Sales</th>
                                     <th class="ps-3 text-center">Book Stock</th>
@@ -320,7 +320,7 @@
 </style>
 
 @push('scripts')
-<script src="{{ asset('js/wet-stock.js') }}?v=1.9"></script>
+<script src="{{ asset('js/wet-stock.js') }}?v=4.1"></script>
 <script>
     $(document).ready(function() {
         $('#wetStockTable').DataTable({

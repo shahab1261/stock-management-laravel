@@ -5,26 +5,27 @@
 
 $(document).ready(function () {
     let partyCounter = 1;
-    let currentVoucherId = null;
 
     // Initialize
     initializeJournalForm();
+    
+    // Auto-initialize with two entry rows on page load (for inline form)
+    addInitialPartyRows();
 
     /**
      * Initialize journal form functionality
      */
     function initializeJournalForm() {
-        // Add new journal entry button
-        $("#addJournalBtn").click(function () {
-            $("#journalModal").modal("show");
-            resetForm();
-            addInitialPartyRows();
-            currentVoucherId = null; // Reset voucher ID for new entry
-        });
-
         // Add party button
         $("#add_party_btn").click(function () {
-            addPartyRow();
+            const btn = $(this);
+            btn.prop('disabled', true);
+            btn.html('<i class="bi bi-hourglass-split me-1"></i> Adding...');
+
+            addPartyRow(function() {
+                btn.prop('disabled', false);
+                btn.html('<i class="bi bi-plus-circle me-1"></i> Add Entry');
+            });
         });
 
         // Form submission
@@ -36,7 +37,6 @@ $(document).ready(function () {
         // Delete journal entry - open confirmation modal
         $(document).on("click", ".delete-btn", function () {
             const id = $(this).data("id");
-            const voucherId = $(this).data("voucher-id");
             $("#delete_entry_id").val(id);
 
             // Load voucher details
@@ -53,17 +53,31 @@ $(document).ready(function () {
         $(document).on("change", ".vendor-dropdown", function () {
             updateDescription();
         });
+
+        // Reset form button
+        $("#resetFormBtn").click(function () {
+            resetForm();
+            addInitialPartyRows();
+        });
     }
 
     /**
      * Reset form to initial state
      */
     function resetForm() {
+        // Destroy all Select2 instances before clearing
+        $(".vendor-dropdown").each(function() {
+            if ($(this).hasClass('select2-hidden-accessible')) {
+                $(this).select2('destroy');
+            }
+        });
+
         $("#append_parties").empty();
         partyCounter = 1;
         $("#debit_sum_div").text("Rs 0.00");
         $("#credit_sum_div").text("Rs 0.00");
         $("#balance_amount").text("Rs 0.00");
+        $("#journal_description").val("");
         $("#transaction_btn").prop("disabled", true);
     }
 
@@ -71,150 +85,166 @@ $(document).ready(function () {
      * Add initial party rows
      */
     function addInitialPartyRows() {
-        addPartyRow();
-        addPartyRow();
+        addPartyRow(function() {
+            // Add second row after first is initialized
+            setTimeout(function() {
+                addPartyRow();
+            }, 100);
+        });
     }
 
     /**
      * Add a new party row
      */
-    function addPartyRow() {
+    function addPartyRow(callback) {
         const rowHtml = `
             <div class="row align-items-end party-row mb-3" id="row_${partyCounter}">
-                <div class="col-md-3">
-                    <label class="form-label">Account Type</label>
-                    <select class="form-select account-type-dropdown" id="account_type_${partyCounter}" data-row="${partyCounter}">
-                        <option value="">Select Type</option>
-                        <option value="1">Supplier</option>
-                        <option value="2">Customer</option>
-                        <option value="3">Product</option>
-                        <option value="4">Expense</option>
-                        <option value="5">Income</option>
-                        <option value="6">Bank</option>
-                        <option value="7">Cash</option>
-                        <option value="8">MP</option>
-                    </select>
+                <div class="col-12 mb-2">
+                    <span class="badge bg-secondary">Entry #${partyCounter}</span>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label">Select Account</label>
-                    <select class="form-select vendor-dropdown" id="journal_vendor_${partyCounter}" data-row="${partyCounter}" required disabled>
+                <div class="col-md-4">
+                    <label class="form-label">Select Account <span class="text-danger">*</span></label>
+                    <select class="form-select vendor-dropdown" id="journal_vendor_${partyCounter}" data-row="${partyCounter}" required>
                         <option value="">Select Account</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">Debit Amount</label>
                     <input type="number" step="0.01" class="form-control amount-input debit-amount"
                            id="debit_amount_${partyCounter}" value="0" min="0" data-row="${partyCounter}">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">Credit Amount</label>
                     <input type="number" step="0.01" class="form-control amount-input credit-amount"
                            id="credit_amount_${partyCounter}" value="0" min="0" data-row="${partyCounter}">
                 </div>
-                <div class="col-md-1">
-                    <button type="button" class="btn btn-danger btn-sm" onclick="deletePartyRow(${partyCounter})" title="Remove Entry">
-                        <i class="bi bi-trash"></i>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-sm w-100" onclick="deletePartyRow(${partyCounter})" title="Remove Entry">
+                        <i class="bi bi-trash"></i> Remove
                     </button>
-                </div>
-                <div class="col-12 mt-2">
-                    <label class="form-label">Description</label>
-                    <textarea class="form-control description" rows="1" id="journal_description_${partyCounter}"
-                              placeholder="Transaction description will be auto-generated" readonly></textarea>
                 </div>
             </div>
         `;
 
         $("#append_parties").append(rowHtml);
 
-        // Add account type change handler
-        $(`#account_type_${partyCounter}`).change(function () {
-            const row = $(this).data("row");
-            const accountType = $(this).val();
-            loadVendorsByType(accountType, row);
-        });
+        // Store current counter before incrementing
+        const currentCounter = partyCounter;
 
+        // Populate all vendors in the dropdown
+        populateAllVendors(currentCounter);
+
+        // Use setTimeout to ensure DOM is ready before initializing Select2
+        setTimeout(function() {
+            try {
+                // Initialize Select2 for this dropdown (no modal parent needed for inline form)
+                $(`#journal_vendor_${currentCounter}`).select2({
+                    placeholder: 'Search and select account',
+                    allowClear: true,
+                    width: '100%',
+                    theme: 'default'
+                });
+
+                // Call callback if provided
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            } catch (error) {
+                console.error('Error initializing Select2:', error);
+                // Call callback anyway to re-enable button
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            }
+        }, 50);
+
+        // Increment counter for next row
         partyCounter++;
     }
 
     /**
-     * Load vendors by account type
+     * Populate all vendors in a single dropdown
      */
-    function loadVendorsByType(accountType, row) {
+    function populateAllVendors(row) {
         const vendorSelect = $(`#journal_vendor_${row}`);
         vendorSelect.empty().append('<option value="">Select Account</option>');
 
-        if (!accountType) {
-            vendorSelect.prop("disabled", true);
-            return;
+        // Add Suppliers
+        if (window.vendorData.suppliers && window.vendorData.suppliers.length > 0) {
+            window.vendorData.suppliers.forEach((vendor) => {
+                const name = vendor.vendor_name || vendor.name;
+                vendorSelect.append(
+                    `<option value="${vendor.id}" data-vendor="${vendor.id}" data-vendor-type="1">${name} (Supplier)</option>`
+                );
+            });
         }
 
-        let vendors = [];
-
-        switch (accountType) {
-            case "1": // Suppliers
-                vendors = window.vendorData.suppliers;
-                break;
-            case "2": // Customers
-                vendors = window.vendorData.customers;
-                break;
-            case "3": // Products
-                vendors = window.vendorData.products.map((p) => ({
-                    id: p.id,
-                    vendor_name: p.name,
-                    name: p.name,
-                    vendor_type: 3,
-                }));
-                break;
-            case "4": // Expenses
-                vendors = window.vendorData.expenses.map((e) => ({
-                    id: e.id,
-                    // vendor_name: e.name,
-                    name: e.expense_name,
-                    vendor_type: 4,
-                }));
-                break;
-            case "5": // Incomes
-                vendors = window.vendorData.incomes.map((i) => ({
-                    id: i.id,
-                    // vendor_name: i.name,
-                    name: i.income_name,
-                    vendor_type: 5,
-                }));
-                break;
-            case "6": // Banks
-                vendors = window.vendorData.banks;
-                break;
-            case "7": // Cash
-                vendors = [
-                    {
-                        id: 1,
-                        vendor_name: "Cash",
-                        name: "Cash",
-                        vendor_type: 7,
-                    },
-                ];
-                break;
-            case "8": // MP
-                vendors = [
-                    { id: 1, vendor_name: "MP", name: "MP", vendor_type: 8 },
-                ];
-                break;
+        // Add Customers
+        if (window.vendorData.customers && window.vendorData.customers.length > 0) {
+            window.vendorData.customers.forEach((vendor) => {
+                const name = vendor.vendor_name || vendor.name;
+                vendorSelect.append(
+                    `<option value="${vendor.id}" data-vendor="${vendor.id}" data-vendor-type="2">${name} (Customer)</option>`
+                );
+            });
         }
 
-        vendors.forEach((vendor) => {
-            const name = vendor.vendor_name || vendor.name;
-            vendorSelect.append(
-                `<option value="${vendor.id}" data-type="${accountType}" data-name="${name}">${name}</option>`
-            );
-        });
+        // Add Products
+        if (window.vendorData.products && window.vendorData.products.length > 0) {
+            window.vendorData.products.forEach((product) => {
+                vendorSelect.append(
+                    `<option value="${product.id}" data-vendor="${product.id}" data-vendor-type="3">${product.name} (Product)</option>`
+                );
+            });
+        }
 
-        vendorSelect.prop("disabled", false);
+        // Add Expenses
+        if (window.vendorData.expenses && window.vendorData.expenses.length > 0) {
+            window.vendorData.expenses.forEach((expense) => {
+                vendorSelect.append(
+                    `<option value="${expense.id}" data-vendor="${expense.id}" data-vendor-type="4">${expense.expense_name} (Expense)</option>`
+                );
+            });
+        }
+
+        // Add Incomes
+        if (window.vendorData.incomes && window.vendorData.incomes.length > 0) {
+            window.vendorData.incomes.forEach((income) => {
+                vendorSelect.append(
+                    `<option value="${income.id}" data-vendor="${income.id}" data-vendor-type="5">${income.income_name} (Income)</option>`
+                );
+            });
+        }
+
+        // Add Banks
+        if (window.vendorData.banks && window.vendorData.banks.length > 0) {
+            window.vendorData.banks.forEach((bank) => {
+                const name = bank.vendor_name || bank.name;
+                vendorSelect.append(
+                    `<option value="${bank.id}" data-vendor="${bank.id}" data-vendor-type="6">${name} (Bank)</option>`
+                );
+            });
+        }
+
+        // Add Cash
+        vendorSelect.append(
+            `<option value="7" data-vendor="7" data-vendor-type="7">Cash (Cash)</option>`
+        );
+
+        // Add MP
+        vendorSelect.append(
+            `<option value="8" data-vendor="8" data-vendor-type="8">MP (MP)</option>`
+        );
     }
 
     /**
      * Delete party row
      */
     window.deletePartyRow = function (id) {
+        // Destroy Select2 instance before removing
+        if ($(`#journal_vendor_${id}`).hasClass('select2-hidden-accessible')) {
+            $(`#journal_vendor_${id}`).select2('destroy');
+        }
         $(`#row_${id}`).remove();
         validateAmounts();
     };
@@ -320,7 +350,7 @@ $(document).ready(function () {
             if (vendorSelect[0].selectedIndex > 0) {
                 const selectedOption =
                     vendorSelect[0].options[vendorSelect[0].selectedIndex];
-                const vendorName = selectedOption.getAttribute("data-name");
+                const vendorName = selectedOption.text.split(' (')[0]; // Get name before the type
 
                 if (debitAmount > 0) {
                     fromCounter++;
@@ -340,7 +370,7 @@ $(document).ready(function () {
             }
         });
 
-        $(".description").val(description.trim());
+        $("#journal_description").val(description.trim());
     }
 
     /**
@@ -354,6 +384,7 @@ $(document).ready(function () {
 
         const entries = [];
         let hasError = false;
+        const description = $("#journal_description").val();
 
         $(".party-row").each(function () {
             const debitAmount =
@@ -361,7 +392,6 @@ $(document).ready(function () {
             const creditAmount =
                 parseFloat($(this).find(".credit-amount").val()) || 0;
             const vendorSelect = $(this).find(".vendor-dropdown");
-            const description = $(this).find(".description").val();
 
             if (debitAmount > 0 || creditAmount > 0) {
                 if (!vendorSelect.val()) {
@@ -373,8 +403,8 @@ $(document).ready(function () {
                     vendorSelect[0].options[vendorSelect[0].selectedIndex];
 
                 entries.push({
-                    vendor_id_from: vendorSelect.val(),
-                    vendor_from_type: selectedOption.getAttribute("data-type"),
+                    vendor_id_from: selectedOption.getAttribute("data-vendor"),
+                    vendor_from_type: selectedOption.getAttribute("data-vendor-type"),
                     journal_amount:
                         debitAmount > 0 ? debitAmount : creditAmount,
                     journal_description: description,
@@ -406,7 +436,6 @@ $(document).ready(function () {
         if (index >= entries.length) {
             // All entries submitted successfully
             showAlert("success", "Journal entries saved successfully!");
-            $("#journalModal").modal("hide");
             setTimeout(() => {
                 location.reload();
             }, 1500);

@@ -63,7 +63,88 @@
         </div>
     </div>
 
+    <!-- Add New Journal Entry Form (Inline) -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary bg-opacity-10 border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-journal-plus me-2"></i>Create Journal Entry
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form id="journalForm" class="row g-3">
+                        @csrf
 
+                        <!-- Date Field -->
+                        <div class="col-md-3">
+                            <label for="journal_date" class="form-label fw-medium">Date <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-calendar"></i>
+                                </span>
+                                <input type="date" class="form-control border-start-0" id="journal_date"
+                                       value="{{ $dateLock }}" max="{{ date('Y-m-d') }}" disabled required>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Entries Container -->
+                        <div class="col-12">
+                            <div class="card bg-light border-0">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6 class="mb-0">Journal Entries</h6>
+                                        <button type="button" class="btn btn-sm btn-success" id="add_party_btn">
+                                            <i class="bi bi-plus-circle me-1"></i> Add Entry
+                                        </button>
+                                    </div>
+                                    <div id="append_parties">
+                                        <!-- Dynamic entries will be added here -->
+                                    </div>
+
+                                    <!-- Description Field (After all rows) -->
+                                    <div class="row mt-3 mb-3">
+                                        <div class="col-12">
+                                            <label for="journal_description" class="form-label fw-medium">Description <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="journal_description" rows="2"
+                                                      placeholder="Enter transaction description or it will be auto-generated" required></textarea>
+                                            <small class="text-muted">This description will be applied to all entries in this voucher</small>
+                                        </div>
+                                    </div>
+
+                                    <!-- Totals Row -->
+                                    <div class="row mt-4 pt-3 border-top">
+                                        <div class="col-md-2">
+                                            <strong>Total:</strong>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <strong class="text-success" id="debit_sum_div">Rs 0.00</strong>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <strong class="text-danger" id="credit_sum_div">Rs 0.00</strong>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="alert alert-info mb-0 py-2" id="balance_alert">
+                                                <small><i class="bi bi-info-circle me-1"></i>Balance: <span id="balance_amount">Rs 0.00</span></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-white border-0 d-flex justify-content-end gap-2 px-4 pb-4">
+                    <button type="button" class="btn btn-secondary" id="resetFormBtn">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="transaction_btn" form="journalForm" disabled>
+                        <i class="bi bi-check-circle me-1"></i> Submit Journal Entry
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Journal Entries Table -->
     <div class="row">
@@ -71,9 +152,6 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Journal Entries</h5>
-                    <button type="button" id="addJournalBtn" class="btn btn-primary d-flex align-items-center">
-                        <i class="bi bi-plus-circle me-2"></i> Add New Journal Entry
-                    </button>
                 </div>
                                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">
@@ -128,8 +206,8 @@
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1">
                                             @permission('journal.edit')
-                                                <a href="{{ route('journal.edit-vendor', $entry->id) }}" 
-                                                   class="btn btn-sm btn-warning p-2" 
+                                                <a href="{{ route('journal.edit-vendor', $entry->id) }}"
+                                                   class="btn btn-sm btn-warning p-2"
                                                    title="Edit Vendor">
                                                     <i class="bi bi-person-gear"></i>
                                                 </a>
@@ -154,79 +232,7 @@
 </div>
 @endpermission
 
-<!-- Journal Entry Modal -->
-<div class="modal fade" id="journalModal" tabindex="-1" aria-labelledby="journalModalLabel" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-primary bg-opacity-10 border-0">
-                <h5 class="modal-title">
-                    <i class="bi bi-journal-plus me-2"></i>Create Journal Entry
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <form id="journalForm" class="row g-3">
-                    @csrf
 
-                    <!-- Date Field -->
-                    <div class="col-md-3">
-                        <label for="journal_date" class="form-label fw-medium">Date <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="bi bi-calendar"></i>
-                            </span>
-                            <input type="date" class="form-control border-start-0" id="journal_date"
-                                   value="{{ $dateLock }}" max="{{ date('Y-m-d') }}" disabled required>
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Entries Container -->
-                    <div class="col-12">
-                        <div class="card bg-light border-0">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="mb-0">Journal Entries</h6>
-                                    <button type="button" class="btn btn-sm btn-success" id="add_party_btn">
-                                        <i class="bi bi-plus-circle me-1"></i> Add Entry
-                                    </button>
-                                </div>
-                                <div id="append_parties">
-                                    <!-- Dynamic entries will be added here -->
-                                </div>
-
-                                <!-- Totals Row -->
-                                <div class="row mt-4 pt-3 border-top">
-                                    <div class="col-md-2">
-                                        <strong>Total:</strong>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <strong class="text-success" id="debit_sum_div">Rs 0.00</strong>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <strong class="text-danger" id="credit_sum_div">Rs 0.00</strong>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="alert alert-info mb-0 py-2" id="balance_alert">
-                                            <small><i class="bi bi-info-circle me-1"></i>Balance: <span id="balance_amount">Rs 0.00</span></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i> Cancel
-                </button>
-                <button type="submit" class="btn btn-primary" id="transaction_btn" form="journalForm" disabled>
-                    <i class="bi bi-check-circle me-1"></i> Submit Journal Entry
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">

@@ -215,6 +215,8 @@ Route::middleware('admin')->group(function () {
     Route::post('/sales/credit/{id}/update-vendor', [App\Http\Controllers\CreditSalesController::class, 'updateVendor'])->name('sales.credit.update-vendor');
     Route::post('/sales/credit/delete', [App\Http\Controllers\CreditSalesController::class, 'delete'])->name('sales.credit.delete');
 
+    // Route::post('/deletebulkSales', [App\Http\Controllers\NozzleSalesController::class, 'deleteSalebulk'])->name('sales.nozzle.bulk.delete');
+
         /*************************Daybook_Routes***************************/
     Route::get('/daybook', [App\Http\Controllers\DaybookController::class, 'index'])->name('admin.daybook.index');
 

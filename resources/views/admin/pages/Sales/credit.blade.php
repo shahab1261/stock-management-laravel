@@ -217,8 +217,8 @@
                                                 <td class="ps-3 text-center">
                                                     <div class="d-flex justify-content-center gap-1">
                                                         @permission('sales.credit.edit')
-                                                            <a href="{{ route('sales.credit.edit-vendor', $creditSale->id) }}" 
-                                                               class="btn btn-sm btn-warning" 
+                                                            <a href="{{ route('sales.credit.edit-vendor', $creditSale->id) }}"
+                                                               class="btn btn-sm btn-warning"
                                                                title="Edit Vendor">
                                                                 <i class="bi bi-person-gear"></i>
                                                             </a>

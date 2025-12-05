@@ -118,7 +118,7 @@ class DipController extends Controller
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Create',
-                'action_description' => "Created dip entry for tank: {$tank->tank_name}, dip value: {$dipValue}, liters: {$literValue}, Date: {$dipDate}"
+                'action_description' => "Created dip entry for tank: {$tank->tank_name}, dip value: {$dipValue}, liters: {$literValue}, Previous Stock: {$previousStock}, Date: {$dipDate}"
             ]);
 
             DB::commit();

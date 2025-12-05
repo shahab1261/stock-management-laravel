@@ -6,8 +6,8 @@ $(document).ready(function () {
                 processing: true,
                 responsive: false,
                 scrollX: true,
-                searching: false,
-                dom: '<"row align-items-center"<"col-md-6 dt-left-margin"l><"col-md-6 d-flex justify-content-end"B>>t<"row align-items-center"<"col-md-6"i><"col-md-6 text-end"p>>',
+                searching: true,
+                dom: '<"row align-items-center"<"col-md-6 dt-left-margin"l><"col-md-6 d-flex justify-content-end"fB>>t<"row align-items-center"<"col-md-6"i><"col-md-6 text-end"p>>',
                 lengthMenu: [
                     [10, 25, 50, 100],
                     [10, 25, 50, 100],

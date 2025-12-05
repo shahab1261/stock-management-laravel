@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Ledger;
 use App\Models\Purchase;
 use App\Models\Sales;
+use App\Models\CreditSales;
 use App\Models\User;
 use App\Models\Management\Banks;
 use App\Models\Management\Customers;
@@ -754,6 +755,17 @@ class LedgerController extends Controller
 
                 $noteRate .= ", " . ($vendor->vendor_name ?? '');
                 $noteRate .= ", " . ($product->name ?? '') . ' ' . $sale->quantity . "@" . $sale->rate;
+                $noteRate .= ", " . ($lorry->larry_name ?? '');
+            }
+        } elseif ($purchaseType == '12') { // Credit Sales
+            $creditSale = CreditSales::find($transactionId);
+            if ($creditSale) {
+                $vendor = $this->getVendorByType($creditSale->vendor_type, $creditSale->vendor_id);
+                $product = Product::find($creditSale->product_id);
+                $lorry = TankLari::find($creditSale->vehicle_id);
+
+                $noteRate .= ", " . ($vendor->vendor_name ?? '');
+                $noteRate .= ", " . ($product->name ?? '') . ' ' . $creditSale->quantity . "@" . $creditSale->rate;
                 $noteRate .= ", " . ($lorry->larry_name ?? '');
             }
         }

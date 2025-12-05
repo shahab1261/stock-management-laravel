@@ -59,7 +59,8 @@ $(document).ready(function() {
             success: function(response) {
                 if(response.tanks){
                     const tanks = response.tanks;
-                    $('#tank_update').empty().append('<option selected disabled>Select Tank</option>');
+                    // $('#tank_update').empty().append('<option selected disabled>Select Tank</option>');
+                    $('#tank_update').empty();
                     $.each(tanks, function (key, value){
                         $("#tank_update").append(`<option value="${value.id}">${value.tank_name}</option>`);
                     });

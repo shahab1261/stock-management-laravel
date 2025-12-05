@@ -112,3 +112,13 @@ ALTER TABLE dips
   ADD COLUMN updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   AFTER created_at;
 
+
+
+
+
+Journal Voucher:
+Description area only one at the bottom
+Currently the vendor type and vendor name on change show all and on vendor name and vendor type
+by default add backend conditions correctly that vendor name should be according to the vendor type
+vendor name dropdown searchable
+

@@ -49,21 +49,28 @@ class LubricantSalesController extends Controller
             ->groupBy('product_id')
             ->pluck('product_stock', 'product_id');
 
+        // Filter sales to only include products that DON'T have nozzles (lubricant products)
         $sales = Sales::where('create_date', $dateLock)
+            ->whereIn('product_id', $generalProductIds)
             ->orderByDesc('id')
             ->get();
 
-        // Latest sale id per product (for delete permission like old project)
+        // Latest sale id per product (for delete permission like old project) - only for lubricant products
         $lastSaleIds = Sales::select(DB::raw('MAX(id) as last_id'), 'product_id')
+            ->whereIn('product_id', $generalProductIds)
             ->groupBy('product_id')
             ->pluck('last_id', 'product_id');
 
+        // Filter sales_detail to only include lubricant products
         $sales_detail = Sales::selectRaw('MAX(id) as last_row_id, product_id')
+                        ->whereIn('product_id', $generalProductIds)
                         ->groupBy('product_id')
                         ->get();
 
+        // Sales summary - only for lubricant products
         $salesSummary = Sales::join('products', 'sales.product_id', '=', 'products.id')
             ->whereDate('sales.create_date', $dateLock)
+            ->whereIn('sales.product_id', $generalProductIds)
             ->select('sales.product_id', 'products.name as product_name',
                 DB::raw('SUM(sales.quantity) as total_quantity'),
                 DB::raw('SUM(sales.amount) as total_amount'))

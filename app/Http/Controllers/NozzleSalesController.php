@@ -45,17 +45,22 @@ class NozzleSalesController extends Controller
 
         $products = Product::whereIn('id', $productIds)->get();
 
+        // Filter sales to only include products that have nozzles
         $sales = Sales::where('create_date', $dateLock)
+            ->whereIn('product_id', $productIds)
             ->orderByDesc('id')
             ->get();
 
+        // Filter sales_detail to only include products that have nozzles
         $sales_detail = Sales::selectRaw('MAX(id) as last_row_id, product_id')
+                        ->whereIn('product_id', $productIds)
                         ->groupBy('product_id')
                         ->get();
 
-        // Sales summary for cards
+        // Sales summary for cards - only for nozzle products
         $salesSummary = Sales::join('products', 'sales.product_id', '=', 'products.id')
             ->whereDate('sales.create_date', $dateLock)
+            ->whereIn('sales.product_id', $productIds)
             ->select(
                 'sales.product_id',
                 'products.name as product_name',
@@ -166,9 +171,14 @@ class NozzleSalesController extends Controller
             $productRate = Product::where('id', $request->product_id)->first()->current_sale;
 
             $quant = $request->closing_reading - $request->opening_reading;
-            $amount = $quant * $productRate;
+            $actualQuantity = $quant - $request->test_sales;
+            $amount = $actualQuantity * $productRate;
 
             if ($request->test_sales == 0 && $quant == 0) {
+                return;
+            }
+
+            if($actualQuantity <= 0){
                 return;
             }
 
@@ -557,7 +567,199 @@ class NozzleSalesController extends Controller
         }
     }
 
-        public function getVendorByType($vendorType, $vendorId)
+    // public function deleteSalebulk(Request $request)
+    // {
+
+    //     for($i=21527; $i>=20649; $i--){
+
+    //         try {
+    //             DB::beginTransaction();
+    //             $saleId = $i;
+    //             $sale = Sales::findOrFail($saleId);
+
+    //             // only allow deleting if this is the latest sale for the product
+    //             $lastSale = Sales::where('product_id', $sale->product_id)
+    //                         ->orderByDesc('id')
+    //                         ->first();
+
+    //             if (!$lastSale || $lastSale->id !== $sale->id) {
+    //                 DB::rollBack();
+    //                 return response()->json([
+    //                     'success' => false,
+    //                     'message' => 'Only the last sale for a product can be deleted',
+    //                 ]);
+    //             }
+
+    //             // 1. Delete ledger entries (purchase_type = 2 for sales)
+    //             Ledger::where('transaction_id', $saleId)
+    //                 ->where('purchase_type', 2)
+    //                 ->delete();
+
+    //             // 2. Reverse stock after sale delete
+    //             $stockReversed = $this->reverseStockAfterSaleDelete($saleId);
+    //             if (!$stockReversed) {
+    //                 DB::rollBack();
+    //                 return response()->json([
+    //                     'success' => false,
+    //                     'message' => 'Failed to reverse stock',
+    //                 ]);
+    //             }
+
+    //             // 3. Handle nozzle reading reset if sale had a nozzle
+    //             if ($sale->nozzle_id != 0) {
+    //                 $nozzle = Nozzle::find($sale->nozzle_id);
+    //                 if ($nozzle) {
+    //                     $nozzle->opening_reading = $sale->opening_reading;
+    //                     $nozzle->save();
+    //                 }
+    //             }
+
+    //             // $vendorInfo = $this->getVendorByType($sale->vendor_type, $sale->customer_id);
+    //             // $vendorName = $vendorInfo->vendor_name ?? 'Unknown Vendor';
+    //             // $product = Product::find($sale->product_id);
+    //             // $productName = $product ? $product->name : 'Unknown Product';
+    //             // $tank = Tank::find($sale->tank_id);
+    //             // $tankName = $tank ? $tank->tank_name : 'No Tank';
+
+
+    //             // Logs::create([
+    //             //     'user_id' => Auth::id(),
+    //             //     'action_type' => 'Delete',
+    //             //     'action_description' => "Deleted Sale: {$productName} | Qty: {$sale->quantity} L | Rate: PKR {$sale->rate} | Vendor: {$vendorName} | Total: PKR {$sale->amount} | Tank: {$tankName} | Opening Reading: {$sale->opening_reading} | Closing Reading | {$sale->closing_reading} | Date: {$sale->create_date} ",
+    //             // ]);
+
+    //         // 4. Delete the sale itself
+    //             $sale->delete();
+
+    //             DB::commit();
+    //             return response()->json([
+    //                 'success' => true,
+    //                 'message' => 'Sale deleted successfully',
+    //             ]);
+    //         } catch (\Exception $e) {
+    //             DB::rollBack();
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => $e->getMessage(),
+    //                 'error' => $e->getMessage(),
+    //             ]);
+    //         }
+    //     }
+    // }
+
+//     public function deleteFromLatestDownTo(Request $request)
+// {
+//     try {
+//         DB::beginTransaction();
+
+//         $endId = (int) $request->input('end_sale_id');
+
+//         // Get the latest (newest) sale ID
+//         $latestSale = Sales::orderByDesc('id')->first();
+//         if (!$latestSale) {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => 'No sales found.',
+//             ]);
+//         }
+
+//         $startId = $latestSale->id; // latest sale ID
+
+//         if ($endId > $startId) {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => 'End sale ID must be older than the latest sale.',
+//             ]);
+//         }
+
+//         // Fetch sales from latest to end ID (descending order)
+//         $sales = Sales::whereBetween('id', [$endId, $startId])
+//                       ->orderBy('id', 'desc')
+//                       ->get();
+
+//         if ($sales->isEmpty()) {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => 'No sales found in the given range.',
+//             ]);
+//         }
+
+//         foreach ($sales as $sale) {
+
+//             // Ensure this is the last sale for product
+//             $lastSale = Sales::where('product_id', $sale->product_id)
+//                               ->orderByDesc('id')
+//                               ->first();
+
+//             if (!$lastSale || $lastSale->id !== $sale->id) {
+//                 DB::rollBack();
+//                 return response()->json([
+//                     'success' => false,
+//                     'message' => "Sale ID {$sale->id} cannot be deleted because it is not the latest sale of its product.",
+//                 ]);
+//             }
+
+//             // Delete ledger entries
+//             Ledger::where('transaction_id', $sale->id)
+//                   ->where('purchase_type', 2)
+//                   ->delete();
+
+//             // Reverse stock
+//             $stockReversed = $this->reverseStockAfterSaleDelete($sale->id);
+//             if (!$stockReversed) {
+//                 DB::rollBack();
+//                 return response()->json([
+//                     'success' => false,
+//                     'message' => "Failed to reverse stock for sale ID {$sale->id}",
+//                 ]);
+//             }
+
+//             // Reset nozzle
+//             if ($sale->nozzle_id != 0) {
+//                 $nozzle = Nozzle::find($sale->nozzle_id);
+//                 if ($nozzle) {
+//                     $nozzle->opening_reading = $sale->opening_reading;
+//                     $nozzle->save();
+//                 }
+//             }
+
+//             // Logging
+//             $vendorInfo = $this->getVendorByType($sale->vendor_type, $sale->customer_id);
+//             $vendorName = $vendorInfo->vendor_name ?? 'Unknown Vendor';
+//             $product = Product::find($sale->product_id);
+//             $productName = $product->name ?? 'Unknown Product';
+//             $tank = Tank::find($sale->tank_id);
+//             $tankName = $tank->tank_name ?? 'No Tank';
+
+//             Logs::create([
+//                 'user_id' => Auth::id(),
+//                 'action_type' => 'Delete',
+//                 'action_description' =>
+//                     "Deleted Sale ID: {$sale->id} | {$productName} | Qty: {$sale->quantity} L | Rate: {$sale->rate} | Vendor: {$vendorName} | Total: {$sale->amount} | Tank: {$tankName}",
+//             ]);
+
+//             // Delete sale
+//             $sale->delete();
+//         }
+
+//         DB::commit();
+
+//         return response()->json([
+//             'success' => true,
+//             'message' => "Deleted sales from ID {$startId} down to {$endId}.",
+//         ]);
+
+//     } catch (\Exception $e) {
+//         DB::rollBack();
+//         return response()->json([
+//             'success' => false,
+//             'error' => $e->getMessage(),
+//         ]);
+//     }
+// }
+
+
+    public function getVendorByType($vendorType, $vendorId)
     {
         $vendorDetails = [];
         $vendorName = '';
