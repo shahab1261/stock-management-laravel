@@ -7,6 +7,7 @@ use App\Models\Management\Product;
 use App\Models\Management\Tank;
 use App\Models\Logs;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -80,6 +81,7 @@ class ProductController extends Controller
                     'action_type' => 'Create',
                     'action_description' => "Product created: {$prod->name} (Unit {$prod->unit})",
                 ]);
+                return response()->json(['success' => true, 'message' => 'Product added successfully', 'product' => $prod]);
             } else{
                 $product = new Product();
                 $product->name = $request->name;
@@ -103,10 +105,11 @@ class ProductController extends Controller
                     'action_type' => 'Create',
                     'action_description' => "Product created: {$product->name} (Unit {$product->unit})",
                 ]);
+                return response()->json(['success' => true, 'message' => 'Product added successfully', 'product' => $product]);
             }
 
-            return response()->json(['success' => true, 'message' => 'Product added successfully', 'product' => $product]);
         } catch (\Exception $e) {
+            Log::info('Error: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Failed to add product']);
         }
     }

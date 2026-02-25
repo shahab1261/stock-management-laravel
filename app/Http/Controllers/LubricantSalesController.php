@@ -67,14 +67,18 @@ class LubricantSalesController extends Controller
                         ->groupBy('product_id')
                         ->get();
 
-        // Sales summary - only for lubricant products
+        // Sales summary - only for lubricant products that have been sold on the locked date
         $salesSummary = Sales::join('products', 'sales.product_id', '=', 'products.id')
             ->whereDate('sales.create_date', $dateLock)
             ->whereIn('sales.product_id', $generalProductIds)
-            ->select('sales.product_id', 'products.name as product_name',
+            ->select(
+                'sales.product_id',
+                'products.name as product_name',
                 DB::raw('SUM(sales.quantity) as total_quantity'),
-                DB::raw('SUM(sales.amount) as total_amount'))
+                DB::raw('SUM(sales.amount) as total_amount')
+            )
             ->groupBy('sales.product_id', 'products.name')
+            ->orderBy('products.name')
             ->get();
 
         return view('admin.pages.Sales.lubricant', compact('products', 'stockByProduct', 'dateLock', 'sales', 'salesSummary', 'lastSaleIds', 'sales_detail'));

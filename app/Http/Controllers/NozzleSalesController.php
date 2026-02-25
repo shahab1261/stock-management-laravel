@@ -57,7 +57,7 @@ class NozzleSalesController extends Controller
                         ->groupBy('product_id')
                         ->get();
 
-        // Sales summary for cards - only for nozzle products
+        // Sales summary for cards - only for nozzle products that have been sold on the locked date
         $salesSummary = Sales::join('products', 'sales.product_id', '=', 'products.id')
             ->whereDate('sales.create_date', $dateLock)
             ->whereIn('sales.product_id', $productIds)
@@ -68,6 +68,7 @@ class NozzleSalesController extends Controller
                 DB::raw('SUM(sales.amount) as total_amount')
             )
             ->groupBy('sales.product_id', 'products.name')
+            ->orderBy('products.name')
             ->get();
 
         return view('admin.pages.Sales.nozzle', compact('products', 'dateLock', 'sales', 'salesSummary', 'sales_detail'));

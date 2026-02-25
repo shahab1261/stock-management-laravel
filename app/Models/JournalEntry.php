@@ -84,7 +84,7 @@ class JournalEntry extends Model
     {
         $vendor = $this->getVendorDetailsAttribute();
         if ($vendor) {
-            return $vendor->vendor_name ?? $vendor->name ?? $vendor->expense_name ??  'Unknown';
+            return $vendor->vendor_name ?? $vendor->name ?? $vendor->expense_name ?? $vendor->income_name ?? 'Unknown';
         }
         return 'Unknown';
     }
