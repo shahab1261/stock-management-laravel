@@ -85,10 +85,7 @@ function printBillingReport() {
     printWindow.document.close();
 
     // Wait for content to load then print
-    printWindow.onload = function() {
-        printWindow.print();
-        printWindow.close();
-    };
+    printWindow.print();
 }
 
 /**
@@ -182,6 +179,7 @@ function createPrintContent() {
                 <thead>
                     <tr>
                         <th class="text-center">Date</th>
+                        <th class="text-center">Invoice No</th>
                         <th>Vendor</th>
                         <th>Product</th>
                         <th>Tank Lorry</th>
