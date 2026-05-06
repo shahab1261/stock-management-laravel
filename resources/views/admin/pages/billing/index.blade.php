@@ -314,6 +314,7 @@
                                     <thead>
                                         <tr>
                                             <th class="ps-3 text-center">Date</th>
+                                            <th class="ps-3 text-center">Invoice No</th>
                                             <th class="ps-3">Vendor</th>
                                             <th class="ps-3">Product</th>
                                             <th class="ps-3">Tank Lorry</th>
@@ -328,6 +329,9 @@
                                             <tr>
                                                 <td class="text-center">
                                                     {{ $sale->transasction_date ? $sale->transasction_date->format('d-m-Y') : '-' }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ $sale->invoice_no ?? '-' }}
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
@@ -383,6 +387,7 @@
 
                                         <!-- Total Row -->
                                         <tr class="table-light">
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
@@ -517,11 +522,11 @@
                     [0, 'desc']
                 ],
                 columnDefs: [{
-                        targets: [4, 5, 6],
+                        targets: [5, 6, 7],
                         className: 'text-end'
                     },
                     {
-                        targets: [0],
+                        targets: [0, 1],
                         className: 'text-center'
                     }
                 ]

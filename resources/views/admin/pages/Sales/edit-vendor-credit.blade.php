@@ -60,6 +60,18 @@
                             <input type="hidden" name="vendor_data_type" id="vendor_data_type" value="{{ $creditSale->vendor_type }}">
                         </div>
                     </div>
+
+                    <div class="col-md-6" style="margin-top: -8px !important;">
+                        <label class="form-label fw-medium text-muted mb-2">Select Vehicle</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-truck"></i>
+                            </span>
+                            <select class="form-select border-start-0 searchable-dropdown" name="vehicle_id" id="vehicle_id" required>
+                                <option value="" selected disabled>Choose vehicle</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,43 +92,88 @@
 <script src="{{ asset('assets/sweetalert2/sweetalert2.min.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('assets/sweetalert2/sweetalert2.min.css') }}" />
 <script>
-    (function(){
-        const vendorSelect = document.getElementById('vendor');
-        const vendorTypeInput = document.getElementById('vendor_data_type');
-        if (vendorSelect) {
-            vendorSelect.addEventListener('change', function() {
-                const selected = vendorSelect.options[vendorSelect.selectedIndex];
-                const type = selected.getAttribute('data-type');
-                vendorTypeInput.value = type;
-            });
-            // Ensure we capture existing selection's data-type on load
-            const selected = vendorSelect.options[vendorSelect.selectedIndex];
-            if (selected) {
-                const type = selected.getAttribute('data-type');
-                if (type) vendorTypeInput.value = type;
+    $(function(){
+        const $vendorSelect = $('#vendor');
+        const $vendorTypeInput = $('#vendor_data_type');
+        const $vehicleSelect = $('#vehicle_id');
+        const initialVehicleId = "{{ $creditSale->vehicle_id }}";
+
+        // Function to load vehicles via AJAX
+        function loadVehicles(vendorId, vendorType, selectedVehicleId = null) {
+            if (!$vehicleSelect.length) return;
+
+            // Clear current options and show loading
+            $vehicleSelect.html('<option value="" selected disabled>Loading...</option>').trigger('change');
+
+            // Only Customers (2) and Suppliers (1) typically have vehicles
+            if (vendorType != 2 && vendorType != 1) {
+                $vehicleSelect.html('<option value="" selected disabled>No vehicles for this type</option>').trigger('change');
+                return;
             }
+
+            $.ajax({
+                url: '{{ route('sales.credit.customer_vehicles') }}',
+                type: 'POST',
+                data: {
+                    customer_id: vendorId,
+                    vendor_type: vendorType,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(data) {
+                    if (data.success && data.vehicles && data.vehicles.length > 0) {
+                        let options = '<option value="" disabled>Choose vehicle</option>';
+                        data.vehicles.forEach(vehicle => {
+                            const selected = (selectedVehicleId && vehicle.id == selectedVehicleId) ? 'selected' : '';
+                            options += `<option value="${vehicle.id}" ${selected}>${vehicle.larry_name}</option>`;
+                        });
+                        $vehicleSelect.html(options).trigger('change');
+                    } else {
+                        $vehicleSelect.html('<option value="" selected disabled>No vehicles found</option>').trigger('change');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error loading vehicles:', xhr);
+                    $vehicleSelect.html('<option value="" selected disabled>Error loading vehicles</option>').trigger('change');
+                }
+            });
         }
 
-        const form = document.getElementById('editVendorForm');
-        const saveBtn = document.getElementById('saveVendorBtn');
-        if (form) {
-            form.addEventListener('submit', async function(e){
+        // Vendor selection change event
+        $vendorSelect.on('change', function() {
+            const $selectedOption = $(this).find('option:selected');
+            const type = $selectedOption.attr('data-type');
+            const vendorId = $(this).val();
+            
+            if ($vendorTypeInput.length) {
+                $vendorTypeInput.val(type);
+            }
+
+            // Load vehicles when vendor changes
+            loadVehicles(vendorId, type);
+        });
+
+        // Initial load
+        const $initialSelected = $vendorSelect.find('option:selected');
+        if ($initialSelected.length) {
+            const type = $initialSelected.attr('data-type');
+            const vendorId = $vendorSelect.val();
+            loadVehicles(vendorId, type, initialVehicleId);
+        }
+
+        const $form = $('#editVendorForm');
+        const $saveBtn = $('#saveVendorBtn');
+
+        if ($form.length) {
+            $form.on('submit', function(e){
                 e.preventDefault();
-                const url = form.getAttribute('action');
-                const formData = new FormData(form);
-                // Force-sync vendor_data_type from the currently selected option at submit time
-                if (vendorSelect && vendorSelect.selectedIndex >= 0) {
-                    const selected = vendorSelect.options[vendorSelect.selectedIndex];
-                    const type = selected ? selected.getAttribute('data-type') : '';
-                    if (type) {
-                        formData.set('vendor_data_type', type);
-                        if (vendorTypeInput) vendorTypeInput.value = type; // keep hidden input in sync
-                    }
-                }
-                if (saveBtn) {
-                    saveBtn.disabled = true;
-                    saveBtn.dataset.originalHtml = saveBtn.innerHTML;
-                    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+                
+                const url = $(this).attr('action');
+                const formData = new FormData(this);
+
+                if ($saveBtn.length) {
+                    $saveBtn.prop('disabled', true);
+                    $saveBtn.data('originalHtml', $saveBtn.html());
+                    $saveBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...');
                 }
 
                 const toast = Swal.mixin({
@@ -127,41 +184,37 @@
                     timerProgressBar: true
                 });
 
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
-                        },
-                        body: formData
-                    });
-
-                    const data = await response.json();
-
-                    if (!response.ok || data.success === false) {
-                        const message = (data && data.message) ? data.message : 'Failed to update vendor';
-                        toast.fire({ icon: 'error', title: message });
-                        return;
-                    }
-
-                    toast.fire({ icon: 'success', title: data.message || 'Vendor updated successfully' });
-                    setTimeout(function(){
-                        window.location.href = data.redirect || '{{ route('sales.credit.index') }}';
-                    }, 900);
-                } catch (err) {
-                    toast.fire({ icon: 'error', title: (err && err.message) ? err.message : 'Unexpected error' });
-                } finally {
-                    if (saveBtn) {
-                        saveBtn.disabled = false;
-                        if (saveBtn.dataset.originalHtml) {
-                            saveBtn.innerHTML = saveBtn.dataset.originalHtml;
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        if (data.success) {
+                            toast.fire({ icon: 'success', title: data.message || 'Vendor updated successfully' });
+                            setTimeout(function(){
+                                window.location.href = data.redirect || '{{ route('sales.credit.index') }}';
+                            }, 900);
+                        } else {
+                            toast.fire({ icon: 'error', title: data.message || 'Failed to update vendor' });
+                            $saveBtn.prop('disabled', false).html($saveBtn.data('originalHtml'));
                         }
+                    },
+                    error: function(xhr) {
+                        const data = xhr.responseJSON;
+                        const message = (data && data.message) ? data.message : 'Unexpected error';
+                        toast.fire({ icon: 'error', title: message });
+                        $saveBtn.prop('disabled', false).html($saveBtn.data('originalHtml'));
                     }
-                }
+                });
             });
         }
-    })();
+    });
 </script>
 @endpush
 @endsection

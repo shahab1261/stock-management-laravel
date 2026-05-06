@@ -105,9 +105,22 @@ class CreditSalesController extends Controller
     public function getCustomerVehicles(Request $request)
     {
         try {
-            $customerId = $request->input('customer_id');
-            $vehicles = TankLari::where('customer_id', $customerId)
-                ->whereIn('tank_type', [3, 4])
+            $vendorId = $request->input('customer_id'); // Keeping name for backward compatibility
+            $vendorType = $request->input('vendor_type', 2); // Default to customer if not provided
+
+            $query = TankLari::query();
+
+            if ($vendorType == 1) { // Supplier
+                $query->where('supplier_id', $vendorId);
+            } elseif ($vendorType == 2) { // Customer
+                $query->where('customer_id', $vendorId);
+            } else {
+                // For other types, we might not have vehicles linked in tank_lari
+                // but we can still try if this is a specialized case
+                return response()->json(['success' => true, 'vehicles' => []]);
+            }
+
+            $vehicles = $query->whereIn('tank_type', [3, 4])
                 ->orderBy('larry_name')
                 ->get();
 
@@ -334,7 +347,8 @@ class CreditSalesController extends Controller
     {
         $request->validate([
             'vendor_id' => 'required',
-            'vendor_data_type' => 'required|integer|in:1,2,3,4,5,6,7,8,9'
+            'vendor_data_type' => 'required|integer|in:1,2,3,4,5,6,7,8,9',
+            'vehicle_id' => 'nullable'
         ]);
 
         try {
@@ -344,6 +358,7 @@ class CreditSalesController extends Controller
 
             $oldVendorId = $creditSale->vendor_id;
             $oldVendorType = $creditSale->vendor_type;
+            $oldVehicleId = $creditSale->vehicle_id;
 
             // Server-side validation to ensure vendor_id exists for the given vendor_data_type
             $vendorType = (int) $request->vendor_data_type;
@@ -393,6 +408,7 @@ class CreditSalesController extends Controller
             // Update credit sale record
             $creditSale->vendor_id = $vendorId;
             $creditSale->vendor_type = $vendorType;
+            $creditSale->vehicle_id = $request->vehicle_id;
             $creditSale->save();
 
             // Update vendor on related ledger entries for this credit sale
@@ -410,13 +426,17 @@ class CreditSalesController extends Controller
             // Log the change
             $oldVendor = $this->getVendorByType($oldVendorType, $oldVendorId);
             $newVendor = $this->getVendorByType($vendorType, $vendorId);
+            
+            $oldVehicle = TankLari::find($oldVehicleId);
+            $newVehicle = TankLari::find($request->vehicle_id);
 
             Logs::create([
                 'user_id' => Auth::id(),
                 'action_type' => 'Update',
                 'action_description' => 'Updated credit sale vendor: Credit Sale ID ' . $creditSale->id .
                     ' | Vendor changed from ' . ($oldVendor->vendor_name ?? 'N/A') . ' (' . ($oldVendor->vendor_type ?? '-') . ')' .
-                    ' To ' . ($newVendor->vendor_name ?? 'N/A') . ' (' . ($newVendor->vendor_type ?? '-') . ')',
+                    ' To ' . ($newVendor->vendor_name ?? 'N/A') . ' (' . ($newVendor->vendor_type ?? '-') . ')' .
+                    ' | Vehicle changed from ' . ($oldVehicle->larry_name ?? 'N/A') . ' to ' . ($newVehicle->larry_name ?? 'N/A'),
             ]);
 
             DB::commit();

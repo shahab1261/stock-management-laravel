@@ -39,8 +39,8 @@ class BillingController extends Controller
         // Get all dippable products
         $products = Product::where('is_dippable', 1)->orderBy('id', 'desc')->get();
 
-        // Get all customer vehicles (tank_type = 3)
-        $vehicles = TankLari::where('tank_type', 3)->orderBy('id', 'desc')->get();
+        // Get all customer vehicles
+        $vehicles = TankLari::orderBy('id', 'desc')->get();
 
         $suppliers = Suppliers::orderBy('id', 'desc')->get();
         $customers = Customers::orderBy('id', 'desc')->get();
@@ -186,7 +186,7 @@ class BillingController extends Controller
 
         $callback = function() use($sales) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['Date', 'Vendor', 'Product', 'Tank Lorry', 'Sold Stock', 'Rate', 'Amount', 'Comments']);
+            fputcsv($file, ['Date', 'Invoice No', 'Vendor', 'Product', 'Tank Lorry', 'Sold Stock', 'Rate', 'Amount', 'Comments']);
 
             foreach ($sales as $sale) {
                 // Get vendor details
@@ -195,6 +195,7 @@ class BillingController extends Controller
 
                 $row = [
                     $sale->transasction_date ? $sale->transasction_date->format('d-m-Y') : '',
+                    $sale->invoice_no ?? '',
                     $vendor->vendor_name . ' (' . ucfirst($vendor->vendor_type) . ')',
                     $sale->product ? $sale->product->name : 'Not found',
                     $sale->vehicle ? $sale->vehicle->larry_name : 'Not found',
