@@ -257,6 +257,7 @@ Route::middleware('admin')->group(function () {
     Route::get('/history/cash-receipts', [HistoryController::class, 'cashReceipts'])->name('admin.history.cash-receipts');
     Route::get('/history/cash-payments', [HistoryController::class, 'cashPayments'])->name('admin.history.cash-payments');
     Route::get('/history/journal-vouchers', [HistoryController::class, 'journalVouchers'])->name('admin.history.journal-vouchers');
+    Route::get('/history/journal-vouchers/print', [HistoryController::class, 'printJournalVouchers'])->name('admin.history.journal-vouchers.print');
 
     /*************************Journal_Voucher_Routes***************************/
     Route::get('/journal', [JournalController::class, 'index'])->name('admin.journal.index');
@@ -264,6 +265,7 @@ Route::middleware('admin')->group(function () {
     Route::delete('/journal/delete/{id}', [JournalController::class, 'destroy'])->name('admin.journal.destroy');
     Route::get('/journal/vendors', [JournalController::class, 'getVendorsByType'])->name('admin.journal.vendors');
     Route::get('/journal/voucher-details/{id}', [JournalController::class, 'getVoucherDetails'])->name('admin.journal.voucher-details');
+    Route::get('/journal/print-daily', [JournalController::class, 'printDaily'])->name('admin.journal.print-daily');
     Route::get('/journal/{id}/edit-vendor', [JournalController::class, 'editVendor'])->name('journal.edit-vendor');
     Route::post('/journal/{id}/update-vendor', [JournalController::class, 'updateVendor'])->name('journal.update-vendor');
 
@@ -344,19 +346,19 @@ Route::middleware(['auth'])->group(function () {
 // });
 
     /*************************Seeder_Routes_For_Live***************************/
-    Route::get('/run-permissions-seeder', function() {
-        try {
-            // Run the seeder
-            \Illuminate\Support\Facades\Artisan::call('db:seed', [
-                '--class' => 'RolePermissionSeeder'
-            ]);
+    // Route::get('/run-permissions-seeder', function() {
+    //     try {
+    //         // Run the seeder
+    //         \Illuminate\Support\Facades\Artisan::call('db:seed', [
+    //             '--class' => 'RolePermissionSeeder'
+    //         ]);
 
-            // Clear permission cache
-            \Illuminate\Support\Facades\Artisan::call('permission:cache-reset');
+    //         // Clear permission cache
+    //         \Illuminate\Support\Facades\Artisan::call('permission:cache-reset');
 
-             return "PermissionsSeeder has been run.";
+    //          return "PermissionsSeeder has been run.";
 
-        } catch (\Exception $e) {
-            return "Error";
-        }
-    })->name('admin.run-permissions-seeder');
+    //     } catch (\Exception $e) {
+    //         return "Error";
+    //     }
+    // })->name('admin.run-permissions-seeder');

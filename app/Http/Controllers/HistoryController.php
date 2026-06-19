@@ -30,7 +30,7 @@ class HistoryController extends Controller
         $this->middleware('permission:history.bank-payments.view')->only('bankPayments');
         $this->middleware('permission:history.cash-receipts.view')->only('cashReceipts');
         $this->middleware('permission:history.cash-payments.view')->only('cashPayments');
-        $this->middleware('permission:history.journal-vouchers.view')->only('journalVouchers');
+        $this->middleware('permission:history.journal-vouchers.view')->only(['journalVouchers', 'printJournalVouchers']);
     }
 
     /**
@@ -262,6 +262,23 @@ class HistoryController extends Controller
             'cashPayments',
             'processedPayments',
             'paymentTotals'
+        ));
+    }
+
+    /**
+     * Print journal vouchers history (all rows, no pagination)
+     */
+    public function printJournalVouchers(Request $request)
+    {
+        $startDate = $request->get('start_date', date('Y-m-d'));
+        $endDate   = $request->get('end_date', date('Y-m-d'));
+
+        $journalEntries  = $this->getJournalEntriesByFilter('', $startDate, $endDate);
+        $processedJournals = $this->processJournalData($journalEntries);
+        $journalTotals   = $this->calculateJournalTotals($journalEntries);
+
+        return view('admin.pages.history.print-journal-vouchers', compact(
+            'processedJournals', 'journalTotals', 'startDate', 'endDate'
         ));
     }
 
@@ -756,10 +773,12 @@ class HistoryController extends Controller
 
             $processedData[] = (object)[
                 'id' => $journal->id,
-                'voucher_id' => $journal->voucher_id ?? $journal->id,
+                'voucher_id' => $journal->voucher_id ?? null,
+                'has_voucher' => !empty($journal->voucher_id),
                 'transaction_date' => $journal->transaction_date,
                 'vendor' => $vendor,
                 'amount' => $journal->amount,
+                'debit_credit' => $journal->debit_credit,
                 'description' => $journal->description,
                 'entry_type' => $journal->entry_type ?? 'General'
             ];
@@ -768,18 +787,24 @@ class HistoryController extends Controller
     }
 
     /**
-     * Calculate journal totals
+     * Calculate journal totals (separate debit and credit)
      */
     private function calculateJournalTotals($journalEntries)
     {
-        $totalAmount = 0;
+        $totalDebit = 0;
+        $totalCredit = 0;
 
         foreach ($journalEntries as $journal) {
-            $totalAmount += $journal->amount;
+            if ($journal->debit_credit == 2) {
+                $totalDebit += $journal->amount;
+            } else {
+                $totalCredit += $journal->amount;
+            }
         }
 
         return (object)[
-            'total_amount' => $totalAmount
+            'total_debit' => $totalDebit,
+            'total_credit' => $totalCredit,
         ];
     }
 }

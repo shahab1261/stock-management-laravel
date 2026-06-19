@@ -152,6 +152,9 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-table me-2"></i>Journal Entries</h5>
+                    <a href="{{ route('admin.journal.print-daily') }}" target="_blank" class="btn btn-sm btn-info">
+                        <i class="bi bi-printer me-1"></i> Print
+                    </a>
                 </div>
                                 <div class="card-body p-0 pt-0">
                     <div class="table-responsive">

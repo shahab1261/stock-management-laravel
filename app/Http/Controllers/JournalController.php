@@ -22,7 +22,7 @@ class JournalController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:journal.view')->only('index');
+        $this->middleware('permission:journal.view')->only(['index', 'printDaily']);
         $this->middleware('permission:journal.create')->only('store');
         $this->middleware('permission:journal.delete')->only('destroy');
         $this->middleware('permission:journal.edit')->only(['editVendor', 'updateVendor']);
@@ -65,6 +65,25 @@ class JournalController extends Controller
             'totalDebit',
             'totalCredit'
         ));
+    }
+
+    /**
+     * Print all journal entries for today's date lock
+     */
+    public function printDaily()
+    {
+        $settings = Settings::first();
+        $dateLock = $settings->date_lock ?? now()->format('Y-m-d');
+
+        $entries = JournalEntry::whereDate('transaction_date', $dateLock)
+            ->orderBy('voucher_id')
+            ->orderBy('id')
+            ->get();
+
+        $totalDebit  = $entries->where('debit_credit', 2)->sum('amount');
+        $totalCredit = $entries->where('debit_credit', 1)->sum('amount');
+
+        return view('admin.pages.journal.print-daily', compact('entries', 'dateLock', 'totalDebit', 'totalCredit'));
     }
 
     /**

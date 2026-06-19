@@ -57,7 +57,13 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0"><i class="bi bi-journal-text me-2"></i>Journal Vouchers</h5>
-                    <div class="dt-buttons-container"></div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="dt-buttons-container"></div>
+                        <a href="{{ route('admin.history.journal-vouchers.print', ['start_date' => $startDate, 'end_date' => $endDate]) }}"
+                           target="_blank" class="btn btn-sm btn-info">
+                            <i class="bi bi-printer me-1"></i> Print
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -68,7 +74,8 @@
                                     <th class="text-center">Date</th>
                                     <th class="text-center">Account</th>
                                     <th class="text-center">Entry Type</th>
-                                    <th class="text-center">Amount</th>
+                                    <th class="text-center">Debit (DR)</th>
+                                    <th class="text-center">Credit (CR)</th>
                                     <th class="text-center">Description</th>
                                     <th class="text-center">Actions</th>
                                 </tr>
@@ -85,7 +92,20 @@
                                         <td>
                                             <span class="badge bg-info">{{ $journal->entry_type }}</span>
                                         </td>
-                                        <td>Rs {{ number_format($journal->amount, 0, '', ',') }}</td>
+                                        <td class="text-center">
+                                            @if($journal->debit_credit == 2)
+                                                <span class="text-success fw-bold">Rs {{ number_format($journal->amount, 0, '', ',') }}</span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @if($journal->debit_credit == 1)
+                                                <span class="text-danger fw-bold">Rs {{ number_format($journal->amount, 0, '', ',') }}</span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $journal->description }}</td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-1">
@@ -104,7 +124,8 @@
                             <tfoot class="table-light">
                                 <tr>
                                     <th colspan="4" class="text-end">Total:</th>
-                                    <th class="text-center">Rs {{ number_format($journalTotals->total_amount, 0, '', ',') }}</th>
+                                    <th class="text-center text-success">Rs {{ number_format($journalTotals->total_debit, 0, '', ',') }}</th>
+                                    <th class="text-center text-danger">Rs {{ number_format($journalTotals->total_credit, 0, '', ',') }}</th>
                                     <th>-</th>
                                     <th>-</th>
                                 </tr>
